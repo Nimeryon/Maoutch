@@ -20,14 +20,16 @@ namespace maoutch
 
 		if (_needUpdate)
 		{
-			_transform = parent == nullptr ? _localTransform : transform::Compose(_localTransform, parent->_transform);
+			if (parent == nullptr) _transform = _localTransform;
+			else _transform = transform::Compose(_localTransform, parent->_transform);
+
 			for (GameObject* child : childrens)
 				child->NeedUpdate();
 
 			_needUpdate = false;
 		}
 
-		_OnDraw(window);
+		_OnDraw(window, _transform.getTransform());
 	}
 
 	GameObject* GameObject::GetChildren(const int& index)

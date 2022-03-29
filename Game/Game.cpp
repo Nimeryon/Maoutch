@@ -23,6 +23,9 @@ namespace maoutch
 		ImGui::SFML::Init(_data->window);
 		InputHandler::GetInstance()->SetWindow(&_data->window);
 
+		// Setup framerate
+		_data->window.setFramerateLimit(120);
+
 		// Setup logic time
 		_data->logicDeltatime = sf::milliseconds(1000.f / 60.f);
 

@@ -4,7 +4,10 @@
 #include "MatchGrid.h"
 #include "../../Engine/Objects/GameObjectHandler.h"
 #include "../../Types/Direction.h"
+#include "../../Tools/Random.h"
 
+extern int WINDOW_WIDTH;
+extern int WINDOW_HEIGHT;
 extern maoutch::Vector2 ELEMENT_SIZE;
 extern maoutch::Vector2 ELEMENT_SCALE;
 
@@ -12,8 +15,12 @@ namespace maoutch
 {
 	MatchGrid::MatchGrid(const int& width, const int& height, const Vector2& position) :
 		GameObject("Match Grid", 0),
+		_velocity(Vector2(random::Float(-50, 50), random::Float(-50, 50))),
 		_grid(std::max(width, 5), std::max(height, 5)),
-		_state(GridState::INPUTS)
+		_state(GridState::INPUTS),
+		_destroyTimer(.5f, &MatchGrid::DestroyMatched, this),
+		_collapseTimer(.33f, &MatchGrid::CollapseColumns, this),
+		_refillTimer(.33f, &MatchGrid::RefillBoard, this)
 	{
 		Setup();
 		SetPosition(position);
@@ -24,6 +31,16 @@ namespace maoutch
 		_grid.Clear();
 	}
 
+	void MatchGrid::Update(float dt)
+	{
+		if (GetPosition().x < 0 || GetPosition().x >= WINDOW_WIDTH)
+			_velocity.x *= -1;
+
+		if (GetPosition().y < 0 || GetPosition().y >= WINDOW_HEIGHT)
+			_velocity.y *= -1;
+
+		Move(_velocity * dt);
+	}
 	void MatchGrid::FixedUpdate(float fixedDt)
 	{
 		switch (_state)
@@ -35,16 +52,8 @@ namespace maoutch
 					[](const MatchElement* element) { return element != nullptr && element->IsMoving(); }
 				))
 				{
-					if (RefillBoard())
-						if (!ProcessMatches()) break;
-
-					SetState(GridState::DESTROYING);
+					SetState(GridState::INPUTS);
 				}
-				break;
-
-			case GridState::DESTROYING:
-				if (DestroyMatched()) CollapseColumns();
-				else SetState(GridState::INPUTS);
 				break;
 
 			default: break;
@@ -133,11 +142,9 @@ namespace maoutch
 		}
 		std::cout << value << std::endl;
 	}
-
 	bool MatchGrid::ProcessMatches()
 	{
 		bool matchFound = false;
-		SetState(GridState::MOVING);
 
 		_matchFinder.FindMatches(_grid);
 		if (_matchFinder.matches.size() > 0) matchFound = true;
@@ -150,11 +157,14 @@ namespace maoutch
 			}
 		}
 
+		if (matchFound)
+			_destroyTimer.Start();
+
 		return matchFound;
 	}
-	bool MatchGrid::DestroyMatched()
+	void MatchGrid::DestroyMatched()
 	{
-		bool destroyed = false;
+		std::cout << "Destroy\n";
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
@@ -163,18 +173,17 @@ namespace maoutch
 			{
 				if (_grid.GetGridElement(gridPos) != nullptr && _grid.GetGridElement(gridPos)->IsMatched())
 				{
-					destroyed = true;
 					GameObjectHandler::instance->Destroy(_grid.GetGridElement(gridPos));
 					_grid.GetGridElement(gridPos) = nullptr;
 				}
 			}
 		}
 
-		return destroyed;
-	}	bool MatchGrid::RefillBoard()
+		_collapseTimer.Start();
+	}
+	void MatchGrid::RefillBoard()
 	{
-		bool refilled = false;
-		SetState(GridState::MOVING);
+		std::cout << "Refill\n";
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
@@ -183,7 +192,6 @@ namespace maoutch
 			{
 				if (_grid.GetGridElement(gridPos) == nullptr)
 				{
-					refilled = true;
 					_grid.GetGridElement(gridPos) = new MatchElement(*this, gridPos, Element::Random());
 					AddChildren(_grid.GetGridElement(gridPos));
 				}
@@ -191,12 +199,32 @@ namespace maoutch
 		}
 
 		UpdateElementsPosition();
-
-		return refilled;
+		AfterRefill();
 	}
+	void MatchGrid::AfterRefill()
+	{
+		std::cout << "After Refill\n";
 
+		Vector2i gridPos;
+		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
+		{
+			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
+			{
+				if (_grid.GetGridElement(gridPos) != nullptr)
+				{
+					if (_matchFinder.MatchAt(_grid, gridPos, _grid.GetGridElement(gridPos)->GetElement()))
+					{
+						ProcessMatches();
+						return;
+					}
+				}
+			}
+		}
+	}
 	void MatchGrid::Swap(const Vector2i gridPos, const Direction dir)
 	{
+		SetState(GridState::MOVING);
+
 		Vector2i goalPos = gridPos + dir;
 		if (!IsValidGridPosition(goalPos)) return;
 		if (_grid.GetGridElement(gridPos) == nullptr || _grid.GetGridElement(goalPos) == nullptr) return;
@@ -211,7 +239,7 @@ namespace maoutch
 	}
 	void MatchGrid::CollapseColumns()
 	{
-		SetState(GridState::MOVING);
+		std::cout << "Collapse\n";
 		
 		int nullCount = 0;
 		Vector2i gridPos;
@@ -231,11 +259,12 @@ namespace maoutch
 			}
 			nullCount = 0;
 		}
+
+		_refillTimer.Start();
 	}
 	void MatchGrid::UpdateElementsPosition()
 	{
 		_grid.MapAll([](MatchElement* element) { element->MoveToGridPos(); });
-		SetState(GridState::MOVING);
 	}
 
 	GridState MatchGrid::GetState() const { return _state; }

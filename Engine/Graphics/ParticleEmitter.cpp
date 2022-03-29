@@ -100,7 +100,7 @@ namespace maoutch
 		}
 	}
 
-	void ParticleEmitter::_OnDraw(sf::RenderWindow& window)
+	void ParticleEmitter::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
 		if (_emitterIsTextured)
 			window.draw(_particleVertex, &AssetLoader::GetInstance()->GetTexture(_emitterTextureName));

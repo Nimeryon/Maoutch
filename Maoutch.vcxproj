@@ -162,7 +162,6 @@
     <ClCompile Include="Game\Match\MatchFinder.cpp" />
     <ClCompile Include="Game\Objects\MatchElement.cpp" />
     <ClCompile Include="Game\Objects\MatchGrid.cpp" />
-    <ClCompile Include="Game\Objects\TestObject.cpp" />
     <ClCompile Include="Includes\imgui\imgui-SFML.cpp" />
     <ClCompile Include="Includes\imgui\imgui.cpp" />
     <ClCompile Include="Includes\imgui\imgui_draw.cpp" />
@@ -194,7 +193,6 @@
     <ClInclude Include="Game\Match\MatchFinder.h" />
     <ClInclude Include="Game\Objects\MatchElement.h" />
     <ClInclude Include="Game\Objects\MatchGrid.h" />
-    <ClInclude Include="Game\Objects\TestObject.h" />
     <ClInclude Include="Includes\imgui\imconfig-SFML.h" />
     <ClInclude Include="Includes\imgui\imconfig.h" />
     <ClInclude Include="Includes\imgui\imgui-SFML.h" />

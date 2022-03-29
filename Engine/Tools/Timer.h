@@ -5,16 +5,40 @@ namespace maoutch
 {
 	struct TimerBase
 	{
-		TimerBase(float time);
-		virtual ~TimerBase();
+		TimerBase(float time) :
+			_currentTime(0),
+			_time(time)
+		{}
+		virtual ~TimerBase()
+		{
+			Stop();
+		}
 
 		TimerBase& operator=(const TimerBase&) = delete;
 
-		void Start();
-		void Stop();
-		void Reset();
+		void Start()
+		{
+			timerEvent += EventHandler::Bind<float, TimerBase>(&TimerBase::Update, this);
+		}
+		void Stop()
+		{
+			timerEvent -= EventHandler::Bind<float, TimerBase>(&TimerBase::Update, this);
+		}
+		void Reset()
+		{
+			Stop();
+			_currentTime = 0;
+		}
 
-		void Update(float& dt);
+		void Update(float& dt)
+		{
+			_currentTime += dt;
+			if (_currentTime >= _time)
+			{
+				Reset();
+				_OnTimerEvent();
+			}
+		}
 
 		static Event<float> timerEvent;
 
@@ -28,11 +52,18 @@ namespace maoutch
 	template <typename T>
 	struct Timer : TimerBase
 	{
-		Timer(float time, void(T::* callback)(), T* instance);
+		Timer(float time, void(T::* callback)(), T* instance) :
+			TimerBase(time),
+			_instance(instance),
+			_callback(callback)
+		{}
 		Timer& operator=(const Timer&) = delete;
 
 	private:
-		void _OnTimerEvent() override;
+		void _OnTimerEvent() override
+		{
+			(_instance->*_callback)();
+		}
 
 		T* _instance;
 		void(T::* _callback)();
@@ -41,11 +72,17 @@ namespace maoutch
 	template<>
 	struct Timer<void> : TimerBase
 	{
-		Timer(float time, void(*callback)());
+		Timer(float time, void(*callback)()) :
+			TimerBase(time),
+			_callback(callback)
+		{}
 		Timer& operator=(const Timer&) = delete;
 
 	private:
-		void _OnTimerEvent() override;
+		void _OnTimerEvent() override
+		{
+			_callback();
+		}
 
 		void(*_callback)();
 	};

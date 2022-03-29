@@ -86,6 +86,6 @@ namespace maoutch
 		bool _needUpdate;
 		int _zIndex;
 		
-		virtual void _OnDraw(sf::RenderWindow& window) {}
+		virtual void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) {}
 	};
 }

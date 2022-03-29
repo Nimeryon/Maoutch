@@ -79,9 +79,9 @@ namespace maoutch
 			}
 		}
 	}
-	void MatchElement::_OnDraw(sf::RenderWindow& window)
+	void MatchElement::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		window.draw(*_sprite, _transform.getTransform());
+		window.draw(*_sprite, transform);
 	}
 
 	Element MatchElement::GetElement() const { return _type; }
@@ -138,7 +138,7 @@ namespace maoutch
 		_endClickPosition = InputHandler::GetInstance()->GetMousePosition();
 		if (_endClickPosition.Distance(_startClickPosition) > ELEMENT_SWIPE_DISTANCE)
 		{
-			const float angle = std::atan2f(
+			float angle = std::atan2f(
 				_endClickPosition.y - _startClickPosition.y,
 				_endClickPosition.x - _startClickPosition.x
 			) * RAD2DEG;

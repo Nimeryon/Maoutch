@@ -77,7 +77,7 @@
       <UniqueIdentifier>{03fed150-4ddb-4bda-8590-7001064497bd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Engine\Tools">
-      <UniqueIdentifier>{01a531c5-b04b-4e31-bef6-56085f8e443e}</UniqueIdentifier>
+      <UniqueIdentifier>{0e74abc0-0baa-4f65-a525-12735b7a1cda}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +152,6 @@
     </ClCompile>
     <ClCompile Include="Types\Direction.cpp">
       <Filter>Source Files\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\TestObject.cpp">
-      <Filter>Source Files\Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\MatchElement.cpp">
       <Filter>Source Files\Game\Objects</Filter>
@@ -274,9 +271,6 @@
     </ClInclude>
     <ClInclude Include="Types\Direction.h">
       <Filter>Header Files\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\TestObject.h">
-      <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Game\Match\Element.h">
       <Filter>Header Files\Game\Match</Filter>

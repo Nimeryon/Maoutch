@@ -5,7 +5,7 @@ namespace sf
 }
 
 #include "../../Engine/Objects/GameObject.h"
-#include "../../Types//Vector2i.h"
+#include "../../Types/Vector2i.h"
 #include "../Match/Element.h"
 
 namespace maoutch
@@ -20,7 +20,7 @@ namespace maoutch
 
 		void ProcessInputs() override;
 		void Update(float dt) override;
-		void _OnDraw(sf::RenderWindow& window) override;
+		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 
 		Vector2i GetGridPos() const;
 		Element GetElement() const;

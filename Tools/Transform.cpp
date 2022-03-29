@@ -7,12 +7,14 @@ namespace maoutch
 	{
 		sf::Transformable Compose(const sf::Transformable& target, const sf::Transformable& from)
 		{
-			sf::Transformable transform = target;
-			transform.move(from.getPosition());
-			transform.rotate(from.getRotation());
-			transform.scale(from.getScale());
+			sf::Transform fromTransfrom = from.getTransform();
 
-			return transform;
+			sf::Transformable transformable = target;
+			transformable.setPosition(fromTransfrom.transformPoint(transformable.getPosition()));
+			transformable.rotate(from.getRotation());
+			transformable.scale(from.getScale());
+
+			return transformable;
 		}
 
 		sf::FloatRect GetRect(sf::FloatRect rect, const sf::Transformable& transform)

@@ -45,7 +45,7 @@ namespace  maoutch
 
 		void Update(float dt) override;
 		void FixedUpdate(float dt) override;
-		void _OnDraw(sf::RenderWindow& window) override;
+		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 
 		// Emitter properties
 
