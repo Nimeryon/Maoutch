@@ -1,5 +1,6 @@
 #include "Direction.h"
 #include "../Tools/String.h"
+#include "../Tools/Math.h"
 
 namespace maoutch
 {
@@ -75,13 +76,14 @@ namespace maoutch
 		if (dir == Vector2::Left()) return DirectionValue::WEST;
 		return DirectionValue::NONE;
 	}
-	Direction Direction::GetDirection(const float& angle)
+	Direction Direction::GetDirection(const float& angle, const float& offset)
 	{
-		if (angle > -45 && angle <= 45) return DirectionValue::EAST;
-		if (angle > 45 && angle <= 135) return DirectionValue::SOUTH;
-		if (angle > 135 || angle <= -135) return DirectionValue::WEST;
-		if (angle < -45 && angle >= -135) return DirectionValue::NORTH;
-		return DirectionValue::NONE;
+		const int offsetAngle = ((int)(angle - offset) % 360 + 360) % 360;
+
+		if (offsetAngle > 45 && offsetAngle <= 135) return DirectionValue::NORTH;
+		if (offsetAngle > 135 && offsetAngle <= 225) return DirectionValue::EAST;
+		if (offsetAngle > 225 && offsetAngle <= 315) return DirectionValue::SOUTH;
+		return DirectionValue::WEST;
 	}
 
 	// Methods

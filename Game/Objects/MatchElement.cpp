@@ -138,11 +138,14 @@ namespace maoutch
 		_endClickPosition = InputHandler::GetInstance()->GetMousePosition();
 		if (_endClickPosition.Distance(_startClickPosition) > ELEMENT_SWIPE_DISTANCE)
 		{
+			// Calculate swipe angle
+			// Angle between 0 and 360 deg
 			float angle = std::atan2f(
 				_endClickPosition.y - _startClickPosition.y,
 				_endClickPosition.x - _startClickPosition.x
-			) * RAD2DEG;
-			const Direction direction = Direction::GetDirection(angle);
+			) * RAD2DEG + 180;
+
+			const Direction direction = Direction::GetDirection(angle, _transform.getRotation());
 			_grid.Swap(_gridPos, direction);
 			OnPointerUp();
 		}

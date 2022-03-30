@@ -21,6 +21,16 @@ namespace maoutch
 		static Vector2i Up() { return Vector2i(0, -1); }
 		static Vector2i Down() { return Vector2i(0, 1); }
 
+		// Static methods
+		static Vector2i FromString(const std::string& value)
+		{
+			const auto values = string::Split(value, '|');
+			return Vector2i(
+				std::atoi(&values[0][0]),
+				std::atoi(&values[1][0])
+			);
+		}
+
 		// Methods
 		void Translate(const Vector2i& v)
 		{
@@ -88,7 +98,7 @@ namespace maoutch
 	// Operators
 	inline std::ostream& operator<<(std::ostream& os, const Vector2i& v)
 	{
-		os << v.x << "," << v.y;
+		os << v.x << "|" << v.y;
 		return os;
 	}
 

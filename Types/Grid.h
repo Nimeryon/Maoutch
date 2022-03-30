@@ -13,32 +13,30 @@ namespace maoutch
 		{
 			_ReserveSpace();
 		}
-		virtual ~Grid()
-		{
-			array.clear();
-		}
+		Grid() : Grid(0, 0) {}
+		virtual ~Grid() = default;
 
 		void MapAll(void (*fn)(T value))
 		{
 			for (T& arrayElement : array)
-				fn(arrayElement);
+				if (arrayElement != nullptr) fn(arrayElement);
 		}
 
 		// Getters
 
-		bool Equals(const Grid<T>& grid) const { return this == grid; }
-		int GetGridIndex(const Vector2i& gridPos) const { return gridPos.x + gridPos.y * _width; }
-		int GetWidth() const { return _width; }
-		int GetHeight() const { return _height; }
-		int GetSize() const { return _width * _height; }
-		bool IsEmpty() const { return _width == 0 && _height == 0; }
+		[[nodiscard]] bool Equals(const Grid<T>& grid) const { return this == grid; }
+		[[nodiscard]] int GetGridIndex(const Vector2i& gridPos) const { return gridPos.x + gridPos.y * _width; }
+		[[nodiscard]] int GetWidth() const { return _width; }
+		[[nodiscard]] int GetHeight() const { return _height; }
+		[[nodiscard]] int GetSize() const { return _width * _height; }
+		[[nodiscard]] bool IsEmpty() const { return _width == 0 && _height == 0; }
 		T& GetGridElement(const Vector2i& gridPos)
 		{
 			return GetGridElement(GetGridIndex(gridPos));
 		}
 		T& GetGridElement(const int& index)
 		{
-			assert(index >= 0 && index < _width* _height);
+			assert(index >= 0 && index < _width * _height);
 			return array[index];
 		}
 
@@ -50,13 +48,13 @@ namespace maoutch
 			_height = height;
 			_ReserveSpace();
 		}
-		void SetGridElement(const T& element, const Vector2i& gridPos)
-		{
-			SetGridElement(element, GetGridIndex(gridPos));
-		}
 		void SetGridElement(const T& element, const int& index)
 		{
 			array[GetGridIndex(index)] = element;
+		}
+		void SetGridElement(const T& element, const Vector2i& gridPos)
+		{
+			SetGridElement(element, GetGridIndex(gridPos));
 		}
 		void EmplaceBack(const T& element) { array.emplace_back(element); }
 		void Clear() { array.clear(); }

@@ -19,8 +19,6 @@ namespace maoutch
 			_ClearObjectsToDestroy();
 			_needObjectDeleting = false;
 		}
-
-		_objects.clear();
 	}
 
 	void GameObjectHandler::AddObject(GameObject* object)

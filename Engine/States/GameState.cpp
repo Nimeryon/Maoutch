@@ -21,8 +21,8 @@ namespace maoutch
 
 	void GameState::Init()
 	{
-		_grid1 = new MatchGrid(7, 9, Vector2(_gridPosition1[0], _gridPosition1[1]));
-		_grid2 = new MatchGrid(7, 9, Vector2(_gridPosition2[0], _gridPosition2[1]));
+		_grid1 = new MatchGrid("circle_grid", Vector2(_gridPosition1[0], _gridPosition1[1]));
+		_grid2 = new MatchGrid("circle_grid", Vector2(_gridPosition2[0], _gridPosition2[1]));
 	}
 
 	void GameState::ImGui(float dt)

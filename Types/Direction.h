@@ -36,7 +36,7 @@ namespace maoutch
 		[[nodiscard]] static Direction FromString(const std::string& string);
 		[[nodiscard]] static Direction GetOpposite(const Direction& dir);
 		[[nodiscard]] static Direction GetDirection(const Vector2& dir);
-		[[nodiscard]] static Direction GetDirection(const float& angle);
+		[[nodiscard]] static Direction GetDirection(const float& angle, const float& offset);
 
 		// Methods
 

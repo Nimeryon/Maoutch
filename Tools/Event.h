@@ -233,9 +233,9 @@ namespace maoutch
 	class Event : public EventBase<T>
 	{
 	public:
-		void operator()(T& value)
+		void operator()(T& value) const
 		{
-			auto listeners = this->_listeners;
+			const std::list<EventListener<T>*> listeners = this->_listeners;
 			for (const auto listener : listeners)
 				if (listener != nullptr) listener->Invoke(value);
 		}
@@ -248,9 +248,9 @@ namespace maoutch
 	class Event<void> : public EventBase<void>
 	{
 	public:
-		void operator()()
+		void operator()() const
 		{
-			auto listeners = _listeners;
+			const std::list<EventListener<void>*> listeners = _listeners;
 			for (const auto listener : listeners)
 				if (listener != nullptr) listener->Invoke();
 		}

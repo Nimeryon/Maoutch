@@ -8,11 +8,7 @@ namespace maoutch
 	std::mutex AssetLoader::_mutex;
 
 	AssetLoader::AssetLoader() = default;
-	AssetLoader::~AssetLoader()
-	{
-		_textures.clear();
-		_fonts.clear();
-	}
+	AssetLoader::~AssetLoader() = default;
 
 	AssetLoader* AssetLoader::GetInstance()
 	{
