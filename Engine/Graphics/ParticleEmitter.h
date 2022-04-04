@@ -1,5 +1,4 @@
 #pragma once
-
 namespace sf
 {
 	class VertexArray;
@@ -45,7 +44,6 @@ namespace  maoutch
 
 		void Update(float dt) override;
 		void FixedUpdate(float dt) override;
-		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 
 		// Emitter properties
 
@@ -122,5 +120,7 @@ namespace  maoutch
 		EmitterValue<float> _particleFriction;
 		EmitterValue<float> _particleGravity;
 		EmitterValue<float> _particleRotationSpeed;
+
+		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 	};
 }
