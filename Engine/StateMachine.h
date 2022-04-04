@@ -22,6 +22,7 @@ namespace maoutch
 
 		void HandleStateUpdate();
 
+		void ProcessObjectsAdding();
 		void ProcessInputs();
 		void EarlyUpdate(float dt);
 		void Update(float dt);

@@ -31,6 +31,10 @@ namespace maoutch
 		_HandleAdding();
 	}
 
+	void StateMachine::ProcessObjectsAdding()
+	{
+		GetState()->objectHandler.ProcessObjectsAdding();
+	}
 	void StateMachine::ProcessInputs()
 	{
 		GetState()->ProcessInputs();

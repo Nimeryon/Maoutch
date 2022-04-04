@@ -18,6 +18,8 @@ namespace maoutch
 		void AddObject(GameObject* object);
 		void Destroy(GameObject* object);
 
+		void ProcessObjectsAdding();
+
 		void ProcessInputs();
 
 		void EarlyUpdate(float dt);
@@ -34,9 +36,12 @@ namespace maoutch
 	private:
 		bool _neeedObjectSorting;
 		bool _needObjectDeleting;
+		bool _needObjectAdding;
 		std::vector<GameObject*> _objects;
 		std::vector<GameObject*> _objectsToDestroy;
+		std::vector<GameObject*> _objectsToAdd;
 
 		void _ClearObjectsToDestroy();
+		void _AddObjectsToAdd();
 	};
 }

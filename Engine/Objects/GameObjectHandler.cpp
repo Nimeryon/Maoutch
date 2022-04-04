@@ -23,8 +23,9 @@ namespace maoutch
 
 	void GameObjectHandler::AddObject(GameObject* object)
 	{
-		_objects.push_back(object);
-		NeedUpdateSorting();
+		_needObjectAdding = true;
+
+		_objectsToAdd.push_back(object);
 	}
 	void GameObjectHandler::Destroy(GameObject* object)
 	{
@@ -36,6 +37,15 @@ namespace maoutch
 			Destroy(childObject);
 
 		_objectsToDestroy.push_back(object);
+	}
+
+	void GameObjectHandler::ProcessObjectsAdding()
+	{
+		if (_needObjectAdding)
+		{
+			_needObjectAdding = false;
+			_AddObjectsToAdd();
+		}
 	}
 
 	void GameObjectHandler::ProcessInputs()
@@ -94,6 +104,14 @@ namespace maoutch
 		}
 
 		_objectsToDestroy.clear();
+		NeedUpdateSorting();
+	}
+	void GameObjectHandler::_AddObjectsToAdd()
+	{
+		for (GameObject* object : _objectsToAdd)
+			_objects.push_back(object);
+
+		_objectsToAdd.clear();
 		NeedUpdateSorting();
 	}
 }
