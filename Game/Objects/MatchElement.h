@@ -5,6 +5,7 @@ namespace sf
 }
 
 #include "../../Engine/Objects/GameObject.h"
+#include "../../Engine/Tools/Timer.h"
 #include "../../Types/Vector2i.h"
 #include "../Match/Element.h"
 
@@ -15,12 +16,11 @@ namespace maoutch
 	class MatchElement : public GameObject
 	{
 	public:
-		MatchElement(MatchGrid& grid, const Vector2i& gridPos, const Element& element);
+		MatchElement(MatchGrid& grid, const Vector2& startPos, const Vector2i& gridPos, const Element& element);
 		~MatchElement() override;
 
 		void ProcessInputs() override;
 		void Update(float dt) override;
-		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 
 		Vector2i GetGridPos() const;
 		Element GetElement() const;
@@ -29,12 +29,16 @@ namespace maoutch
 		bool IsMoving() const;
 
 		void SetElement(const Element& element);
-		void SetGridPos(const Vector2i& gridPos);
-		void SetAndMoveToGridPos(const Vector2i& gridPos);
 		void SetIsMatched();
 		void SetIsSelected(const bool& isSelected);
 
-		void MoveToGridPos();
+		void SetGridPos(const Vector2i& gridPos);
+		void SetAndMoveToGridPos(const Vector2i& gridPos, const float& minStartMoveTime, const float& maxStartMoveTime);
+		void SetAndMoveToGridPos(const Vector2i& gridPos, const float& moveTime = 0);
+		void MoveToGridPos(const float& minStartMoveTime, const float& maxStartMoveTime);
+		void MoveToPos(const Vector2& position, const float& minStartMoveTime, const float& maxStartMoveTime);
+		void MoveToPos(const Vector2& position, const float& moveTime = 0);
+
 		void UpdatePosition();
 		void OnPointerDown();
 		void OnPointerUpdate();
@@ -50,8 +54,14 @@ namespace maoutch
 		bool _isMatched;
 		bool _isSelectd;
 		bool _isMoving;
+		bool _moveTimerFinished;
+		Timer<MatchElement> _moveTimer;
 		Vector2 _startClickPosition;
 		Vector2 _endClickPosition;
 		Vector2 _goalPosition;
+
+		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
+
+		void _OnMoveToPositionTimer();
 	};
 }

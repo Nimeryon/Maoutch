@@ -9,17 +9,14 @@
 #include "MatchGrid.h"
 #include "../Match/Element.h"
 
-extern int WINDOW_WIDTH;
-extern int WINDOW_HEIGHT;
 extern maoutch::Vector2 ELEMENT_SIZE;
-extern maoutch::Vector2 ELEMENT_SCALE;
 extern float ELEMENT_SNAP_DISTANCE;
 extern float ELEMENT_DT_MULTIPLIER;
 extern float ELEMENT_SWIPE_DISTANCE;
 
 namespace maoutch
 {
-	MatchElement::MatchElement(MatchGrid& grid, const Vector2i& gridPos, const Element& element) :
+	MatchElement::MatchElement(MatchGrid& grid, const Vector2& startPos, const Vector2i& gridPos, const Element& element) :
 		GameObject("MatchBox"),
 		_type(element),
 		_grid(grid),
@@ -27,16 +24,16 @@ namespace maoutch
 		_sprite(new sf::Sprite()),
 		_isMatched(false),
 		_isSelectd(false),
-		_isMoving(false)
+		_isMoving(false),
+		_moveTimerFinished(false),
+		_moveTimer(random::Float(0, 2), &MatchElement::_OnMoveToPositionTimer, this)
 	{
 		_sprite->setTexture(AssetLoader::GetInstance()->GetTexture("Elements"));
 		_sprite->setTextureRect(
 			sf::IntRect(Vector2i((int)_type.Value(), 0) * ELEMENT_SIZE, ELEMENT_SIZE)
 		);
-
-		Vector2 goalPos = _grid.GetCenterGridPosition(_gridPos);
-		SetPosition({ goalPos.x, -WINDOW_HEIGHT / 2.f + random::Float(-256, -34) });
-		SetScale(ELEMENT_SCALE);
+		
+		SetPosition(startPos);
 		SetOrigin(ELEMENT_SIZE / 2.f);
 	}
 	MatchElement::~MatchElement()
@@ -60,7 +57,7 @@ namespace maoutch
 	}
 	void MatchElement::Update(float dt)
 	{
-		if (_isMoving)
+		if (_moveTimerFinished && _isMoving)
 		{
 			// Move Horizontal
 			if (std::abs(GetPosition().x - _goalPosition.x) > ELEMENT_SNAP_DISTANCE)
@@ -75,6 +72,7 @@ namespace maoutch
 			if (GetPosition() == _goalPosition)
 			{
 				_isMoving = false;
+				_moveTimerFinished = false;
 				SetZIndex(0);
 			}
 		}
@@ -97,33 +95,46 @@ namespace maoutch
 			sf::IntRect(Vector2i((int)_type.Value(), 0) * ELEMENT_SIZE, ELEMENT_SIZE)
 		);
 	}
+	void MatchElement::SetIsMatched()
+	{
+		_isMatched = true;
+		_sprite->setColor(_isMatched ? sf::Color(255, 255, 255, 128) : sf::Color::White);
+	}
+	void MatchElement::SetIsSelected(const bool& isSelected) { _isSelectd = isSelected; }
+
 	void MatchElement::SetGridPos(const Vector2i& gridPos)
 	{
 		_gridPos = gridPos;
 		SetName((std::string)gridPos + " Element");
 	}
-	void MatchElement::SetAndMoveToGridPos(const Vector2i& gridPos)
+	void MatchElement::SetAndMoveToGridPos(const Vector2i& gridPos, const float& minStartMoveTime, const float& maxStartMoveTime)
 	{
 		SetGridPos(gridPos);
-		MoveToGridPos();
+		MoveToGridPos(minStartMoveTime, maxStartMoveTime);
 	}
-	void MatchElement::SetIsMatched()
+	void MatchElement::SetAndMoveToGridPos(const Vector2i& gridPos, const float& moveTime)
 	{
-		_isMatched = true;
-		_sprite->setColor(_isMatched ? sf::Color(64, 64, 64, 255) : sf::Color::White);
+		SetAndMoveToGridPos(gridPos, moveTime, moveTime);
 	}
-	void MatchElement::SetIsSelected(const bool& isSelected) { _isSelectd = isSelected; }
+	void MatchElement::MoveToGridPos(const float& minStartMoveTime, const float& maxStartMoveTime)
+	{
+		_isMoving = true;
+		_goalPosition = _grid.GetCenterGridPosition(_gridPos);
+		_moveTimer.SetTime(random::Float(minStartMoveTime, maxStartMoveTime));
+		_moveTimer.Start();
+	}
+	void MatchElement::MoveToPos(const Vector2& position, const float& minStartMoveTime, const float& maxStartMoveTime)
+	{
+		_isMoving = true;
+		_goalPosition = position;
+		_moveTimer.SetTime(random::Float(minStartMoveTime, maxStartMoveTime));
+		_moveTimer.Start();
+	}
+	void MatchElement::MoveToPos(const Vector2& position, const float& moveTime)
+	{
+		MoveToPos(position, moveTime, moveTime);
+	}
 
-	void MatchElement::MoveToGridPos()
-	{
-		Vector2 goalPos = _grid.GetCenterGridPosition(_gridPos);
-		if (GetPosition() != goalPos)
-		{
-			_isMoving = true;
-			_goalPosition = goalPos;
-			SetZIndex(1);
-		}
-	}
 	void MatchElement::UpdatePosition()
 	{
 		SetPosition(_grid.GetCenterGridPosition(_gridPos));
@@ -153,5 +164,11 @@ namespace maoutch
 	void MatchElement::OnPointerUp()
 	{
 		_isSelectd = false;
+	}
+
+	void MatchElement::_OnMoveToPositionTimer()
+	{
+		_moveTimerFinished = true;
+		SetZIndex(1);
 	}
 }
