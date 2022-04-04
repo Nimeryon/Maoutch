@@ -48,14 +48,6 @@ namespace maoutch
 			_height = height;
 			_ReserveSpace();
 		}
-		void SetGridElement(const T& element, const int& index)
-		{
-			array[GetGridIndex(index)] = element;
-		}
-		void SetGridElement(const T& element, const Vector2i& gridPos)
-		{
-			SetGridElement(element, GetGridIndex(gridPos));
-		}
 		void EmplaceBack(const T& element) { array.emplace_back(element); }
 		void Clear() { array.clear(); }
 
