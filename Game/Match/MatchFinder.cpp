@@ -5,13 +5,15 @@
 
 namespace maoutch
 {
-	bool MatchFinder::MatchAt(Grid<MatchElement*>& grid, const Vector2i& gridPos, const Element& element)
+	MatchFinder::MatchFinder(Grid<MatchElement*>* grid) : _grid(grid) {}
+
+	bool MatchFinder::MatchAt(const Vector2i& gridPos, const Element& element) const
 	{
 		// Horizontal tests
 		if (gridPos.x > 1)
 		{
-			MatchElement* gridXLeft = grid.GetGridElement({ gridPos.x - 1, gridPos.y });
-			MatchElement* gridXFarLeft = grid.GetGridElement({ gridPos.x - 2, gridPos.y });
+			MatchElement* gridXLeft = _grid->GetGridElement(Vector2i(gridPos.x - 1, gridPos.y));
+			MatchElement* gridXFarLeft = _grid->GetGridElement(Vector2i(gridPos.x - 2, gridPos.y));
 			if (gridXLeft != nullptr && gridXFarLeft != nullptr)
 				if (gridXLeft->GetElement() == element && gridXFarLeft->GetElement() == element)
 					return true;
@@ -20,8 +22,8 @@ namespace maoutch
 		// Vertical tests
 		if (gridPos.y > 1)
 		{
-			MatchElement* gridYTop = grid.GetGridElement({ gridPos.x, gridPos.y - 1 });
-			MatchElement* gridYFarTop = grid.GetGridElement({ gridPos.x, gridPos.y - 2 });
+			MatchElement* gridYTop = _grid->GetGridElement(Vector2i(gridPos.x, gridPos.y - 1));
+			MatchElement* gridYFarTop = _grid->GetGridElement(Vector2i(gridPos.x, gridPos.y - 2));
 			if (gridYTop != nullptr && gridYFarTop != nullptr)
 				if (gridYTop->GetElement() == element && gridYFarTop->GetElement() == element)
 					return true;
@@ -29,66 +31,770 @@ namespace maoutch
 
 		return false;
 	}
+	bool MatchFinder::IsValidPosition(const Vector2i& gridPos) const
+	{
+		return _grid->GetGridElement(gridPos) != nullptr;
+	}
+	bool MatchFinder::SameElement(const Vector2i& gridPos, const Element& element) const
+	{
+		if (gridPos.x < 0 || gridPos.y < 0 || gridPos.x >= _grid->GetWidth() || gridPos.y >= _grid->GetHeight()) return false;
+		return IsValidPosition(gridPos) && _grid->GetGridElement(gridPos)->GetElement() == element;
+	}
 
-	void MatchFinder::FindMatches(Grid<MatchElement*>& grid)
+	bool MatchFinder::FindMatches()
 	{
 		matches = {};
 
 		Vector2i gridPos;
-		for (gridPos.y = 0; gridPos.y < grid.GetHeight(); ++gridPos.y)
-			for (gridPos.x = 0; gridPos.x < grid.GetWidth(); ++gridPos.x)
+		for (gridPos.y = 0; gridPos.y < _grid->GetHeight(); ++gridPos.y)
+			for (gridPos.x = 0; gridPos.x < _grid->GetWidth(); ++gridPos.x)
 			{
-				if (grid.GetGridElement(gridPos) == nullptr) continue;
+				if (!IsValidPosition(gridPos)) continue;
 
-				const Element currentElement = grid.GetGridElement(gridPos)->GetElement();
+				const Element currentElement = _grid->GetGridElement(gridPos)->GetElement();
+				
+				_CheckHorizontal(gridPos, currentElement);
 
-				// Horizontal tests
-				std::vector<Vector2i> horizontalMatches = _CheckHorizontal(grid, gridPos, currentElement);
-				if (horizontalMatches.size() > 2)
-					_AddMatch(horizontalMatches);
-
-				// Vertical tests
-				std::vector<Vector2i> verticalmMatches = _CheckVertical(grid, gridPos, currentElement);
-				if (verticalmMatches.size() > 2)
-					_AddMatch(verticalmMatches);
+				_CheckVertical(gridPos, currentElement);
 			}
+
+		return !matches.empty();
+	}
+	bool MatchFinder::FindPossibleMatches()
+	{
+		possibleMatches = {};
+
+		Vector2i gridPos;
+		for (gridPos.y = 0; gridPos.y < _grid->GetHeight(); ++gridPos.y)
+			for (gridPos.x = 0; gridPos.x < _grid->GetWidth(); ++gridPos.x)
+			{
+				if (!IsValidPosition(gridPos)) continue;
+
+				const Element currentElement = _grid->GetGridElement(gridPos)->GetElement();
+
+				if (!_CheckPossibleHorizontal5(gridPos, currentElement))
+					if (!_CheckPossibleHorizontal4(gridPos, currentElement))
+						_CheckPossibleHorizontal3(gridPos, currentElement);
+
+				if (!_CheckPossibleVertical5(gridPos, currentElement))
+					if (!_CheckPossibleVertical4(gridPos, currentElement))
+						_CheckPossibleVertical3(gridPos, currentElement);
+			}
+
+		std::cout << "Possible matches: " << possibleMatches.size() << "\n";
+		return !possibleMatches.empty();
 	}
 
-	std::vector<Vector2i> MatchFinder::_CheckHorizontal(Grid<MatchElement*>& grid, const Vector2i& gridPos, const Element& element)
+	void MatchFinder::_CheckHorizontal(const Vector2i& gridPos, const Element& element)
 	{
-		std::vector<Vector2i> matchedPositions{};
-		for (int i = gridPos.x; i < grid.GetWidth(); ++i)
+		Match match;
+		match.element = element;
+
+		for (int i = gridPos.x; i < _grid->GetWidth(); ++i)
 		{
-			Vector2i pos = { i, gridPos.y };
-			if (grid.GetGridElement(pos) == nullptr || grid.GetGridElement(pos)->GetElement() != element)
+			Vector2i pos = Vector2i(i, gridPos.y);
+			if (!SameElement(pos, element))
 				break;
 
-			matchedPositions.push_back(pos);
+			match.positions.push_back(pos);
 		}
 
-		return matchedPositions;
+		if (match.positions.size() > 2)
+			_AddMatch(match);
 	}
-	std::vector<Vector2i> MatchFinder::_CheckVertical(Grid<MatchElement*>& grid, const Vector2i& gridPos, const Element& element)
+	bool MatchFinder::_CheckPossibleHorizontal5(const Vector2i& gridPos, const Element& element)
 	{
-		std::vector<Vector2i> matchedPositions{};
-		for (int i = gridPos.y; i < grid.GetHeight(); ++i)
+		PossibleMatch possibleMatch;
+		possibleMatch.match.element = element;
+		possibleMatch.gridPos = gridPos;
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * * X * *
+		  0 0 * 0 0
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 2, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y + 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x + 2, gridPos.y + 1), element))
 		{
-			Vector2i pos = { gridPos.x, i };
-			if (grid.GetGridElement(pos) == nullptr || grid.GetGridElement(pos)->GetElement() != element)
+			possibleMatch.match.positions.reserve(5);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  0 0 * 0 0
+		  * * X * *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 2, gridPos.y - 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y - 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element)
+			&& SameElement(Vector2i(gridPos.x + 2, gridPos.y - 1), element))
+		{
+			possibleMatch.match.positions.reserve(5);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y - 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		return false;
+	}
+	bool MatchFinder::_CheckPossibleHorizontal4(const Vector2i& gridPos, const Element& element)
+	{
+		PossibleMatch possibleMatch;
+		possibleMatch.match.element = element;
+		possibleMatch.gridPos = gridPos;
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * * X * *
+		  * 0 * 0 0
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y + 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x + 2, gridPos.y + 1), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * 0 * 0 0
+		  * * X * *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y - 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element)
+			&& SameElement(Vector2i(gridPos.x + 2, gridPos.y - 1), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y - 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * * X * *
+		  0 0 * 0 *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 2, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y + 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  0 0 * 0 *
+		  * * X * *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 2, gridPos.y - 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y - 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		return false;
+	}
+	bool MatchFinder::_CheckPossibleHorizontal3(const Vector2i& gridPos, const Element& element)
+	{
+		PossibleMatch possibleMatch;
+		possibleMatch.match.element = element;
+		possibleMatch.gridPos = gridPos;
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * * X * *
+		  * 0 * 0 *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y + 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * 0 * 0 *
+		  * * X * *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y - 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * * X * *
+		  0 0 * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 2, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y + 1)))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  0 0 * * *
+		  * * X * *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 2, gridPos.y - 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y - 1)))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * * X * *
+		  * * * 0 0
+		  * * * * *
+		\* example  */
+		if (IsValidPosition(Vector2i(gridPos.x, gridPos.y + 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x + 2, gridPos.y + 1), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * 0 0
+		  * * X * *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (IsValidPosition(Vector2i(gridPos.x, gridPos.y - 1))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element)
+			&& SameElement(Vector2i(gridPos.x + 2, gridPos.y - 1), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y - 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  0 0 * X *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 3, gridPos.y), element)
+			&& SameElement(Vector2i(gridPos.x - 2, gridPos.y), element)
+			&& IsValidPosition(Vector2i(gridPos.x - 1, gridPos.y)))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 3, gridPos.y));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * X * 0 0
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (IsValidPosition(Vector2i(gridPos.x + 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x + 2, gridPos.y), element)
+			&& SameElement(Vector2i(gridPos.x + 3, gridPos.y), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 3, gridPos.y));
+			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		return false;
+	}
+
+	void MatchFinder::_CheckVertical(const Vector2i& gridPos, const Element& element)
+	{
+		Match match;
+		match.element = element;
+
+		for (int i = gridPos.y; i < _grid->GetHeight(); ++i)
+		{
+			Vector2i pos = Vector2i(gridPos.x, i);
+			if (!SameElement(pos, element))
 				break;
 
-			matchedPositions.push_back(pos);
+			match.positions.push_back(pos);
 		}
 
-		return matchedPositions;
+		if (match.positions.size() > 2)
+			_AddMatch(match);
+	}
+	bool MatchFinder::_CheckPossibleVertical5(const Vector2i& gridPos, const Element& element)
+	{
+		PossibleMatch possibleMatch;
+		possibleMatch.match.element = element;
+		possibleMatch.gridPos = gridPos;
+
+		/* example *\
+		  * * * 0 *
+		  * * * 0 *
+		  * * X * *
+		  * * * 0 *
+		  * * * 0 *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x + 1, gridPos.y - 2), element)
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x + 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 2), element))
+		{
+			possibleMatch.match.positions.reserve(5);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 2));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 2));
+			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * 0 * * *
+		  * 0 * * *
+		  * * X * *
+		  * 0 * * *
+		  * 0 * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y - 2), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x - 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 2), element))
+		{
+			possibleMatch.match.positions.reserve(5);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 2));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 2));
+			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		return false;
+	}
+	bool MatchFinder::_CheckPossibleVertical4(const Vector2i& gridPos, const Element& element)
+	{
+		PossibleMatch possibleMatch;
+		possibleMatch.match.element = element;
+		possibleMatch.gridPos = gridPos;
+
+		/* example *\
+		  * * * 0 *
+		  * * * 0 *
+		  * * X * *
+		  * * * 0 *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x + 1, gridPos.y - 2), element)
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x + 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 2));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * 0 * * *
+		  * 0 * * *
+		  * * X * *
+		  * 0 * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y - 2), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x - 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 2));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * 0 *
+		  * * X * *
+		  * * * 0 *
+		  * * * 0 *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x + 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 2), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 2));
+			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * 0 * * *
+		  * * X * *
+		  * 0 * * *
+		  * 0 * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x - 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 2), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 2));
+			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		return false;
+	}
+	bool MatchFinder::_CheckPossibleVertical3(const Vector2i& gridPos, const Element& element)
+	{
+		PossibleMatch possibleMatch;
+		possibleMatch.match.element = element;
+		possibleMatch.gridPos = gridPos;
+
+		/* example *\
+		  * * * * *
+		  * * * 0 *
+		  * * X * *
+		  * * * 0 *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x + 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element))
+		{
+			possibleMatch.match.positions.reserve(4);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * 0 * * *
+		  * * X * *
+		  * 0 * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x - 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * 0 *
+		  * * * 0 *
+		  * * X * *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x + 1, gridPos.y - 2), element)
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x + 1, gridPos.y)))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 2));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * 0 * * *
+		  * 0 * * *
+		  * * X * *
+		  * * * * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x - 1, gridPos.y - 2), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y - 1), element)
+			&& IsValidPosition(Vector2i(gridPos.x - 1, gridPos.y)))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 2));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * * X * *
+		  * * * 0 *
+		  * * * 0 *
+		\* example  */
+		if (IsValidPosition(Vector2i(gridPos.x + 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x + 1, gridPos.y + 2), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 2));
+			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * * * *
+		  * * X * *
+		  * 0 * * *
+		  * 0 * * *
+		\* example  */
+		if (IsValidPosition(Vector2i(gridPos.x - 1, gridPos.y))
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 1), element)
+			&& SameElement(Vector2i(gridPos.x - 1, gridPos.y + 2), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 2));
+			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * 0 * *
+		  * * 0 * *
+		  * * * * *
+		  * * X * *
+		  * * * * *
+		\* example  */
+		if (SameElement(Vector2i(gridPos.x, gridPos.y - 3), element)
+			&& SameElement(Vector2i(gridPos.x, gridPos.y - 2), element)
+			&& IsValidPosition(Vector2i(gridPos.x, gridPos.y - 1)))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x, gridPos.y - 3));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x, gridPos.y - 2));
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		/* example *\
+		  * * * * *
+		  * * X * *
+		  * * * * *
+		  * * 0 * *
+		  * * 0 * *
+		\* example  */
+		if (IsValidPosition(Vector2i(gridPos.x, gridPos.y + 1))
+			&& SameElement(Vector2i(gridPos.x, gridPos.y + 2), element)
+			&& SameElement(Vector2i(gridPos.x, gridPos.y + 3), element))
+		{
+			possibleMatch.match.positions.reserve(3);
+			possibleMatch.match.positions.emplace_back(gridPos);
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x, gridPos.y + 2));
+			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x, gridPos.y + 3));
+			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+
+			_AddPossibleMatch(possibleMatch);
+			return true;
+		}
+
+		return false;
 	}
 
-	void MatchFinder::_AddMatch(const std::vector<Vector2i>& currentMatch)
+	void MatchFinder::_AddMatch(const Match& currentMatch)
 	{
 		bool foundMatch = false;
-		for (std::vector<Vector2i> match : matches)
+		for (Match& match : matches)
 		{
-			if (_VectorContains(match, currentMatch))
+			if (_VectorContains(match.positions, currentMatch.positions))
 			{
 				foundMatch = true;
 				break;
@@ -98,15 +804,27 @@ namespace maoutch
 		if (!foundMatch)
 			matches.push_back(currentMatch);
 	}
-	bool MatchFinder::_VectorContains(const std::vector<Vector2i>& vector1, std::vector<Vector2i> vector2)
+	void MatchFinder::_AddPossibleMatch(const PossibleMatch& currentPossibleMatch)
+	{
+		bool foundMatch = false;
+		for (PossibleMatch& possibleMatch : possibleMatches)
+		{
+			if (_VectorContains(possibleMatch.match.positions, currentPossibleMatch.match.positions))
+			{
+				foundMatch = true;
+				break;
+			}
+		}
+
+		if (!foundMatch)
+			possibleMatches.push_back(currentPossibleMatch);
+	}
+
+	bool MatchFinder::_VectorContains(const std::vector<Vector2i>& vector1, std::vector<Vector2i> vector2) const
 	{
 		return std::all_of(vector2.begin(), vector2.end(), [vector1](const Vector2i& position)
 		{
-				return std::find(
-					vector1.begin(),
-					vector1.end(),
-					position
-				) != vector1.end();
+			return std::find(vector1.begin(), vector1.end(), position) != vector1.end();
 		});
 	}
 }

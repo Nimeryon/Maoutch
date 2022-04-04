@@ -8,10 +8,26 @@
 
 namespace maoutch
 {
-	const std::string gridPath = "Assets\\Grids\\";
+	class MatchGridBackGround;
+
+	static const std::string gridPath = "Assets\\Grids\\";
+
+	static constexpr float destroyTime = .2f;
+	static constexpr float collapseTime = .33f;
+	static constexpr float refillTime = .33f;
+	static constexpr float startResetTime = .5f;
+	static constexpr float endResetTime = .5f;
+	static constexpr float processMatchTime = .33f;
+	static constexpr float processPossibleMatchTime = .5f;
+
+	static constexpr float setupMinFallTime = 0.f;
+	static constexpr float setupMaxFallTime = 2.f;
+	static constexpr float resetMinMoveTime = 0.f;
+	static constexpr float resetMaxMoveTime = .5f;
 
 	enum class GridState
 	{
+		STARTING,
 		MOVING,
 		INPUTS
 	};
@@ -20,24 +36,24 @@ namespace maoutch
 	{
 	public:
 		MatchGrid(const std::string& fileName, const Vector2& position);
-		
-		void FixedUpdate(float fixedDt) override;
+
+		void FixedUpdate(float dt) override;
 
 		void Setup(const std::string& fileName);
 		void SetupGrid(const Vector2i& gridSize);
 		void SetupGridPos(const Vector2i& gridPos);
 
+		bool IsMoving() const;
 		bool IsValidGridPosition(const Vector2i& gridPos) const;
-		bool ProcessMatches();
 
-		void Reset();
-		void DestroyMatched();
-		void CollapseColumns();
-		void RefillBoard();
-		void AfterRefill();
+		void StartReset();
+
 		void Swap(const Vector2i gridPos, const Direction dir);
 		void SwapBack();
-		void UpdateElementsPosition();
+		void DestroyGridPos(const Vector2i& gridPos);
+
+		void UpdateElementsPosition(const float& minStartMoveTime, const float& maxStartMoveTime);
+		void UpdateElementsPosition(const float& moveTime = 0);
 
 		Vector2 GetCenterGridPosition(const Vector2i& gridPos) const;
 		GridState GetState() const;
@@ -46,18 +62,34 @@ namespace maoutch
 		void PrintGrid();
 
 	private:
+		MatchGridBackGround* _matchGridBackGround;
 		Grid<MatchElement*> _grid;
+
 		std::vector<Vector2i> _emptyPositions;
 		GridState _state;
 		MatchFinder _matchFinder;
 
 		bool _moveChecked;
-		bool _processAfterMoving;
 		Vector2i _lastSwapGoalPos;
 		Direction _lastSwapDir;
-
+		
 		Timer<MatchGrid> _destroyTimer;
 		Timer<MatchGrid> _collapseTimer;
 		Timer<MatchGrid> _refillTimer;
+		Timer<MatchGrid> _startResetTimer;
+		Timer<MatchGrid> _endResetTimer;
+		Timer<MatchGrid> _processMatchTimer;
+		Timer<MatchGrid> _processPossibleMatchTimer;
+
+		void _DestroyMatched();
+		void _CollapseColumns();
+		void _RefillBoard();
+		void _AfterRefill();
+		void _Reset();
+
+		void _ProcessMatches();
+		void _ProcessPossibleMatches();
+
+		void _FillGrid(bool createAtCenter = false);
 	};
 }
