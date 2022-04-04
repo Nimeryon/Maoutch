@@ -79,6 +79,9 @@
     <Filter Include="Source Files\Engine\Tools">
       <UniqueIdentifier>{0e74abc0-0baa-4f65-a525-12735b7a1cda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Grids">
+      <UniqueIdentifier>{22c3d84f-2c13-4d9c-ab36-63288036f72a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -164,6 +167,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Tools\Timer.cpp">
       <Filter>Source Files\Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\MatchGridBackGround.cpp">
+      <Filter>Source Files\Game\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -281,5 +287,16 @@
     <ClInclude Include="Engine\Tools\Timer.h">
       <Filter>Header Files\Engine\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\MatchGridBackGround.h">
+      <Filter>Header Files\Game\Objects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Grids\circle_grid">
+      <Filter>Resource Files\Grids</Filter>
+    </None>
+    <None Include="Assets\Grids\small_grid">
+      <Filter>Resource Files\Grids</Filter>
+    </None>
   </ItemGroup>
 </Project>

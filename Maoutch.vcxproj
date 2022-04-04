@@ -162,6 +162,7 @@
     <ClCompile Include="Game\Match\MatchFinder.cpp" />
     <ClCompile Include="Game\Objects\MatchElement.cpp" />
     <ClCompile Include="Game\Objects\MatchGrid.cpp" />
+    <ClCompile Include="Game\Objects\MatchGridBackGround.cpp" />
     <ClCompile Include="Includes\imgui\imgui-SFML.cpp" />
     <ClCompile Include="Includes\imgui\imgui.cpp" />
     <ClCompile Include="Includes\imgui\imgui_draw.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Game\Match\MatchFinder.h" />
     <ClInclude Include="Game\Objects\MatchElement.h" />
     <ClInclude Include="Game\Objects\MatchGrid.h" />
+    <ClInclude Include="Game\Objects\MatchGridBackGround.h" />
     <ClInclude Include="Includes\imgui\imconfig-SFML.h" />
     <ClInclude Include="Includes\imgui\imconfig.h" />
     <ClInclude Include="Includes\imgui\imgui-SFML.h" />
@@ -215,6 +217,10 @@
     <ClInclude Include="Types\LerpableValue.h" />
     <ClInclude Include="Types\Vector2.h" />
     <ClInclude Include="Types\Vector2i.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Grids\circle_grid" />
+    <None Include="Assets\Grids\small_grid" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
