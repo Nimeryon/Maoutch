@@ -21,7 +21,7 @@ namespace maoutch
 
 	void GameState::Init()
 	{
-		_grid1 = new MatchGrid("circle_grid", Vector2(_gridPosition1[0], _gridPosition1[1]));
+		_grid1 = new MatchGrid("small_grid", Vector2(_gridPosition1[0], _gridPosition1[1]));
 		_grid2 = new MatchGrid("circle_grid", Vector2(_gridPosition2[0], _gridPosition2[1]));
 	}
 
@@ -54,9 +54,9 @@ namespace maoutch
 		}
 
 		if (ImGui::Button("Reset Grid 1"))
-			_grid1->Reset();
+			_grid1->StartReset();
 		if (ImGui::Button("Reset Grid 2"))
-			_grid2->Reset();
+			_grid2->StartReset();
 
 		ImGui::End();
 	}
