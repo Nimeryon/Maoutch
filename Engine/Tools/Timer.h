@@ -6,22 +6,28 @@ namespace maoutch
 	struct TimerBase
 	{
 		TimerBase(float time) :
+			_started(false),
 			_currentTime(0),
 			_time(time)
 		{}
-		virtual ~TimerBase()
-		{
-			Stop();
-		}
+		virtual ~TimerBase() { Stop(); }
 
 		TimerBase& operator=(const TimerBase&) = delete;
 
+		void SetTime(const float& time) { _time = time; }
+
+		float GetTime() const { return _time; }
+
 		void Start()
 		{
+			if (_started) return;
+
+			_started = true;
 			timerEvent += EventHandler::Bind<float, TimerBase>(&TimerBase::Update, this);
 		}
 		void Stop()
 		{
+			_started = false;
 			timerEvent -= EventHandler::Bind<float, TimerBase>(&TimerBase::Update, this);
 		}
 		void Reset()
@@ -44,7 +50,8 @@ namespace maoutch
 
 	private:
 		virtual void _OnTimerEvent() = 0;
-		
+
+		bool _started;
 		float _currentTime;
 		float _time;
 	};
