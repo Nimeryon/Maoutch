@@ -22,6 +22,7 @@ namespace maoutch
 	{
 		if (!LoadTexture("Effects", "effect.png")) return false;
 		if (!LoadTexture("Elements", "elements.png")) return false;
+		if (!LoadTexture("Elements Background", "elements_background.png")) return false;
 
 		return true;
 	}
