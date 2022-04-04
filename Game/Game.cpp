@@ -24,7 +24,7 @@ namespace maoutch
 		InputHandler::GetInstance()->SetWindow(&_data->window);
 
 		// Setup framerate
-		_data->window.setFramerateLimit(120);
+		_data->window.setFramerateLimit(128);
 
 		// Setup logic time
 		_data->logicDeltatime = sf::milliseconds(1000.f / 60.f);
@@ -47,6 +47,7 @@ namespace maoutch
 
 			// Handle state update
 			_data->stateMachine.HandleStateUpdate();
+			_data->stateMachine.ProcessObjectsAdding();
 
 			_ProcessInputs();
 
