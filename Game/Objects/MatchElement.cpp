@@ -26,12 +26,16 @@ namespace maoutch
 		_isSelectd(false),
 		_isMoving(false),
 		_moveTimerFinished(false),
-		_moveTimer(random::Float(0, 2), &MatchElement::_OnMoveToPositionTimer, this)
+		_moveTimer(random::Float(0, 2), &MatchElement::_OnMoveToPositionTimer, this),
+		_selectedAnimation(.05f, &AssetLoader::GetInstance()->GetTexture("Selected Animation"), Vector2i::From(ELEMENT_SIZE), Vector2i::Zero(), true)
 	{
 		_sprite->setTexture(AssetLoader::GetInstance()->GetTexture("Elements"));
 		_sprite->setTextureRect(
 			sf::IntRect(Vector2i((int)_type.Value(), 0) * ELEMENT_SIZE, ELEMENT_SIZE)
 		);
+
+		for (int i = 0; i < 12; ++i)
+			_selectedAnimation.AddFrame({ i, 0 });
 		
 		SetPosition(startPos);
 		SetOrigin(ELEMENT_SIZE / 2.f);
@@ -80,6 +84,9 @@ namespace maoutch
 	void MatchElement::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
 		window.draw(*_sprite, transform);
+
+		if (IsSelected())
+			_selectedAnimation.Draw(window, transform);
 	}
 
 	Element MatchElement::GetElement() const { return _type; }
@@ -100,7 +107,13 @@ namespace maoutch
 		_isMatched = true;
 		_sprite->setColor(_isMatched ? sf::Color(255, 255, 255, 128) : sf::Color::White);
 	}
-	void MatchElement::SetIsSelected(const bool& isSelected) { _isSelectd = isSelected; }
+	void MatchElement::SetIsSelected(const bool& isSelected)
+	{
+		_isSelectd = isSelected;
+
+		if (_isSelectd) _selectedAnimation.Play();
+		else _selectedAnimation.Stop();
+	}
 
 	void MatchElement::SetGridPos(const Vector2i& gridPos)
 	{
@@ -141,7 +154,7 @@ namespace maoutch
 	}
 	void MatchElement::OnPointerDown()
 	{
-		_isSelectd = true;
+		SetIsSelected(true);
 		_startClickPosition = InputHandler::GetInstance()->GetMousePosition();
 	}
 	void MatchElement::OnPointerUpdate()
@@ -163,7 +176,7 @@ namespace maoutch
 	}
 	void MatchElement::OnPointerUp()
 	{
-		_isSelectd = false;
+		SetIsSelected(false);
 	}
 
 	void MatchElement::_OnMoveToPositionTimer()

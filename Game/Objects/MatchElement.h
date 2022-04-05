@@ -8,6 +8,7 @@ namespace sf
 #include "../../Engine/Tools/Timer.h"
 #include "../../Types/Vector2i.h"
 #include "../Match/Element.h"
+#include "../../Engine/Graphics/AnimatedSprite.h"
 
 namespace maoutch
 {
@@ -18,7 +19,7 @@ namespace maoutch
 	public:
 		MatchElement(MatchGrid& grid, const Vector2& startPos, const Vector2i& gridPos, const Element& element);
 		~MatchElement() override;
-
+		
 		void ProcessInputs() override;
 		void Update(float dt) override;
 
@@ -59,6 +60,8 @@ namespace maoutch
 		Vector2 _startClickPosition;
 		Vector2 _endClickPosition;
 		Vector2 _goalPosition;
+
+		AnimatedSprite _selectedAnimation;
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 
