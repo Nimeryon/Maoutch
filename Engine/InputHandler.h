@@ -16,10 +16,11 @@ namespace maoutch
 	class InputHandler
 	{
 	public:
-		static InputHandler* GetInstance();
 
 		InputHandler(InputHandler const&) = delete;
 		void operator=(InputHandler const&) = delete;
+
+		static InputHandler* GetInstance();
 
 		void SetWindow(sf::RenderWindow* window);
 		void ClearLastFrameEvents();
@@ -55,15 +56,21 @@ namespace maoutch
 		static std::mutex _mutex; // For allowing multithreaded use
 
 		sf::RenderWindow* _window = nullptr;
+
+		// Window Properties
+
 		bool _windowHasFocus;
 
 		// KeyBoard
+
 		std::array<bool, sf::Keyboard::KeyCount> _keyboardState = {};
 		std::array<bool, sf::Keyboard::KeyCount> _oldKeyboardState = {};
 		bool _keyCtrl;
 		bool _keyAlt;
 		bool _keyShift;
+
 		// Mouse
+
 		Vector2 _mousePosition;
 		std::array<bool, sf::Mouse::ButtonCount> _mouseState = {};
 		std::array<bool, sf::Mouse::ButtonCount> _oldMouseState = {};

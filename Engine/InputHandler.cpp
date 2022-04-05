@@ -17,7 +17,7 @@ namespace maoutch
 		if (_instance == nullptr) _instance = new InputHandler();
 		return _instance;
 	}
-
+	
 	void InputHandler::SetWindow(sf::RenderWindow* window) { _window = window; }
 	void InputHandler::ClearLastFrameEvents()
 	{
@@ -83,11 +83,11 @@ namespace maoutch
 	}
 
 	// Window Properties
-
+	
 	bool InputHandler::IsWindowFocused() const { return _windowHasFocus; }
 
 	// KeyBoard Properties
-
+	
 	bool InputHandler::IsKey(sf::Keyboard::Key key) const { return _keyboardState[key]; }
 	bool InputHandler::IsKeyDown(sf::Keyboard::Key key) const { return _keyboardState[key] && !_oldKeyboardState[key]; }
 	bool InputHandler::IsKeyUp(sf::Keyboard::Key key) const { return !_keyboardState[key] && _oldKeyboardState[key]; }
@@ -96,7 +96,7 @@ namespace maoutch
 	bool InputHandler::Shift() const { return _keyShift; }
 
 	// Mouse Properties
-
+	
 	Vector2 InputHandler::GetMousePosition() const { return _mousePosition; }
 
 	bool InputHandler::IsPointer(sf::Mouse::Button button) const { return _mouseState[button]; }
