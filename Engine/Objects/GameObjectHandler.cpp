@@ -7,9 +7,9 @@ namespace maoutch
 {
 	GameObjectHandler* GameObjectHandler::instance = nullptr;
 
-	GameObjectHandler::GameObjectHandler() : _neeedObjectSorting(false), _needObjectDeleting(false)
+	GameObjectHandler::GameObjectHandler() : _neeedObjectSorting(false), _needObjectDeleting(false), _needObjectAdding(false)
 	{
-		if (instance != nullptr) delete instance;
+		delete instance;
 		instance = this;
 	};
 	GameObjectHandler::~GameObjectHandler()
@@ -51,28 +51,33 @@ namespace maoutch
 	void GameObjectHandler::ProcessInputs()
 	{
 		for (GameObject* object : _objects)
-			object->ProcessInputs();
+			if (object->IsActive())
+				object->ProcessInputs();
 	}
 
 	void GameObjectHandler::EarlyUpdate(float dt)
 	{
 		for (GameObject* object : _objects)
-			object->EarlyUpdate(dt);
+			if (object->IsActive())
+				object->EarlyUpdate(dt);
 	}
 	void GameObjectHandler::Update(float dt)
 	{
 		for (GameObject* object : _objects)
-			object->Update(dt);
+			if (object->IsActive())
+				object->Update(dt);
 	}
 	void GameObjectHandler::FixedUpdate(float dt)
 	{
 		for (GameObject* object : _objects)
-			object->FixedUpdate(dt);
+			if (object->IsActive())
+				object->FixedUpdate(dt);
 	}
 	void GameObjectHandler::LateUpdate(float dt)
 	{
 		for (GameObject* object : _objects)
-			object->LateUpdate(dt);
+			if (object->IsActive())
+				object->LateUpdate(dt);
 	}
 
 	void GameObjectHandler::Draw(sf::RenderWindow& window)
@@ -90,7 +95,8 @@ namespace maoutch
 		}
 		
 		for (GameObject* object : _objects)
-			object->DrawCall(window);
+			if (object->IsActive())
+				object->DrawCall(window);
 	}
 
 	void GameObjectHandler::NeedUpdateSorting()	{ _neeedObjectSorting = true; }

@@ -15,7 +15,7 @@ namespace maoutch
 	class GameObject
 	{
 	public:
-		explicit GameObject(const std::string& name, const int& zIndex = 0, const bool& isVisible = true);
+		explicit GameObject(const std::string& name, const int& zIndex = 0, const bool& isVisible = true, const bool& isActive = true);
 		virtual ~GameObject();
 		
 		// Function called when object destroyed
@@ -46,7 +46,9 @@ namespace maoutch
 		void SetName(const std::string& name);
 
 		bool IsVisible() const;
+		bool IsActive() const;
 		void SetVisible(const bool& isVisible);
+		void SetActive(const bool& isActive);
 		void NeedUpdate();
 
 		void SetZIndex(const int& zIndex);
@@ -83,6 +85,7 @@ namespace maoutch
 	private:
 		std::string _name;
 		bool _isVisible;
+		bool _isActive;
 		bool _needUpdate;
 		int _zIndex;
 		

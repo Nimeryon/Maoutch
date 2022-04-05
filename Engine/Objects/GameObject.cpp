@@ -8,7 +8,12 @@
 
 namespace maoutch
 {
-	GameObject::GameObject(const std::string& name, const int& zIndex, const bool& isVisible) : _name(name), _zIndex(zIndex), _isVisible(isVisible), _needUpdate(true)
+	GameObject::GameObject(const std::string& name, const int& zIndex, const bool& isVisible, const bool& isActive) :
+		_name(name),
+		_isVisible(isVisible),
+		_zIndex(zIndex),
+		_needUpdate(true),
+		_isActive(isActive)
 	{
 		GameObjectHandler::instance->AddObject(this);
 	}
@@ -83,7 +88,9 @@ namespace maoutch
 	void GameObject::SetName(const std::string& name) { _name = name; }
 
 	bool GameObject::IsVisible() const { return _isVisible; }
+	bool GameObject::IsActive() const { return _isActive; }
 	void GameObject::SetVisible(const bool& isVisible) { _isVisible = isVisible; }
+	void GameObject::SetActive(const bool& isActive) { _isActive = isActive; }
 	void GameObject::NeedUpdate() { _needUpdate = true; }
 
 	Vector2 GameObject::GetPosition() const { return Vector2::From(_localTransform.getPosition()); }
