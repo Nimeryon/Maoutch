@@ -302,6 +302,9 @@
     <ClInclude Include="Engine\Graphics\AnimatedSprite.h">
       <Filter>Header Files\Engine\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\MatchHint.h">
+      <Filter>Header Files\Game\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Grids\circle_grid">

@@ -197,6 +197,7 @@
     <ClInclude Include="Game\Objects\MatchElement.h" />
     <ClInclude Include="Game\Objects\MatchGrid.h" />
     <ClInclude Include="Game\Objects\MatchGridBackGround.h" />
+    <ClInclude Include="Game\Objects\MatchHint.h" />
     <ClInclude Include="Includes\imgui\imconfig-SFML.h" />
     <ClInclude Include="Includes\imgui\imconfig.h" />
     <ClInclude Include="Includes\imgui\imgui-SFML.h" />
