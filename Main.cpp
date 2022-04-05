@@ -10,10 +10,10 @@ int WINDOW_HEIGHT = 720;
 
 // Elements
 maoutch::Vector2 ELEMENT_SIZE = { 38 };
-maoutch::Vector2 ELEMENT_SCALE = { 1.25f };
-float ELEMENT_SNAP_DISTANCE = 2;
-float ELEMENT_DT_MULTIPLIER = 10;
-float ELEMENT_SWIPE_DISTANCE = 20;
+maoutch::Vector2 ELEMENT_SCALE = { 1.4f };
+float ELEMENT_SNAP_DISTANCE = 1;
+float ELEMENT_DT_MULTIPLIER = 8;
+float ELEMENT_SWIPE_DISTANCE = 30;
 
 int main()
 {
