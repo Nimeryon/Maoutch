@@ -33,6 +33,7 @@ namespace maoutch
 	}
 	bool MatchFinder::IsValidPosition(const Vector2i& gridPos) const
 	{
+		if (gridPos.x < 0 || gridPos.y < 0 || gridPos.x >= _grid->GetWidth() || gridPos.y >= _grid->GetHeight()) return false;
 		return _grid->GetGridElement(gridPos) != nullptr;
 	}
 	bool MatchFinder::SameElement(const Vector2i& gridPos, const Element& element) const
