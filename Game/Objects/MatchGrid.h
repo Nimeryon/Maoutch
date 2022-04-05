@@ -17,6 +17,7 @@ namespace maoutch
 	static constexpr float refillTime = .33f;
 	static constexpr float startResetTime = .5f;
 	static constexpr float endResetTime = .5f;
+	static constexpr float swapBackTime = .33f;
 	static constexpr float processMatchTime = .33f;
 	static constexpr float processPossibleMatchTime = .33f;
 
@@ -49,7 +50,6 @@ namespace maoutch
 		void StartReset();
 
 		void Swap(const Vector2i gridPos, const Direction dir);
-		void SwapBack();
 		void DestroyGridPos(const Vector2i& gridPos);
 
 		void UpdateElementsPosition(const float& minStartMoveTime, const float& maxStartMoveTime);
@@ -78,6 +78,7 @@ namespace maoutch
 		Timer<MatchGrid> _refillTimer;
 		Timer<MatchGrid> _startResetTimer;
 		Timer<MatchGrid> _endResetTimer;
+		Timer<MatchGrid> _swapBackTimer;
 		Timer<MatchGrid> _processMatchTimer;
 		Timer<MatchGrid> _processPossibleMatchTimer;
 
@@ -90,6 +91,7 @@ namespace maoutch
 		void _ProcessMatches();
 		void _ProcessPossibleMatches();
 
+		void _SwapBack();
 		void _FillGrid(bool createAtCenter = false);
 		void _SpawnParticle(const Element& element, const Vector2i& gridPos);
 		void _SpawnParticle(const std::string& fileName, const Vector2& position);

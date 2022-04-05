@@ -28,6 +28,7 @@ namespace maoutch
 		_refillTimer(refillTime, &MatchGrid::_RefillBoard, this),
 		_startResetTimer(startResetTime, &MatchGrid::StartReset, this),
 		_endResetTimer(endResetTime, &MatchGrid::_Reset, this),
+		_swapBackTimer(swapBackTime, &MatchGrid::_SwapBack, this),
 		_processMatchTimer(processMatchTime, &MatchGrid::_ProcessMatches, this),
 		_processPossibleMatchTimer(processPossibleMatchTime, &MatchGrid::_ProcessPossibleMatches, this)
 	{
@@ -147,14 +148,6 @@ namespace maoutch
 
 		if (!_moveChecked) _ProcessMatches();
 	}
-	void MatchGrid::SwapBack()
-	{
-		if (_grid.GetGridElement(_lastSwapGoalPos) != nullptr && _grid.GetGridElement(_lastSwapGoalPos + !_lastSwapDir) != nullptr)
-			Swap(_lastSwapGoalPos, !_lastSwapDir);
-
-		_moveChecked = false;
-		SetState(GridState::INPUTS);
-	}
 	void MatchGrid::DestroyGridPos(const Vector2i& gridPos)
 	{
 		if (!IsValidGridPosition(gridPos) || _grid.GetGridElement(gridPos) == nullptr) return;
@@ -230,7 +223,7 @@ namespace maoutch
 		_moveChecked = true;
 
 		if (matched) _collapseTimer.Start();
-		else SwapBack();
+		else _swapBackTimer.Start();
 	}
 	void MatchGrid::_CollapseColumns()
 	{
@@ -332,6 +325,14 @@ namespace maoutch
 		}
 	}
 
+	void MatchGrid::_SwapBack()
+	{
+		if (_grid.GetGridElement(_lastSwapGoalPos) != nullptr && _grid.GetGridElement(_lastSwapGoalPos + !_lastSwapDir) != nullptr)
+			Swap(_lastSwapGoalPos, !_lastSwapDir);
+
+		_moveChecked = false;
+		SetState(GridState::INPUTS);
+	}
 	void MatchGrid::_FillGrid(bool createAtCenter)
 	{
 		Vector2i gridPos;
