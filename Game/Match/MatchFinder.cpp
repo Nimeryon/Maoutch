@@ -80,8 +80,7 @@ namespace maoutch
 					if (!_CheckPossibleVertical4(gridPos, currentElement))
 						_CheckPossibleVertical3(gridPos, currentElement);
 			}
-
-		std::cout << "Possible matches: " << possibleMatches.size() << "\n";
+		
 		return !possibleMatches.empty();
 	}
 
