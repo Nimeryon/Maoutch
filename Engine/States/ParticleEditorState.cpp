@@ -25,7 +25,7 @@ namespace maoutch
 		_xDirection{-1, 1},
 		_yDirection{-1, 1}
 	{
-		for (const auto& filePath : std::filesystem::directory_iterator(particlesPath))
+		for (const auto& filePath : std::filesystem::recursive_directory_iterator(particlesPath))
 			filePaths.push_back(filePath.path().string());
 	}
 	ParticleEditorState::~ParticleEditorState()
@@ -40,11 +40,7 @@ namespace maoutch
 	}
 	void ParticleEditorState::ProcessInputs()
 	{
-		if (InputHandler::GetInstance()->IsKeyDown(sf::Keyboard::Space)) {
-			if (_particle->IsPlaying())
-				_particle->Stop();
-			else _particle->Play();
-		}
+		if (InputHandler::GetInstance()->IsKeyDown(sf::Keyboard::Space)) _particle->Play();
 	}
 
 	void ParticleEditorState::Update(float dt)
@@ -71,11 +67,16 @@ namespace maoutch
 			ImGui::SameLine();
 			ImGui::Text(&std::to_string(_particle->GetCurrentParticleCount())[0]);
 
+			ImGui::Text("Current Max Particle Count:");
+			ImGui::SameLine();
+			ImGui::Text(&std::to_string(_particle->GetCurrentMaxParticleCount())[0]);
+
 			ImGui::Text("Current Emitter Lifetime:");
 			ImGui::SameLine();
 			ImGui::Text(&std::to_string(*_particle->GetCurrentLifetime())[0]);
 
 			ImGui::Checkbox("Play On Awake", _particle->PlayOnAwake());
+			ImGui::Checkbox("Respawn Dead Particle", _particle->RespawnDeadParticle());
 			ImGui::Checkbox("Is Looping", _particle->IsLooping());
 			ImGui::Checkbox("Is Playing", _particle->IsPlaying());
 			ImGui::Checkbox("Is Textured", _particle->IsTextured());
@@ -86,7 +87,7 @@ namespace maoutch
 				if (ImGui::DragInt("Max Particle Count", _particle->GetMaxParticleCount(), 10, 0, 50000))
 					_particle->ReserveParticlesSpace();
 				ImGui::DragFloat("Emitter Lifetime", _particle->GetLifetime(), .1f, 0, 1000);
-				ImGui::DragFloat("Emitter Emission Time", _particle->GetEmissionSpeed(), .00001f, .00001f, 10, "%.5f");
+				ImGui::DragFloat("Emitter Emission Time", _particle->GetEmissionSpeed(), .00001f, .000001f, 10, "%.6f");
 
 				ImGui::Separator();
 				ImGui::TreePop();
@@ -265,7 +266,7 @@ namespace maoutch
 				for (std::string filePath : filePaths)
 					if (ImGui::Selectable(filePath.c_str()))
 					{
-						_particle->SetupFromFile(filePath);
+						_particle->SetupFromFile(filePath, false);
 						colors::ToFloat4(_startColor, _particle->GetParticleColors()->startColor);
 						colors::ToFloat4(_endColor, _particle->GetParticleColors()->endColor);
 
@@ -299,6 +300,7 @@ namespace maoutch
 			}
 
 			ImGui::InputText("Particle Name", fileName, 255);
+			ImGui::Checkbox("Destroy After Playing", _particle->DestroyAfterPlaying());
 			ImGui::SameLine();
 			if (ImGui::Button("Save"))
 			{
