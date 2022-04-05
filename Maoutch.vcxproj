@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine\AssetLoader.cpp" />
+    <ClCompile Include="Engine\Graphics\AnimatedSprite.cpp" />
     <ClCompile Include="Engine\Graphics\Particle.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleEmitter.cpp" />
     <ClCompile Include="Engine\InputHandler.cpp" />
@@ -179,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\AssetLoader.h" />
+    <ClInclude Include="Engine\Graphics\AnimatedSprite.h" />
     <ClInclude Include="Engine\Graphics\Particle.h" />
     <ClInclude Include="Engine\Graphics\ParticleEmitter.h" />
     <ClInclude Include="Engine\InputHandler.h" />
@@ -221,6 +223,14 @@
   <ItemGroup>
     <None Include="Assets\Grids\circle_grid" />
     <None Include="Assets\Grids\small_grid" />
+    <None Include="Assets\Particles\Elements\Dark_particle" />
+    <None Include="Assets\Particles\Elements\Earth_particle" />
+    <None Include="Assets\Particles\Elements\Fire_particle" />
+    <None Include="Assets\Particles\Elements\Light_particle" />
+    <None Include="Assets\Particles\Elements\Metal_particle" />
+    <None Include="Assets\Particles\Elements\Nature_particle" />
+    <None Include="Assets\Particles\Elements\Water_particle" />
+    <None Include="Assets\Particles\Elements_particle" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

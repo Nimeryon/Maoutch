@@ -82,6 +82,12 @@
     <Filter Include="Resource Files\Grids">
       <UniqueIdentifier>{22c3d84f-2c13-4d9c-ab36-63288036f72a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Particles">
+      <UniqueIdentifier>{15d20560-b305-4cf4-b3c4-fe33da59f24d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Particles\Elements">
+      <UniqueIdentifier>{8711cfa0-6681-426b-8035-9fc09204fbbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -170,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\MatchGridBackGround.cpp">
       <Filter>Source Files\Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\AnimatedSprite.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -290,6 +299,9 @@
     <ClInclude Include="Game\Objects\MatchGridBackGround.h">
       <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Graphics\AnimatedSprite.h">
+      <Filter>Header Files\Engine\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Grids\circle_grid">
@@ -297,6 +309,30 @@
     </None>
     <None Include="Assets\Grids\small_grid">
       <Filter>Resource Files\Grids</Filter>
+    </None>
+    <None Include="Assets\Particles\Elements\Dark_particle">
+      <Filter>Resource Files\Particles\Elements</Filter>
+    </None>
+    <None Include="Assets\Particles\Elements\Earth_particle">
+      <Filter>Resource Files\Particles\Elements</Filter>
+    </None>
+    <None Include="Assets\Particles\Elements\Fire_particle">
+      <Filter>Resource Files\Particles\Elements</Filter>
+    </None>
+    <None Include="Assets\Particles\Elements\Light_particle">
+      <Filter>Resource Files\Particles\Elements</Filter>
+    </None>
+    <None Include="Assets\Particles\Elements\Metal_particle">
+      <Filter>Resource Files\Particles\Elements</Filter>
+    </None>
+    <None Include="Assets\Particles\Elements\Nature_particle">
+      <Filter>Resource Files\Particles\Elements</Filter>
+    </None>
+    <None Include="Assets\Particles\Elements\Water_particle">
+      <Filter>Resource Files\Particles\Elements</Filter>
+    </None>
+    <None Include="Assets\Particles\Elements_particle">
+      <Filter>Resource Files\Particles</Filter>
     </None>
   </ItemGroup>
 </Project>
