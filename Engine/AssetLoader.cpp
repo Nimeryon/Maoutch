@@ -17,16 +17,17 @@ namespace maoutch
 		if (_instance == nullptr) _instance = new AssetLoader();
 		return _instance;
 	}
-
+	
 	bool AssetLoader::Init()
 	{
-		if (!LoadTexture("Effects", "effect.png")) return false;
 		if (!LoadTexture("Elements", "elements.png")) return false;
 		if (!LoadTexture("Elements Background", "elements_background.png")) return false;
+		if (!LoadTexture("Selected Animation", "selected_animation.png")) return false;
+		if (!LoadTexture("Hint Arrow Animation", "hint_arrow_animation.png")) return false;
 
 		return true;
 	}
-
+	
 	bool AssetLoader::LoadTexture(const std::string& name, const std::string& fileName)
 	{
 		sf::Texture texture;
@@ -47,10 +48,10 @@ namespace maoutch
 		}
 		return false;
 	}
-
+	
 	std::map<std::string, sf::Texture>& AssetLoader::GetTexturesMap() { return _textures; }
 	sf::Texture& AssetLoader::GetTexture(const std::string& name) { return _textures.at(name); }
-
+	
 	std::map<std::string, sf::Font>& AssetLoader::GetFontsMap() { return _fonts; }
 	sf::Font& AssetLoader::GetFont(const std::string& name) { return _fonts.at(name); }
 }
