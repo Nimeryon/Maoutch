@@ -113,6 +113,8 @@ namespace maoutch
 	{
 		SetState(GridState::MOVING);
 
+		_SpawnParticle(particlesPath + "Elements_particle", Vector2::Zero());
+
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
@@ -291,8 +293,6 @@ namespace maoutch
 	{
 		_moveChecked = false;
 		SetState(GridState::STARTING);
-
-		_SpawnParticle(particlesPath + "Elements_particle", Vector2::Zero());
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
