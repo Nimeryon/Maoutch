@@ -8,7 +8,6 @@
 namespace maoutch
 {
 	Particle::Particle(
-		Vector2 position,
 		float lifetime,
 		float startRotation,
 		LerpableValue<Vector2> direction,
@@ -25,7 +24,6 @@ namespace maoutch
 		_isTextured(isTextured),
 		_texturePosition(texturePosition),
 		_textureRectSize(textureRectSize),
-		_position(position),
 		_currentLifetime(0),
 		_lifetime(lifetime),
 		_currentRotation(startRotation),

@@ -12,7 +12,6 @@ namespace maoutch
 	struct Particle
 	{
 		explicit Particle(
-			Vector2 position,
 			float lifetime,
 			float startRotation,
 			LerpableValue<Vector2> direction,

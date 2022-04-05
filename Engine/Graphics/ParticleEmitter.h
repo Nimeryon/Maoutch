@@ -23,6 +23,8 @@ namespace  maoutch
 		explicit ParticleEmitter(
 			int maxParticleCount = 1000,
 			bool playOnAwake = false,
+			bool destroyAfterPlaying = false,
+			bool respawnDeadParticle = true,
 			bool isLooping = true,
 			bool isTextured = false,
 			float emitterLifetime = 5.f,
@@ -39,6 +41,7 @@ namespace  maoutch
 			EmitterValue<float> particleGravity = { 0 },
 			EmitterValue<float> particleRotationSpeed = { 0 }
 		);
+		~ParticleEmitter() override;
 
 		// GameObject properties
 
@@ -54,11 +57,13 @@ namespace  maoutch
 		bool IsPlaying() const;
 		void SpawnParticle();
 
-		void SaveToFile(std::string fileName);
-		void SetupFromFile(std::string fileName);
+		void SaveToFile(const std::string& fileName);
+		void SetupFromFile(const std::string& fileName, bool canDestroy = true);
 
 		// Emitter Getter/Setter
 		bool* PlayOnAwake();
+		bool* DestroyAfterPlaying();
+		bool* RespawnDeadParticle();
 		bool* IsPlaying();
 		bool* IsLooping();
 		bool* IsTextured();
@@ -80,6 +85,7 @@ namespace  maoutch
 
 		// Particles Getter/Setter
 		int GetCurrentParticleCount() const;
+		int GetCurrentMaxParticleCount() const;
 		int* GetMaxParticleCount();
 		float* GetMinParticleLifetime();
 		float* GetMaxParticleLifetime();
@@ -94,21 +100,26 @@ namespace  maoutch
 		EmitterValue<float>* GetParticleRotationSpeed();
 
 	private:
+		sf::RenderStates _renderState;
+
 		std::vector<Particle> _particles;
 		sf::VertexArray _particleVertex;
 
 		// Emitter parameters
-		int _emitterMaxParticleCount;
-		bool _emitterPlayOnAwake;
-		bool _emitterIsPlaying;
-		bool _emitterIsLooping;
-		bool _emitterIsTextured;
-		std::string _emitterTextureName;
-		std::vector<Vector2i> _emitterTexturePositions;
-		Vector2i _emitterTextureRectSize;
-		float _emitterCurrentLifetime, _emitterLifetime;
-		float _emitterEmissionSpeed;
-		float _emitterEmissionAccumulator;
+		int _maxParticleCount;
+		int _currentMaxParticleCount;
+		bool _playOnAwake;
+		bool _destroyAfterPlaying;
+		bool _respawnDeadParticle;
+		bool _isPlaying;
+		bool _isLooping;
+		bool _isTextured;
+		std::string _textureName;
+		std::vector<Vector2i> _texturePositions;
+		Vector2i _textureRectSize;
+		float _currentLifetime, _lifetime;
+		float _emissionSpeed;
+		float _emissionAccumulator;
 
 		// Particle parameters
 		float _minParticleLifetime, _maxParticleLifetime;
