@@ -24,13 +24,17 @@ namespace maoutch
 		InputHandler::GetInstance()->SetWindow(&_data->window);
 
 		// Setup framerate
-		_data->window.setFramerateLimit(128);
+		_data->window.setFramerateLimit(240);
 
 		// Setup logic time
 		_data->logicDeltatime = sf::milliseconds(1000.f / 60.f);
 
 		// Try initing assets
-		if (!AssetLoader::GetInstance()->Init()) return;
+		if (!AssetLoader::GetInstance()->Init())
+		{
+			std::cout << "Loading error!\n";
+			return;
+		}
 
 		// Add default state
 		_data->stateMachine.AddState(std::make_unique<GameState>());
