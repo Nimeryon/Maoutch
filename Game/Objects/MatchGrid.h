@@ -12,16 +12,16 @@ namespace maoutch
 
 	static const std::string gridPath = "Assets\\Grids\\";
 
-	static constexpr float destroyTime = .2f;
+	static constexpr float destroyTime = .12f;
 	static constexpr float collapseTime = .33f;
 	static constexpr float refillTime = .33f;
 	static constexpr float startResetTime = .5f;
 	static constexpr float endResetTime = .5f;
 	static constexpr float processMatchTime = .33f;
-	static constexpr float processPossibleMatchTime = .5f;
+	static constexpr float processPossibleMatchTime = .33f;
 
 	static constexpr float setupMinFallTime = 0.f;
-	static constexpr float setupMaxFallTime = 2.f;
+	static constexpr float setupMaxFallTime = 1.75f;
 	static constexpr float resetMinMoveTime = 0.f;
 	static constexpr float resetMaxMoveTime = .5f;
 
@@ -91,5 +91,7 @@ namespace maoutch
 		void _ProcessPossibleMatches();
 
 		void _FillGrid(bool createAtCenter = false);
+		void _SpawnParticle(const Element& element, const Vector2i& gridPos);
+		void _SpawnParticle(const std::string& fileName, const Vector2& position);
 	};
 }

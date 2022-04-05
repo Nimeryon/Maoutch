@@ -5,6 +5,7 @@
 #include "MatchGrid.h"
 #include "MatchGridBackGround.h"
 #include "../../Engine/Objects/GameObjectHandler.h"
+#include "../../Engine/Graphics/ParticleEmitter.h"
 #include "../../Types/Direction.h"
 
 extern int WINDOW_WIDTH;
@@ -218,6 +219,7 @@ namespace maoutch
 					if (_grid.GetGridElement(gridPos) != nullptr && _grid.GetGridElement(gridPos)->IsMatched())
 					{
 						matched = true;
+						_SpawnParticle(_grid.GetGridElement(gridPos)->GetElement(), gridPos);
 						DestroyGridPos(gridPos);
 					}
 			}
@@ -275,19 +277,13 @@ namespace maoutch
 	{
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
-		{
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
-			{
 				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos) != nullptr)
-				{
 					if (_matchFinder.MatchAt(gridPos, _grid.GetGridElement(gridPos)->GetElement()))
 					{
 						_processMatchTimer.Start();
 						return;
 					}
-				}
-			}
-		}
 
 		_processPossibleMatchTimer.Start();
 	}
@@ -295,6 +291,8 @@ namespace maoutch
 	{
 		_moveChecked = false;
 		SetState(GridState::STARTING);
+
+		_SpawnParticle(particlesPath + "Elements_particle", Vector2::Zero());
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
@@ -309,13 +307,9 @@ namespace maoutch
 	{
 		_matchFinder.FindMatches();
 		for (Match& match : _matchFinder.matches)
-		{
 			for (Vector2i gridPos : match.positions)
-			{
 				if (_grid.GetGridElement(gridPos) != nullptr)
 					_grid.GetGridElement(gridPos)->SetIsMatched();
-			}
-		}
 
 		_destroyTimer.Start();
 	}
@@ -367,5 +361,25 @@ namespace maoutch
 						_grid.GetGridElement(gridPos)->SetElement(Element::Random());
 						SetupGridPos(gridPos);
 					}
+	}
+	void MatchGrid::_SpawnParticle(const Element& element, const Vector2i& gridPos)
+	{
+		const std::string particleFileName = particlesPath + "Elements\\" + element.ToString() + "_particle";
+		
+		ParticleEmitter* emitter = new ParticleEmitter();
+		emitter->SetZIndex(2);
+		emitter->SetPosition(GetCenterGridPosition(gridPos));
+		emitter->SetupFromFile(particleFileName);
+
+		AddChildren(emitter);
+	}
+	void MatchGrid::_SpawnParticle(const std::string& fileName, const Vector2& position)
+	{
+		ParticleEmitter* emitter = new ParticleEmitter();
+		emitter->SetZIndex(2);
+		emitter->SetPosition(position);
+		emitter->SetupFromFile(fileName);
+
+		AddChildren(emitter);
 	}
 }
