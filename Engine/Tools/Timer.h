@@ -5,8 +5,9 @@ namespace maoutch
 {
 	struct TimerBase
 	{
-		TimerBase(float time) :
+		explicit TimerBase(const float& time, const bool& looping) :
 			_started(false),
+			_looping(looping),
 			_currentTime(0),
 			_time(time)
 		{}
@@ -15,8 +16,10 @@ namespace maoutch
 		TimerBase& operator=(const TimerBase&) = delete;
 
 		void SetTime(const float& time) { _time = time; }
+		void SetLooping(const bool& looping) { _looping = looping; }
 
 		float GetTime() const { return _time; }
+		bool IsPlaying() const { return _started; }
 
 		void Start()
 		{
@@ -41,8 +44,10 @@ namespace maoutch
 			_currentTime += dt;
 			if (_currentTime >= _time)
 			{
-				Reset();
 				_OnTimerEvent();
+
+				if (!_looping) Reset();
+				else _currentTime -= _time;
 			}
 		}
 
@@ -52,6 +57,7 @@ namespace maoutch
 		virtual void _OnTimerEvent() = 0;
 
 		bool _started;
+		bool _looping;
 		float _currentTime;
 		float _time;
 	};
@@ -59,8 +65,8 @@ namespace maoutch
 	template <typename T>
 	struct Timer : TimerBase
 	{
-		Timer(float time, void(T::* callback)(), T* instance) :
-			TimerBase(time),
+		Timer(float time, void(T::* callback)(), T* instance, const bool& looping = false) :
+			TimerBase(time, looping),
 			_instance(instance),
 			_callback(callback)
 		{}
@@ -79,8 +85,8 @@ namespace maoutch
 	template<>
 	struct Timer<void> : TimerBase
 	{
-		Timer(float time, void(*callback)()) :
-			TimerBase(time),
+		Timer(float time, void(*callback)(), const bool& looping = false) :
+			TimerBase(time, looping),
 			_callback(callback)
 		{}
 		Timer& operator=(const Timer&) = delete;
