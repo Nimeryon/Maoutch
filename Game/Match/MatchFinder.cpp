@@ -5,6 +5,15 @@
 
 namespace maoutch
 {
+	Match::Match() :
+		positions({}),
+		element(Element::ElementValue::NONE)
+	{}
+
+	PossibleMatch::PossibleMatch() :
+		direction(Direction::DirectionValue::NONE)
+	{}
+
 	MatchFinder::MatchFinder(Grid<MatchElement*>* grid) : _grid(grid) {}
 
 	bool MatchFinder::MatchAt(const Vector2i& gridPos, const Element& element) const

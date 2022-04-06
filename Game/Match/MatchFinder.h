@@ -12,12 +12,16 @@ namespace maoutch
 
 	struct Match
 	{
+		Match();
+
 		std::vector<Vector2i> positions;
 		Element element;
 	};
 
 	struct PossibleMatch
 	{
+		PossibleMatch();
+
 		Match match;
 		Vector2i gridPos;
 		Direction direction;
