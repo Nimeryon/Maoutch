@@ -20,7 +20,7 @@ namespace maoutch
 	static constexpr float swapBackTime = .33f;
 	static constexpr float processMatchTime = .33f;
 	static constexpr float processPossibleMatchTime = .33f;
-
+	static constexpr float showHintTime = 8.f;
 	static constexpr float setupMinFallTime = 0.f;
 	static constexpr float setupMaxFallTime = 1.75f;
 	static constexpr float resetMinMoveTime = 0.f;
@@ -81,6 +81,7 @@ namespace maoutch
 		Timer<MatchGrid> _swapBackTimer;
 		Timer<MatchGrid> _processMatchTimer;
 		Timer<MatchGrid> _processPossibleMatchTimer;
+		Timer<MatchGrid> _showHintTimer;
 
 		void _DestroyMatched();
 		void _CollapseColumns();
@@ -91,6 +92,8 @@ namespace maoutch
 		void _ProcessMatches();
 		void _ProcessPossibleMatches();
 
+		void _DisableMatchHint();
+		void _SetPossibleMatch();
 		void _SwapBack();
 		void _FillGrid(bool createAtCenter = false);
 		void _SpawnParticle(const Element& element, const Vector2i& gridPos);

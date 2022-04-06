@@ -7,6 +7,7 @@
 #include "../../Engine/Objects/GameObjectHandler.h"
 #include "../../Engine/Graphics/ParticleEmitter.h"
 #include "../../Types/Direction.h"
+#include "MatchHint.h"
 
 extern int WINDOW_WIDTH;
 extern int WINDOW_HEIGHT;
@@ -30,7 +31,8 @@ namespace maoutch
 		_endResetTimer(endResetTime, &MatchGrid::_Reset, this),
 		_swapBackTimer(swapBackTime, &MatchGrid::_SwapBack, this),
 		_processMatchTimer(processMatchTime, &MatchGrid::_ProcessMatches, this),
-		_processPossibleMatchTimer(processPossibleMatchTime, &MatchGrid::_ProcessPossibleMatches, this)
+		_processPossibleMatchTimer(processPossibleMatchTime, &MatchGrid::_ProcessPossibleMatches, this),
+		_showHintTimer(showHintTime, &MatchGrid::_SetPossibleMatch, this)
 	{
 		SetScale(ELEMENT_SCALE);
 		SetPosition(position);
@@ -38,6 +40,8 @@ namespace maoutch
 
 		_matchGridBackGround->Setup(_grid);
 		AddChildren(_matchGridBackGround);
+
+		AddChildren(new MatchHint());
 	}
 
 	void MatchGrid::FixedUpdate(float dt)
@@ -79,6 +83,7 @@ namespace maoutch
 
 		_FillGrid();
 		UpdateElementsPosition(setupMinFallTime, setupMaxFallTime);
+		_showHintTimer.Restart();
 	}
 	void MatchGrid::SetupGridPos(const Vector2i& gridPos)
 	{
@@ -114,6 +119,7 @@ namespace maoutch
 	{
 		SetState(GridState::MOVING);
 
+		_DisableMatchHint();
 		_SpawnParticle(particlesPath + "Elements_particle", Vector2::Zero());
 
 		Vector2i gridPos;
@@ -136,6 +142,8 @@ namespace maoutch
 			return;
 		}
 		if (_grid.GetGridElement(gridPos) == nullptr || _grid.GetGridElement(goalPos) == nullptr) return;
+
+		_DisableMatchHint();
 
 		_grid.GetGridElement(gridPos)->SetAndMoveToGridPos(goalPos);
 		_grid.GetGridElement(goalPos)->SetAndMoveToGridPos(gridPos);
@@ -294,6 +302,8 @@ namespace maoutch
 
 		_FillGrid(true);
 		UpdateElementsPosition(resetMinMoveTime, resetMaxMoveTime);
+
+		_showHintTimer.Restart();
 	}
 
 	void MatchGrid::_ProcessMatches()
@@ -320,11 +330,25 @@ namespace maoutch
 		}
 		else
 		{
+			_showHintTimer.Restart();
 			_moveChecked = false;
 			SetState(GridState::INPUTS);
 		}
 	}
 
+	void MatchGrid::_DisableMatchHint()
+	{
+		_showHintTimer.Reset();
+		GetChildren("MatchHint")->SetActive(false);
+	}
+	void MatchGrid::_SetPossibleMatch()
+	{
+		// Set Possible Match Hint
+		auto matchHint = (MatchHint*)GetChildren("MatchHint");
+		matchHint->SetActive(true);
+		matchHint->SetPossibleMatch(_matchFinder.possibleMatches[random::Int(0, _matchFinder.possibleMatches.size())]);
+
+	}
 	void MatchGrid::_SwapBack()
 	{
 		if (_grid.GetGridElement(_lastSwapGoalPos) != nullptr && _grid.GetGridElement(_lastSwapGoalPos + !_lastSwapDir) != nullptr)
@@ -368,7 +392,7 @@ namespace maoutch
 		const std::string particleFileName = particlesPath + "Elements\\" + element.ToString() + "_particle";
 		
 		ParticleEmitter* emitter = new ParticleEmitter();
-		emitter->SetZIndex(2);
+		emitter->SetZIndex(3);
 		emitter->SetPosition(GetCenterGridPosition(gridPos));
 		emitter->SetupFromFile(particleFileName);
 
@@ -377,7 +401,7 @@ namespace maoutch
 	void MatchGrid::_SpawnParticle(const std::string& fileName, const Vector2& position)
 	{
 		ParticleEmitter* emitter = new ParticleEmitter();
-		emitter->SetZIndex(2);
+		emitter->SetZIndex(3);
 		emitter->SetPosition(position);
 		emitter->SetupFromFile(fileName);
 
