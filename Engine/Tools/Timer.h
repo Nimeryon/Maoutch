@@ -28,6 +28,11 @@ namespace maoutch
 			_started = true;
 			timerEvent += EventHandler::Bind<float, TimerBase>(&TimerBase::Update, this);
 		}
+		void Restart()
+		{
+			Reset();
+			Start();
+		}
 		void Stop()
 		{
 			_started = false;
