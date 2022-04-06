@@ -47,11 +47,11 @@ namespace maoutch
 
 		bool IsVisible() const;
 		bool IsActive() const;
-		void SetVisible(const bool& isVisible);
-		void SetActive(const bool& isActive);
+		virtual void SetVisible(const bool& isVisible);
+		virtual void SetActive(const bool& isActive);
 		void NeedUpdate();
 
-		void SetZIndex(const int& zIndex);
+		virtual void SetZIndex(const int& zIndex);
 		int GetZIndex() const;
 
 		// LocalTransform
