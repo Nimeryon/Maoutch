@@ -164,6 +164,7 @@
     <ClCompile Include="Game\Objects\MatchElement.cpp" />
     <ClCompile Include="Game\Objects\MatchGrid.cpp" />
     <ClCompile Include="Game\Objects\MatchGridBackGround.cpp" />
+    <ClCompile Include="Game\Objects\MatchHint.cpp" />
     <ClCompile Include="Includes\imgui\imgui-SFML.cpp" />
     <ClCompile Include="Includes\imgui\imgui.cpp" />
     <ClCompile Include="Includes\imgui\imgui_draw.cpp" />

@@ -180,6 +180,9 @@
     <ClCompile Include="Engine\Graphics\AnimatedSprite.cpp">
       <Filter>Source Files\Engine\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\MatchHint.cpp">
+      <Filter>Source Files\Game\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tools\Random.h">
