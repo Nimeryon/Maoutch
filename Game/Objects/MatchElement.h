@@ -37,6 +37,7 @@ namespace maoutch
 		void SetAndMoveToGridPos(const Vector2i& gridPos, const float& minStartMoveTime, const float& maxStartMoveTime);
 		void SetAndMoveToGridPos(const Vector2i& gridPos, const float& moveTime = 0);
 		void MoveToGridPos(const float& minStartMoveTime, const float& maxStartMoveTime);
+		void MoveToGridPos(const float& moveTime = 0);
 		void MoveToPos(const Vector2& position, const float& minStartMoveTime, const float& maxStartMoveTime);
 		void MoveToPos(const Vector2& position, const float& moveTime = 0);
 

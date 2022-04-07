@@ -136,6 +136,10 @@ namespace maoutch
 		_moveTimer.SetTime(random::Float(minStartMoveTime, maxStartMoveTime));
 		_moveTimer.Start();
 	}
+	void MatchElement::MoveToGridPos(const float& moveTime)
+	{
+		MoveToGridPos(moveTime, moveTime);
+	}
 	void MatchElement::MoveToPos(const Vector2& position, const float& minStartMoveTime, const float& maxStartMoveTime)
 	{
 		_isMoving = true;
