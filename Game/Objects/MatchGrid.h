@@ -12,12 +12,12 @@ namespace maoutch
 
 	static const std::string gridPath = "Assets\\Grids\\";
 
-	static constexpr float destroyTime = .20f;
+	static constexpr float destroyTime = .2f;
 	static constexpr float collapseTime = .15f;
 	static constexpr float refillTime = .25f;
 	static constexpr float startResetTime = .5f;
 	static constexpr float endResetTime = .5f;
-	static constexpr float swapBackTime = .33f;
+	static constexpr float swapBackTime = .2f;
 	static constexpr float processMatchTime = .33f;
 	static constexpr float processPossibleMatchTime = .33f;
 	static constexpr float showHintTime = 8.f;
