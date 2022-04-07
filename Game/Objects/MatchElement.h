@@ -14,6 +14,8 @@ namespace maoutch
 {
 	class MatchGrid;
 
+	static constexpr float animationTime = .1f;
+
 	class MatchElement : public GameObject
 	{
 	public:
