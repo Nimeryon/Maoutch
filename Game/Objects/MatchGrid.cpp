@@ -27,6 +27,7 @@ namespace maoutch
 		_destroyTimer(destroyTime, &MatchGrid::_DestroyMatched, this),
 		_collapseTimer(collapseTime, &MatchGrid::_CollapseColumns, this),
 		_refillTimer(refillTime, &MatchGrid::_RefillBoard, this),
+		_afterRefillTimer(afterRefillTime, &MatchGrid::_AfterRefill, this),
 		_startResetTimer(startResetTime, &MatchGrid::StartReset, this),
 		_endResetTimer(endResetTime, &MatchGrid::_Reset, this),
 		_swapBackTimer(swapBackTime, &MatchGrid::_SwapBack, this),
@@ -83,6 +84,7 @@ namespace maoutch
 
 		_FillGrid();
 		UpdateElementsPosition(setupMinFallTime, setupMaxFallTime);
+
 		_showHintTimer.Restart();
 	}
 	void MatchGrid::SetupGridPos(const Vector2i& gridPos)
@@ -262,19 +264,31 @@ namespace maoutch
 	}
 	void MatchGrid::_RefillBoard()
 	{
+		float moveTimeDelay = 0;
+
 		Vector2i gridPos;
-		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
+		for (gridPos.y = _grid.GetHeight() - 1; gridPos.y >= 0; --gridPos.y)
+		{
+			bool lineRefilled = false;
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
+			{
 				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos) == nullptr)
 				{
 					Vector2 position = GetCenterGridPosition(gridPos);
 					_grid.GetGridElement(gridPos) = new MatchElement(*this, Vector2(position.x, -WINDOW_HEIGHT - position.y), gridPos, Element::Random());
 					_grid.GetGridElement(gridPos)->SetName((std::string)gridPos + " Element");
 					AddChildren(_grid.GetGridElement(gridPos));
-				}
 
-		UpdateElementsPosition();
-		_AfterRefill();
+					_grid.GetGridElement(gridPos)->MoveToGridPos(moveTimeDelay);
+
+					lineRefilled = true;
+				}
+			}
+			if (lineRefilled) moveTimeDelay += refillDelayTime;
+		}
+
+		_afterRefillTimer.SetTime(afterRefillTime + moveTimeDelay);
+		_afterRefillTimer.Start();
 	}
 	void MatchGrid::_AfterRefill()
 	{

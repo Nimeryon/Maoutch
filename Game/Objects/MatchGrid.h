@@ -15,11 +15,13 @@ namespace maoutch
 	static constexpr float destroyTime = .2f;
 	static constexpr float collapseTime = .15f;
 	static constexpr float refillTime = .25f;
+	static constexpr float refillDelayTime = .1f;
+	static constexpr float afterRefillTime = 0.f;
 	static constexpr float startResetTime = .5f;
 	static constexpr float endResetTime = .5f;
 	static constexpr float swapBackTime = .2f;
-	static constexpr float processMatchTime = .33f;
-	static constexpr float processPossibleMatchTime = .33f;
+	static constexpr float processMatchTime = .2f;
+	static constexpr float processPossibleMatchTime = .2f;
 	static constexpr float showHintTime = 8.f;
 	static constexpr float setupMinFallTime = 0.f;
 	static constexpr float setupMaxFallTime = 1.75f;
@@ -76,6 +78,7 @@ namespace maoutch
 		Timer<MatchGrid> _destroyTimer;
 		Timer<MatchGrid> _collapseTimer;
 		Timer<MatchGrid> _refillTimer;
+		Timer<MatchGrid> _afterRefillTimer;
 		Timer<MatchGrid> _startResetTimer;
 		Timer<MatchGrid> _endResetTimer;
 		Timer<MatchGrid> _swapBackTimer;
