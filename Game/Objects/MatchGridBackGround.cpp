@@ -29,14 +29,18 @@ namespace maoutch
 		Vector2 halfElementSize = ELEMENT_SIZE / 2.f;
 		Vector2 halfGridSize = { grid.GetWidth() / 2.f - .5f, grid.GetHeight() / 2.f - .5f };
 
+		bool isBlackTile = true;
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < grid.GetHeight(); ++gridPos.y)
 		{
+			if (grid.GetWidth() % 2 == 0) isBlackTile = !isBlackTile;
 			for (gridPos.x = 0; gridPos.x < grid.GetWidth(); ++gridPos.x)
 			{
+				isBlackTile = !isBlackTile;
 				if (grid.GetGridElement(gridPos) == nullptr) continue;
 
 				Vector2i texturePosition = _CalculateAutoTiling(grid, gridPos);
+				if (!isBlackTile) texturePosition.x += 8;
 
 				std::array<sf::Vertex, 4> vertices;
 				texture::SetTextureCoord(vertices, texturePosition, Vector2i::From(ELEMENT_SIZE));
