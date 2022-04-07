@@ -14,8 +14,6 @@ namespace maoutch
 {
 	class MatchGrid;
 
-	static constexpr float animationTime = .1f;
-
 	class MatchElement : public GameObject
 	{
 	public:
@@ -48,6 +46,8 @@ namespace maoutch
 		void OnPointerUp();
 
 	private:
+		static constexpr float _animationTime = .1f;
+
 		Element _type;
 
 		MatchGrid& _grid;

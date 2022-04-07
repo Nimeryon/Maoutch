@@ -27,7 +27,7 @@ namespace maoutch
 		_isMoving(false),
 		_moveTimerFinished(false),
 		_moveTimer(random::Float(0, 2), &MatchElement::_OnMoveToPositionTimer, this),
-		_selectedAnimation(animationTime, &AssetLoader::GetInstance()->GetTexture("Selected Animation"), Vector2i::From(ELEMENT_SIZE), Vector2i::Zero(), true)
+		_selectedAnimation(_animationTime, &AssetLoader::GetInstance()->GetTexture("Selected Animation"), Vector2i::From(ELEMENT_SIZE), Vector2i::Zero(), true)
 	{
 		_sprite->setTexture(AssetLoader::GetInstance()->GetTexture("Elements"));
 		_sprite->setTextureRect(

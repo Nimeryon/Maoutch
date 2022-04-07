@@ -5,8 +5,6 @@
 
 namespace maoutch
 {
-	static constexpr float animationTime = .1f;
-
 	class MatchHint : public GameObject
 	{
 	public:
@@ -17,6 +15,8 @@ namespace maoutch
 		void SetPossibleMatch(const PossibleMatch& possibleMatch);
 
 	private:
+		static constexpr float _animationTime = .1f;
+
 		PossibleMatch _possibleMatch;
 
 		AnimatedSprite _hintAnimationNorth;

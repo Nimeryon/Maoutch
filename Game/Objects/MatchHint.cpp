@@ -10,28 +10,28 @@ namespace maoutch
 	MatchHint::MatchHint() :
 		GameObject("MatchHint", 2, true, false),
 		_hintAnimationNorth(
-			animationTime,
+			_animationTime,
 			&AssetLoader::GetInstance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(ELEMENT_SIZE.x, ELEMENT_SIZE.y * 2),
 			Vector2i(3, 0),
 			false
 		),
 		_hintAnimationEast(
-			animationTime,
+			_animationTime,
 			&AssetLoader::GetInstance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(ELEMENT_SIZE.x * 2, ELEMENT_SIZE.y),
 			Vector2i::Zero(),
 			false
 		),
 		_hintAnimationSouth(
-			animationTime,
+			_animationTime,
 			&AssetLoader::GetInstance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(ELEMENT_SIZE.x, ELEMENT_SIZE.y * 2),
 			Vector2i(2, 0),
 			false
 		),
 		_hintAnimationWest(
-			animationTime,
+			_animationTime,
 			&AssetLoader::GetInstance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(ELEMENT_SIZE.x * 2, ELEMENT_SIZE.y),
 			Vector2i(0, 1),
