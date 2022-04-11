@@ -10,11 +10,11 @@ namespace maoutch
 	public:
 		enum class DirectionValue
 		{
-			NORTH,
-			EAST,
-			SOUTH,
-			WEST,
-			NONE
+			North,
+			East,
+			South,
+			West,
+			None
 		};
 
 		Direction() = default;
