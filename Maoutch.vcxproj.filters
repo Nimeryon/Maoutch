@@ -88,6 +88,12 @@
     <Filter Include="Resource Files\Particles\Elements">
       <UniqueIdentifier>{8711cfa0-6681-426b-8035-9fc09204fbbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Game\Effects">
+      <UniqueIdentifier>{7aa6fdee-2709-4e8c-aa59-920c06dbcc2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Effects">
+      <UniqueIdentifier>{58ed489d-04b1-4338-9815-5cb7af42de65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -99,7 +105,7 @@
     <ClCompile Include="Engine\StateMachine.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AssetLoader.cpp">
+    <ClCompile Include="Engine\Assets.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Tools\Colors.cpp">
@@ -183,6 +189,12 @@
     <ClCompile Include="Game\Objects\MatchHint.cpp">
       <Filter>Source Files\Game\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Effects\ObjectShaker.cpp">
+      <Filter>Source Files\Game\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\Easing.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tools\Random.h">
@@ -203,7 +215,7 @@
     <ClInclude Include="Tools\Event.h">
       <Filter>Header Files\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AssetLoader.h">
+    <ClInclude Include="Engine\Assets.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Includes\imgui\imconfig.h">
@@ -307,6 +319,12 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\MatchHint.h">
       <Filter>Header Files\Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effects\ObjectShaker.h">
+      <Filter>Header Files\Game\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\Easing.h">
+      <Filter>Header Files\Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
