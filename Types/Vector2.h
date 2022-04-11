@@ -1,10 +1,11 @@
 #pragma warning( disable : 4244 )
 #pragma once
 #include <iostream>
-#include <format>
 #include <SFML/System/Vector2.hpp>
 
 #include "../Tools/Math.h"
+#include "../Tools/Random.h"
+#include "../Tools/Easing.h"
 #include "../Tools/String.h"
 
 namespace  maoutch
@@ -58,11 +59,18 @@ namespace  maoutch
 				v.y / magn
 			);
 		}
-		static Vector2 Lerp(const Vector2& v1, const Vector2& v2, const float& t)
+		static Vector2 Lerp(const Vector2& v1, const Vector2& v2, const float& t, const easing::EaseType& easeType = easing::EaseType::None)
 		{
 			return Vector2(
-				math::Lerp(v1.x, v2.x, t),
-				math::Lerp(v1.y, v2.y, t)
+				math::Lerp(v1.x, v2.x, Ease(easeType, t)),
+				math::Lerp(v1.y, v2.y, Ease(easeType, t))
+			);
+		}
+		static Vector2 RandomCireclePoint()
+		{
+			return Vector2(
+				std::cosf(random::Float() * 2 * PI),
+				std::sinf(random::Float() * 2 * PI)
 			);
 		}
 
@@ -95,9 +103,9 @@ namespace  maoutch
 		{
 			return Normalize(*this);
 		}
-		Vector2 Lerp(const Vector2& v, const float& t) const
+		Vector2 Lerp(const Vector2& v, const float& t, const easing::EaseType& easeType = easing::EaseType::None) const
 		{
-			return Lerp(*this, v, t);
+			return Lerp(*this, v, t, easeType);
 		}
 
 		// Operator when used with SFML
