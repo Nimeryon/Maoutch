@@ -1,0 +1,49 @@
+{
+    "Window": {
+      "Width": 1280,
+      "Height": 720
+    },
+    "Assets": {
+      "TexturePath": "Assets\\Textures\\",
+      "FontPath": "Assets\\Fonts\\"
+    },
+    "Particle": {
+      "Path": "Assets\\Particles\\"
+    },
+    "Element": {
+      "Size": 38,
+      "Scale": 1.4,
+      "SwipeDistance": 30,
+      "SelectedAnimationTime": 0.1,
+      "MoveTime": 0.5
+    },
+    "Grid": {
+      "Path": "Assets\\Grids\\",
+      "DestroyTime": 0.15,
+      "CollapseTime": 0.15,
+      "RefillTime": 0.25,
+      "RefillDelayTime": 0.1,
+      "AfterRefillTime": 0,
+      "StartResetTime": 0.5,
+      "EndResetTile": 0.5,
+      "SwapBackTime": 0.2,
+      "ProcessMatchTime": 0.2,
+      "ProcessPossibleMatchTime": 0.2,
+      "ShowHintTime": 8,
+      "SetupMinFallTime": 0,
+      "SetupMaxFallTime": 1.75,
+      "ResetMinMoveTime": 0,
+      "ResetMaxMoveTime": 0.5,
+      "ShakeMaxRadius": 4,
+      "ShakeMagnitude": 200,
+      "ShakeDecreaseFactor": 300,
+      "ResetShakeMinTime": 0.8,
+      "ResetShakeMaxTime": 1,
+      "ResetShakeMaxRadius": 8,
+      "ResetShakeMagnitude": 400,
+      "ResetShakeDecreaseFactor": 500
+    },
+    "Hint": {
+      "AnimationTime": 0.1
+    }
+  }
