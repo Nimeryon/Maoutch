@@ -11,10 +11,10 @@ namespace maoutch
 	{
 		switch (_value)
 		{
-			case DirectionValue::NORTH: return Vector2::Up();
-			case DirectionValue::EAST: return Vector2::Right();
-			case DirectionValue::SOUTH: return Vector2::Down();
-			case DirectionValue::WEST: return Vector2::Left();
+			case DirectionValue::North: return Vector2::Up();
+			case DirectionValue::East: return Vector2::Right();
+			case DirectionValue::South: return Vector2::Down();
+			case DirectionValue::West: return Vector2::Left();
 			default: return Vector2::Zero();
 		}
 	}
@@ -22,10 +22,10 @@ namespace maoutch
 	{
 		switch (_value)
 		{
-			case DirectionValue::NORTH: return Vector2i::Up();
-			case DirectionValue::EAST: return Vector2i::Right();
-			case DirectionValue::SOUTH: return Vector2i::Down();
-			case DirectionValue::WEST: return Vector2i::Left();
+			case DirectionValue::North: return Vector2i::Up();
+			case DirectionValue::East: return Vector2i::Right();
+			case DirectionValue::South: return Vector2i::Down();
+			case DirectionValue::West: return Vector2i::Left();
 			default: return Vector2i::Zero();
 		}
 	}
@@ -34,11 +34,11 @@ namespace maoutch
 	{
 		switch (_value)
 		{
-			case DirectionValue::NORTH: return DirectionValue::SOUTH;
-			case DirectionValue::EAST: return DirectionValue::WEST;
-			case DirectionValue::SOUTH: return DirectionValue::NORTH;
-			case DirectionValue::WEST: return DirectionValue::EAST;
-			default: return DirectionValue::NONE;
+			case DirectionValue::North: return DirectionValue::South;
+			case DirectionValue::East: return DirectionValue::West;
+			case DirectionValue::South: return DirectionValue::North;
+			case DirectionValue::West: return DirectionValue::East;
+			default: return DirectionValue::None;
 		}
 	}
 	bool Direction::operator==(const Direction& dir) const { return _value == dir._value; }
@@ -50,10 +50,10 @@ namespace maoutch
 	{
 		switch (dir)
 		{
-			case DirectionValue::NORTH: return "North";
-			case DirectionValue::EAST: return "East";
-			case DirectionValue::SOUTH: return "South";
-			case DirectionValue::WEST: return "West";
+			case DirectionValue::North: return "North";
+			case DirectionValue::East: return "East";
+			case DirectionValue::South: return "South";
+			case DirectionValue::West: return "West";
 			default: return "None";
 		}
 	}
@@ -61,29 +61,29 @@ namespace maoutch
 	{
 		std::string value = string::ToLower(string);
 
-		if (value == "north") return DirectionValue::NORTH;
-		if (value == "east") return DirectionValue::EAST;
-		if (value == "south") return DirectionValue::SOUTH;
-		if (value == "west") return DirectionValue::WEST;
-		return DirectionValue::NONE;
+		if (value == "north") return DirectionValue::North;
+		if (value == "east") return DirectionValue::East;
+		if (value == "south") return DirectionValue::South;
+		if (value == "west") return DirectionValue::West;
+		return DirectionValue::None;
 	}
 	Direction Direction::GetOpposite(const Direction& dir) { return !dir; }
 	Direction Direction::GetDirection(const Vector2& dir)
 	{
-		if (dir == Vector2::Up()) return DirectionValue::NORTH;
-		if (dir == Vector2::Right()) return DirectionValue::EAST;
-		if (dir == Vector2::Down()) return DirectionValue::SOUTH;
-		if (dir == Vector2::Left()) return DirectionValue::WEST;
-		return DirectionValue::NONE;
+		if (dir == Vector2::Up()) return DirectionValue::North;
+		if (dir == Vector2::Right()) return DirectionValue::East;
+		if (dir == Vector2::Down()) return DirectionValue::South;
+		if (dir == Vector2::Left()) return DirectionValue::West;
+		return DirectionValue::None;
 	}
 	Direction Direction::GetDirection(const float& angle, const float& offset)
 	{
 		const int offsetAngle = ((int)(angle - offset) % 360 + 360) % 360;
 
-		if (offsetAngle > 45 && offsetAngle <= 135) return DirectionValue::NORTH;
-		if (offsetAngle > 135 && offsetAngle <= 225) return DirectionValue::EAST;
-		if (offsetAngle > 225 && offsetAngle <= 315) return DirectionValue::SOUTH;
-		return DirectionValue::WEST;
+		if (offsetAngle > 45 && offsetAngle <= 135) return DirectionValue::North;
+		if (offsetAngle > 135 && offsetAngle <= 225) return DirectionValue::East;
+		if (offsetAngle > 225 && offsetAngle <= 315) return DirectionValue::South;
+		return DirectionValue::West;
 	}
 
 	// Methods
