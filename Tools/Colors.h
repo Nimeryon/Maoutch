@@ -1,14 +1,17 @@
 #pragma warning( disable : 4244 )
 #pragma once
 namespace sf { class Color; }
+
 #include <string>
+
+#include "Easing.h"
 
 namespace maoutch
 {
 	namespace colors
 	{
 		// Lerp between two colors. t clamped between 0 and 1
-		sf::Color LerpRGB(sf::Color a, sf::Color b, float t);
+		sf::Color LerpRGB(sf::Color a, sf::Color b, float t, const easing::EaseType& easeType = easing::EaseType::None);
 
 		sf::Color FromFloat4(float color[4]);
 		void ToFloat4(float* values, sf::Color color);

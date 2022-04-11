@@ -8,14 +8,14 @@ namespace maoutch
 {
 	namespace colors
 	{
-		sf::Color LerpRGB(sf::Color a, sf::Color b, float t)
+		sf::Color LerpRGB(sf::Color a, sf::Color b, float t, const easing::EaseType& easeType)
 		{
 			t = math::Clamp(t, 0.f, 1.f);
 			return sf::Color(
-				a.r + (b.r - a.r) * t,
-				a.g + (b.g - a.g) * t,
-				a.b + (b.b - a.b) * t,
-				a.a + (b.a - a.a) * t
+				a.r + (b.r - a.r) * Ease(easeType, t),
+				a.g + (b.g - a.g) * Ease(easeType, t),
+				a.b + (b.b - a.b) * Ease(easeType, t),
+				a.a + (b.a - a.a) * Ease(easeType, t)
 			);
 		}
 
