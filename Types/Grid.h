@@ -19,7 +19,7 @@ namespace maoutch
 		void MapAll(void (*fn)(T value))
 		{
 			for (T& arrayElement : array)
-				if (arrayElement != nullptr) fn(arrayElement);
+				if (arrayElement) fn(arrayElement);
 		}
 
 		// Getters

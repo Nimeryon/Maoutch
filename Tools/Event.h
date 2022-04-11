@@ -237,7 +237,7 @@ namespace maoutch
 		{
 			const std::list<EventListener<T>*> listeners = this->_listeners;
 			for (const auto listener : listeners)
-				if (listener != nullptr) listener->Invoke(value);
+				if (listener) listener->Invoke(value);
 		}
 	};
 
@@ -252,7 +252,7 @@ namespace maoutch
 		{
 			const std::list<EventListener<void>*> listeners = _listeners;
 			for (const auto listener : listeners)
-				if (listener != nullptr) listener->Invoke();
+				if (listener) listener->Invoke();
 		}
 	};
 }
