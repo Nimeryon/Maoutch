@@ -349,3 +349,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# SFML Include unwanted folders
+Includes/sfml/*.md
+Includes/sfml/doc/
+Includes/sfml/examples/
