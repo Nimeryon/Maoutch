@@ -1,3 +1,5 @@
+#include <SFML/Graphics.hpp>
+
 #include "imgui.h"
 #include "GameState.h"
 #include "../../Game/Objects/MatchGrid.h"
@@ -7,7 +9,11 @@ namespace maoutch
 {
 	GameState::GameState() :
 		_gridPosition{ Assets::Config<float>("Window", "Width") / 2.f, Assets::Config<float>("Window", "Height") / 2.f },
-		_rotation(0) {}
+		_rotation(0)
+	{
+		_background.setTexture(Assets::GetInstance()->GetTexture("BackGround"));
+		_background.setTextureRect({ 0, 0, 1280, 720 });
+	}
 	GameState::~GameState()
 	{
 		delete _grid;
@@ -17,7 +23,10 @@ namespace maoutch
 	{
 		_grid = new MatchGrid("small_grid", Vector2(_gridPosition[0], _gridPosition[1]));
 	}
-
+	void GameState::Draw(sf::RenderWindow& window)
+	{
+		window.draw(_background);
+	}
 	void GameState::ImGui(float dt)
 	{
 		const float windowWidth = Assets::Config<float>("Window", "Width");

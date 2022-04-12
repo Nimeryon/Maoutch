@@ -1,4 +1,6 @@
 #pragma once
+#include <SFML/Graphics/Sprite.hpp>
+
 #include "State.h"
 
 namespace maoutch
@@ -12,11 +14,13 @@ namespace maoutch
 		~GameState() override;
 
 		void Init() override;
+		void Draw(sf::RenderWindow& window) override;
 		void ImGui(float dt) override;
 
 	private:
 		MatchGrid* _grid = nullptr;
 		float _gridPosition[2];
 		float _rotation;
+		sf::Sprite _background;
 	};
 }
