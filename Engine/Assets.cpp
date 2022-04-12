@@ -33,15 +33,17 @@ namespace maoutch
 
 		return true;
 	}
-	
+
+	nlohmann::json& Assets::Config() { return GetInstance()->_jsonData; }
+
 	bool Assets::LoadTexture(const std::string& name, const std::string& fileName)
 	{
-		if (_textures[name].loadFromFile(texturesPath + fileName)) return true;
+		if (_textures[name].loadFromFile(Config<std::string>("Assets", "TexturePath") + fileName)) return true;
 		return false;
 	}
 	bool Assets::LoadFont(const std::string& name, const std::string& fileName)
 	{
-		if (_fonts[name].loadFromFile(fontsPath + fileName)) return true;
+		if (_fonts[name].loadFromFile(Config<std::string>("Assets", "FontPath") + fileName)) return true;
 		return false;
 	}
 	
@@ -50,6 +52,4 @@ namespace maoutch
 	
 	std::map<std::string, sf::Font>& Assets::GetFontsMap() { return _fonts; }
 	sf::Font& Assets::GetFont(const std::string& name) { return _fonts.at(name); }
-
-	nlohmann::json& Assets::Config() { return GetInstance()->_jsonData; }
 }

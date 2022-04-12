@@ -12,9 +12,6 @@ namespace sf
 
 namespace maoutch
 {
-	const std::string texturesPath = "Assets\\Textures\\";
-	const std::string fontsPath = "Assets\\Fonts\\";
-
 	class Assets
 	{
 	public:
@@ -24,7 +21,13 @@ namespace maoutch
 		void operator=(Assets const&) = delete;
 
 		static bool Init();
+
 		static nlohmann::json& Config();
+		template <typename T>
+		static T Config(const std::string& category, const std::string& value)
+		{
+			return Config()[category][value].get<T>();
+		}
 
 		// Only texture file name needed not the full path
 		bool LoadTexture(const std::string& name, const std::string& fileName);

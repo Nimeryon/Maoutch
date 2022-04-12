@@ -15,8 +15,6 @@ namespace maoutch
 		void SetPossibleMatch(const PossibleMatch& possibleMatch);
 
 	private:
-		static constexpr float _animationTime = .1f;
-
 		PossibleMatch _possibleMatch;
 
 		AnimatedSprite _hintAnimationNorth;

@@ -13,8 +13,6 @@ namespace sf
 
 namespace  maoutch
 {
-	const std::string particlesPath = "Assets\\Particles\\";
-	
 	struct Particle;
 
 	class ParticleEmitter : public GameObject

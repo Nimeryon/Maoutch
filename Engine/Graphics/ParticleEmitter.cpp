@@ -169,7 +169,7 @@ namespace maoutch
 
 	void ParticleEmitter::SaveToFile(const std::string& fileName)
 	{
-		std::ofstream file(particlesPath + fileName);
+		std::ofstream file(Assets::Config<std::string>("Particle", "Path") + fileName);
 		if (file.is_open())
 		{
 			file << _maxParticleCount << std::endl;
