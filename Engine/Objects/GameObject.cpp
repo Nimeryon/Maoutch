@@ -25,7 +25,7 @@ namespace maoutch
 
 		if (_needUpdate)
 		{
-			if (parent == nullptr) _transform = _localTransform;
+			if (!parent) _transform = _localTransform;
 			else _transform = transform::Compose(_localTransform, parent->_transform);
 
 			for (GameObject* child : childrens)
@@ -52,10 +52,10 @@ namespace maoutch
 	void GameObject::SetParent(GameObject* object)
 	{
 		if (parent == object) return;
-		if (parent != nullptr)
+		if (parent)
 			parent->RemoveChildren(this);
 
-		if (object == nullptr)
+		if (!object)
 		{
 			parent = object;
 			return;
@@ -80,7 +80,7 @@ namespace maoutch
 	}
 	void GameObject::RemoveFromParent()
 	{
-		if (parent == nullptr) return;
+		if (!parent) return;
 		parent->RemoveChildren(this);
 	}
 
