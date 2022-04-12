@@ -15,7 +15,8 @@ namespace maoutch
 	{
 		Starting,
 		Moving,
-		Inputs
+		Inputs,
+		Disabled
 	};
 
 	class MatchGrid : public GameObject
@@ -38,7 +39,7 @@ namespace maoutch
 		void UpdateElementsPosition(const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType = easing::EaseType::None);
 		void UpdateElementsPosition(const float& moveTime = 0, const easing::EaseType& easeType = easing::EaseType::None);
 
-		Vector2 GetCenterGridPosition(const Vector2i& gridPos) const;
+		Vector2 GetCenterGridPosition(const Vector2& gridPos) const;
 		GridState GetState() const;
 		void SetState(const GridState& state);
 
@@ -49,6 +50,7 @@ namespace maoutch
 		Grid<MatchElement*> _grid;
 
 		std::vector<Vector2i> _emptyPositions;
+		std::vector<Vector2> _respawnPoints;
 		GridState _state;
 		MatchFinder _matchFinder;
 

@@ -49,13 +49,23 @@ namespace maoutch
 
 		getline(file, line);
 		const Vector2i gridSize = Vector2i::FromString(line);
-		
+
+		// Empty Pos
 		for (int y = 0; y < gridSize.y; ++y)
 		{
 			getline(file, line);
 			std::vector<std::string> values = string::Split(line, ',');
 			for (int x = 0; x < gridSize.x; ++x)
 				if (values[x] == "0") _emptyPositions.emplace_back(Vector2i(x, y));
+		}
+
+		// Respawn Points
+		getline(file, line);
+		const int respawnPoints = std::atoi(&line[0]);
+		for (int i = 0; i < respawnPoints; ++i)
+		{
+			getline(file, line);
+			_respawnPoints.emplace_back(Vector2::FromString(line));
 		}
 
 		SetupGrid(gridSize);
@@ -111,19 +121,24 @@ namespace maoutch
 		SetState(GridState::Moving);
 
 		_DisableMatchHint();
-		_SpawnParticle(Assets::Config<std::string>("Particle", "Path") + "Elements_particle", Vector2::Zero());
+
+		for (Vector2 respawnPoint : _respawnPoints)
+			_SpawnParticle(Assets::Config<std::string>("Particle", "Path") + "Elements_particle", GetCenterGridPosition(respawnPoint));
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
+			{
+				Vector2 randomRespawnPoint = _respawnPoints[random::Int(0, _respawnPoints.size())];
 				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos))
 					_grid.GetGridElement(gridPos)->MoveToPos(
-						Vector2(0, 0),
+						GetCenterGridPosition(randomRespawnPoint),
 						Assets::Config<float>("Grid", "ResetMinMoveTime"),
 						Assets::Config<float>("Grid", "ResetMaxMoveTime"),
 						easing::EaseType::EaseInBack,
 						true
 					);
+			}
 
 		ObjectShaker::Shake(this,
 			random::Float(
@@ -188,7 +203,7 @@ namespace maoutch
 		UpdateElementsPosition(moveTime, moveTime, easeType);
 	}
 
-	Vector2 MatchGrid::GetCenterGridPosition(const Vector2i& gridPos) const
+	Vector2 MatchGrid::GetCenterGridPosition(const Vector2& gridPos) const
 	{
 		const float halfWidth = (_grid.GetWidth() / 2.f) - .5f;
 		const float halfHeight = (_grid.GetHeight() / 2.f) - .5f;
@@ -403,9 +418,10 @@ namespace maoutch
 				if (IsValidGridPosition(gridPos))
 				{
 					Vector2 position = GetCenterGridPosition(gridPos);
+					Vector2 randomRespawnPoint = _respawnPoints[random::Int(0, _respawnPoints.size())];
 					_grid.GetGridElement(gridPos) = new MatchElement(
 						*this,
-						createAtCenter? Vector2::Zero() : Vector2(position.x,-Assets::Config<float>("Window", "Height") - position.y),
+						createAtCenter ? GetCenterGridPosition(randomRespawnPoint) : Vector2(position.x, -Assets::Config<float>("Window", "Height") - position.y),
 						gridPos,
 						Element::Random()
 					);
