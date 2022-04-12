@@ -16,20 +16,20 @@ namespace maoutch
 
 	Element Element::Random()
 	{
-		const int elem = random::Int(0, (int)ElementValue::NONE);
+		const int elem = random::Int(0, (int)ElementValue::None);
 		return Element((ElementValue)elem);
 	}
 	std::string Element::ToString(const Element& elem)
 	{
 		switch (elem)
 		{
-			case ElementValue::FIRE: return "Fire";
-			case ElementValue::WATER: return "Water";
-			case ElementValue::NATURE: return "Nature";
-			case ElementValue::METAL: return "Metal";
-			case ElementValue::EARTH: return "Earth";
-			case ElementValue::LIGHT: return "Light";
-			case ElementValue::DARK: return "Dark";
+			case ElementValue::Fire: return "Fire";
+			case ElementValue::Water: return "Water";
+			case ElementValue::Nature: return "Nature";
+			case ElementValue::Metal: return "Metal";
+			case ElementValue::Earth: return "Earth";
+			case ElementValue::Light: return "Light";
+			case ElementValue::Dark: return "Dark";
 			default: return "None";
 		}
 	}
@@ -37,41 +37,41 @@ namespace maoutch
 	{
 		std::string value = string::ToLower(string);
 
-		if (value == "fire") return ElementValue::FIRE;
-		if (value == "water") return ElementValue::WATER;
-		if (value == "nature") return ElementValue::NATURE;
-		if (value == "metal") return ElementValue::METAL;
-		if (value == "earth") return ElementValue::EARTH;
-		if (value == "light") return ElementValue::LIGHT;
-		if (value == "dark") return ElementValue::DARK;
-		return ElementValue::NONE;
+		if (value == "fire") return ElementValue::Fire;
+		if (value == "water") return ElementValue::Water;
+		if (value == "nature") return ElementValue::Nature;
+		if (value == "metal") return ElementValue::Metal;
+		if (value == "earth") return ElementValue::Earth;
+		if (value == "light") return ElementValue::Light;
+		if (value == "dark") return ElementValue::Dark;
+		return ElementValue::None;
 	}
 	Element Element::GetWeakness(const Element& elem)
 	{
 		switch (elem)
 		{
-			case ElementValue::FIRE: return ElementValue::WATER;
-			case ElementValue::WATER: return ElementValue::EARTH;
-			case ElementValue::NATURE: return ElementValue::METAL;
-			case ElementValue::METAL: return ElementValue::FIRE;
-			case ElementValue::EARTH: return ElementValue::NATURE;
-			case ElementValue::LIGHT: return ElementValue::DARK;
-			case ElementValue::DARK: return ElementValue::LIGHT;
-			default: return ElementValue::NONE;
+			case ElementValue::Fire: return ElementValue::Water;
+			case ElementValue::Water: return ElementValue::Earth;
+			case ElementValue::Nature: return ElementValue::Metal;
+			case ElementValue::Metal: return ElementValue::Fire;
+			case ElementValue::Earth: return ElementValue::Nature;
+			case ElementValue::Light: return ElementValue::Dark;
+			case ElementValue::Dark: return ElementValue::Light;
+			default: return ElementValue::None;
 		}
 	}
 	Element Element::GetStrength(const Element& elem)
 	{
 		switch (elem)
 		{
-			case ElementValue::FIRE: return ElementValue::METAL;
-			case ElementValue::WATER: return ElementValue::FIRE;
-			case ElementValue::NATURE: return ElementValue::EARTH;
-			case ElementValue::METAL: return ElementValue::NATURE;
-			case ElementValue::EARTH: return ElementValue::WATER;
-			case ElementValue::LIGHT: return ElementValue::NONE;
-			case ElementValue::DARK: return ElementValue::NONE;
-			default: return ElementValue::NONE;
+			case ElementValue::Fire: return ElementValue::Metal;
+			case ElementValue::Water: return ElementValue::Fire;
+			case ElementValue::Nature: return ElementValue::Earth;
+			case ElementValue::Metal: return ElementValue::Nature;
+			case ElementValue::Earth: return ElementValue::Water;
+			case ElementValue::Light: return ElementValue::None;
+			case ElementValue::Dark: return ElementValue::None;
+			default: return ElementValue::None;
 		}
 	}
 

@@ -8,14 +8,14 @@ namespace maoutch
 	public:
 		enum class ElementValue
 		{
-			FIRE,
-			WATER,
-			NATURE,
-			METAL,
-			EARTH,
-			LIGHT,
-			DARK,
-			NONE
+			Fire,
+			Water,
+			Nature,
+			Metal,
+			Earth,
+			Light,
+			Dark,
+			None
 		};
 
 		Element() = default;
