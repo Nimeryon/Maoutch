@@ -2,6 +2,7 @@
 #include <map>
 #include <mutex>
 #include <string>
+#include <json.hpp>
 
 namespace sf
 {
@@ -14,15 +15,16 @@ namespace maoutch
 	const std::string texturesPath = "Assets\\Textures\\";
 	const std::string fontsPath = "Assets\\Fonts\\";
 
-	class AssetLoader
+	class Assets
 	{
 	public:
-		static AssetLoader* GetInstance();
+		static Assets* GetInstance();
 
-		AssetLoader(AssetLoader const&) = delete;
-		void operator=(AssetLoader const&) = delete;
+		Assets(Assets const&) = delete;
+		void operator=(Assets const&) = delete;
 
-		bool Init();
+		static bool Init();
+		static nlohmann::json& Config();
 
 		// Only texture file name needed not the full path
 		bool LoadTexture(const std::string& name, const std::string& fileName);
@@ -36,14 +38,16 @@ namespace maoutch
 		sf::Font& GetFont(const std::string& name);
 		
 	protected:
-		AssetLoader();
-		~AssetLoader();
+		Assets();
+		~Assets();
 
 	private:
-		static AssetLoader* _instance;
+		static Assets* _instance;
 		static std::mutex _mutex; // For allowing multithreaded use
 
 		std::map<std::string, sf::Texture> _textures;
 		std::map<std::string, sf::Font> _fonts;
+
+		nlohmann::json _jsonData;
 	};
 }
