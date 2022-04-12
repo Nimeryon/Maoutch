@@ -7,11 +7,11 @@ namespace maoutch
 {
 	Match::Match() :
 		positions({}),
-		element(Element::ElementValue::NONE)
+		element(Element::ElementValue::None)
 	{}
 
 	PossibleMatch::PossibleMatch() :
-		direction(Direction::DirectionValue::NONE)
+		direction(Direction::DirectionValue::None)
 	{}
 
 	MatchFinder::MatchFinder(Grid<MatchElement*>* grid) : _grid(grid) {}
@@ -23,7 +23,7 @@ namespace maoutch
 		{
 			MatchElement* gridXLeft = _grid->GetGridElement(Vector2i(gridPos.x - 1, gridPos.y));
 			MatchElement* gridXFarLeft = _grid->GetGridElement(Vector2i(gridPos.x - 2, gridPos.y));
-			if (gridXLeft != nullptr && gridXFarLeft != nullptr)
+			if (gridXLeft && gridXFarLeft)
 				if (gridXLeft->GetElement() == element && gridXFarLeft->GetElement() == element)
 					return true;
 		}
@@ -33,7 +33,7 @@ namespace maoutch
 		{
 			MatchElement* gridYTop = _grid->GetGridElement(Vector2i(gridPos.x, gridPos.y - 1));
 			MatchElement* gridYFarTop = _grid->GetGridElement(Vector2i(gridPos.x, gridPos.y - 2));
-			if (gridYTop != nullptr && gridYFarTop != nullptr)
+			if (gridYTop && gridYFarTop)
 				if (gridYTop->GetElement() == element && gridYFarTop->GetElement() == element)
 					return true;
 		}
@@ -43,7 +43,7 @@ namespace maoutch
 	bool MatchFinder::IsValidPosition(const Vector2i& gridPos) const
 	{
 		if (gridPos.x < 0 || gridPos.y < 0 || gridPos.x >= _grid->GetWidth() || gridPos.y >= _grid->GetHeight()) return false;
-		return _grid->GetGridElement(gridPos) != nullptr;
+		return _grid->GetGridElement(gridPos);
 	}
 	bool MatchFinder::SameElement(const Vector2i& gridPos, const Element& element) const
 	{
@@ -136,7 +136,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::South);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -161,7 +161,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y - 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::North);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -192,7 +192,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::South);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -215,7 +215,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y - 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::North);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -238,7 +238,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::South);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -261,7 +261,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::North);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -290,7 +290,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::South);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -311,7 +311,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::North);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -332,7 +332,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
-			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::South);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -353,7 +353,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
-			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::North);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -374,7 +374,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::South);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -395,7 +395,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y - 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::North);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -416,7 +416,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 3, gridPos.y));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 2, gridPos.y));
 			possibleMatch.match.positions.emplace_back(gridPos);
-			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::West);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -437,7 +437,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 2, gridPos.y));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 3, gridPos.y));
-			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::East);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -488,7 +488,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 2));
-			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::East);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -513,7 +513,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 2));
-			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::West);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -544,7 +544,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::East);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -567,7 +567,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::West);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -590,7 +590,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 2));
-			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::East);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -613,7 +613,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 2));
-			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::West);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -642,7 +642,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::East);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -663,7 +663,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
-			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::West);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -684,7 +684,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 2));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
-			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::East);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -705,7 +705,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 2));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y - 1));
 			possibleMatch.match.positions.emplace_back(gridPos);
-			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::West);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -726,7 +726,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x + 1, gridPos.y + 2));
-			possibleMatch.direction = Direction(Direction::DirectionValue::EAST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::East);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -747,7 +747,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 1));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x - 1, gridPos.y + 2));
-			possibleMatch.direction = Direction(Direction::DirectionValue::WEST);
+			possibleMatch.direction = Direction(Direction::DirectionValue::West);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -768,7 +768,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x, gridPos.y - 3));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x, gridPos.y - 2));
 			possibleMatch.match.positions.emplace_back(gridPos);
-			possibleMatch.direction = Direction(Direction::DirectionValue::NORTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::North);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
@@ -789,7 +789,7 @@ namespace maoutch
 			possibleMatch.match.positions.emplace_back(gridPos);
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x, gridPos.y + 2));
 			possibleMatch.match.positions.emplace_back(Vector2i(gridPos.x, gridPos.y + 3));
-			possibleMatch.direction = Direction(Direction::DirectionValue::SOUTH);
+			possibleMatch.direction = Direction(Direction::DirectionValue::South);
 
 			_AddPossibleMatch(possibleMatch);
 			return true;
