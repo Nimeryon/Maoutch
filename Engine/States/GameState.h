@@ -15,10 +15,8 @@ namespace maoutch
 		void ImGui(float dt) override;
 
 	private:
-		MatchGrid* _grid1 = nullptr;
-		MatchGrid* _grid2 = nullptr;
-		float _gridPosition1[2];
-		float _gridPosition2[2];
+		MatchGrid* _grid = nullptr;
+		float _gridPosition[2];
 		float _rotation;
 	};
 }
