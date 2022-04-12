@@ -3,10 +3,8 @@
 
 #include "MatchGridBackGround.h"
 #include "MatchElement.h"
-#include "../../Engine/AssetLoader.h"
+#include "../../Engine/Assets.h"
 #include "../../Tools/Texture.h"
-
-extern maoutch::Vector2 ELEMENT_SIZE;
 
 namespace maoutch
 {
@@ -14,7 +12,7 @@ namespace maoutch
 		GameObject("MatchGrid BackGround", -1),
 		_vertexArray(new sf::VertexArray())
 	{
-		_renderState.texture = &AssetLoader::GetInstance()->GetTexture("Elements Background");
+		_renderState.texture = &Assets::GetInstance()->GetTexture("Elements Background");
 		_vertexArray->setPrimitiveType(sf::Quads);
 	}
 	MatchGridBackGround::~MatchGridBackGround()
@@ -26,7 +24,8 @@ namespace maoutch
 	{
 		_vertexArray->clear();
 
-		Vector2 halfElementSize = ELEMENT_SIZE / 2.f;
+		const float elementSize = Assets::Config<float>("Element", "Size");
+		Vector2 halfElementSize = elementSize / 2.f;
 		Vector2 halfGridSize = { grid.GetWidth() / 2.f - .5f, grid.GetHeight() / 2.f - .5f };
 
 		bool isBlackTile = true;
@@ -37,29 +36,29 @@ namespace maoutch
 			for (gridPos.x = 0; gridPos.x < grid.GetWidth(); ++gridPos.x)
 			{
 				isBlackTile = !isBlackTile;
-				if (grid.GetGridElement(gridPos) == nullptr) continue;
+				if (!grid.GetGridElement(gridPos)) continue;
 
 				Vector2i texturePosition = _CalculateAutoTiling(grid, gridPos);
 				if (!isBlackTile) texturePosition.x += 8;
 
 				std::array<sf::Vertex, 4> vertices;
-				texture::SetTextureCoord(vertices, texturePosition, Vector2i::From(ELEMENT_SIZE));
+				texture::SetTextureCoord(vertices, texturePosition, Vector2i::From(elementSize));
 				
 				vertices[0].position = {
-					-halfElementSize.x + ELEMENT_SIZE.x * (gridPos.x - halfGridSize.x),
-					-halfElementSize.x + ELEMENT_SIZE.y * (gridPos.y - halfGridSize.y)
+					-halfElementSize.x + elementSize * (gridPos.x - halfGridSize.x),
+					-halfElementSize.x + elementSize * (gridPos.y - halfGridSize.y)
 				};
 				vertices[1].position = {
-					halfElementSize.x + ELEMENT_SIZE.x * (gridPos.x - halfGridSize.x),
-					-halfElementSize.x + ELEMENT_SIZE.y * (gridPos.y - halfGridSize.y)
+					halfElementSize.x + elementSize * (gridPos.x - halfGridSize.x),
+					-halfElementSize.x + elementSize * (gridPos.y - halfGridSize.y)
 				};
 				vertices[2].position = {
-					halfElementSize.x + ELEMENT_SIZE.x * (gridPos.x - halfGridSize.x),
-					halfElementSize.y + ELEMENT_SIZE.y * (gridPos.y - halfGridSize.y)
+					halfElementSize.x + elementSize * (gridPos.x - halfGridSize.x),
+					halfElementSize.y + elementSize * (gridPos.y - halfGridSize.y)
 				};
 				vertices[3].position = {
-					-halfElementSize.x + ELEMENT_SIZE.x * (gridPos.x - halfGridSize.x),
-					halfElementSize.y + ELEMENT_SIZE.y * (gridPos.y - halfGridSize.y)
+					-halfElementSize.x + elementSize * (gridPos.x - halfGridSize.x),
+					halfElementSize.y + elementSize * (gridPos.y - halfGridSize.y)
 				};
 
 				for (sf::Vertex& vertex : vertices)
@@ -71,7 +70,7 @@ namespace maoutch
 	bool MatchGridBackGround::_IsTileValid(Grid<MatchElement*>& grid, const Vector2i& gridPos)
 	{
 		if (gridPos.x < 0 || gridPos.y < 0 || gridPos.x >= grid.GetWidth() || gridPos.y >= grid.GetHeight()) return false;
-		return grid.GetGridElement(gridPos) != nullptr;
+		return grid.GetGridElement(gridPos);
 	}
 	Vector2i MatchGridBackGround::_CalculateAutoTiling(Grid<MatchElement*>& grid, const Vector2i& gridPos)
 	{
