@@ -6,7 +6,7 @@
 #include "../Objects/GameObjectHandler.h"
 #include "../../Tools/Random.h"
 #include "../../Tools/String.h"
-#include "../AssetLoader.h"
+#include "../Assets.h"
 
 namespace maoutch
 {
@@ -57,7 +57,7 @@ namespace maoutch
 		_particleRotationSpeed(particleRotationSpeed)
 	{
 		ReserveParticlesSpace();
-		_textureName = AssetLoader::GetInstance()->GetTexturesMap().begin()->first;
+		_textureName = Assets::GetInstance()->GetTexturesMap().begin()->first;
 		_particleVertex.setPrimitiveType(sf::Quads);
 	}
 	ParticleEmitter::~ParticleEmitter() = default;
@@ -126,7 +126,7 @@ namespace maoutch
 	void ParticleEmitter::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
 		_renderState.transform = transform;
-		_renderState.texture = _isTextured ? &AssetLoader::GetInstance()->GetTexture(_textureName) : nullptr;
+		_renderState.texture = _isTextured ? &Assets::GetInstance()->GetTexture(_textureName) : nullptr;
 		
 		window.draw(_particleVertex, _renderState);
 	}
