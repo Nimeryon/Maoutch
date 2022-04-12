@@ -14,7 +14,7 @@ namespace maoutch
 	{
 		std::lock_guard lock(_mutex);
 
-		if (_instance == nullptr) _instance = new InputHandler();
+		if (!_instance) _instance = new InputHandler();
 		return _instance;
 	}
 	

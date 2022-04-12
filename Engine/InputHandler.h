@@ -16,11 +16,10 @@ namespace maoutch
 	class InputHandler
 	{
 	public:
+		static InputHandler* GetInstance();
 
 		InputHandler(InputHandler const&) = delete;
 		void operator=(InputHandler const&) = delete;
-
-		static InputHandler* GetInstance();
 
 		void SetWindow(sf::RenderWindow* window);
 		void ClearLastFrameEvents();
