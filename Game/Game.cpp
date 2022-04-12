@@ -25,9 +25,9 @@ namespace maoutch
 			sf::VideoMode(windowWidth, windowHeight),
 			title
 		);
-		_data->letterBowView.setSize(windowWidth, windowHeight);
-		_data->letterBowView.setCenter(windowWidth / 2, windowHeight / 2);
-		_data->window.setView(_data->letterBowView);
+		_data->letterBoxView.setSize(windowWidth, windowHeight);
+		_data->letterBoxView.setCenter(windowWidth / 2, windowHeight / 2);
+		_data->window.setView(_data->letterBoxView);
 
 		ImGui::SFML::Init(_data->window);
 		InputHandler::GetInstance()->SetWindow(&_data->window);
@@ -79,11 +79,8 @@ namespace maoutch
 
 			// Handle rendering
 			_data->window.clear();
-
-
 			_data->stateMachine.Draw(_data->window);
 			ImGui::SFML::Render(_data->window);
-
 			_data->window.display();
 
 			// Handle late update
@@ -101,7 +98,10 @@ namespace maoutch
 				_data->window.close();
 
 			if (event.type == sf::Event::Resized)
+			{
 				_UpdateLetterBoxView(event.size.width, event.size.height);
+				_data->window.setView(_data->letterBoxView);
+			}
 
 			ImGui::SFML::ProcessEvent(_data->window, event);
 			InputHandler::GetInstance()->ProcessEvent(event);
@@ -112,11 +112,24 @@ namespace maoutch
 	void Game::_UpdateLetterBoxView(int width, int height)
 	{
 		const float aspectRatio = (float)width / (float)height;
-		const float viewAspectRatio = (float)_data->letterBowView.getSize().x / (float)_data->letterBowView.getSize().y;
-		
-		float sizeX = viewAspectRatio / aspectRatio;
-		float posX = (1 - sizeX) / 2.f;
+		const float viewRatio = (float)_data->letterBoxView.getSize().x / (float)_data->letterBoxView.getSize().y;
+		float sizeX = 1;
+		float sizeY = 1;
+		float posX = 0;
+		float posY = 0;
 
-		_data->letterBowView.setViewport(sf::FloatRect(posX, 0, sizeX, 1));
+		bool horizontalSpacing = true;
+		if (aspectRatio < viewRatio)
+			horizontalSpacing = false;
+		
+		if (horizontalSpacing) {
+			sizeX = viewRatio / aspectRatio;
+			posX = (1 - sizeX) / 2.f;
+		}
+		else {
+			sizeY = aspectRatio / viewRatio;
+			posY = (1 - sizeY) / 2.f;
+		}
+		_data->letterBoxView.setViewport(sf::FloatRect(posX, posY, sizeX, sizeY));
 	}
 }

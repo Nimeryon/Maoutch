@@ -10,7 +10,7 @@ namespace maoutch
 	{
 		StateMachine stateMachine;
 		sf::RenderWindow window;
-		sf::View letterBowView;
+		sf::View letterBoxView;
 		sf::Time logicDeltatime;
 	};
 
