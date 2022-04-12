@@ -358,5 +358,8 @@
     <None Include="Assets\Particles\Elements_particle">
       <Filter>Resource Files\Particles</Filter>
     </None>
+    <None Include="Assets\Grids\big_grid">
+      <Filter>Resource Files\Grids</Filter>
+    </None>
   </ItemGroup>
 </Project>
