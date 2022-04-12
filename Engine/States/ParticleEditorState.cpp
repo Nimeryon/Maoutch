@@ -229,6 +229,9 @@ namespace maoutch
 				ImGui::DragFloat(&("Max Start " + editorName)[0], &emitter.maxXValue);
 				ImGui::DragFloat(&("Min End " + editorName)[0], &emitter.minYValue);
 				ImGui::DragFloat(&("Max End " + editorName)[0], &emitter.maxYValue);
+				int easeType = (int)emitter.easeType;
+				if (ImGui::Combo(&(editorName + " Ease Type")[0], &easeType, easingTypes, IM_ARRAYSIZE(easingTypes)))
+					emitter.easeType = (easing::EaseType)easeType;
 			}
 			else
 			{
