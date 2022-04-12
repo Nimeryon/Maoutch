@@ -2,22 +2,17 @@
 
 #include "MatchElement.h"
 #include "../../Engine/InputHandler.h"
+#include "../../Engine/Assets.h"
 #include "../../Tools/Transform.h"
 #include "../../Tools/Random.h"
-#include "../../Engine/AssetLoader.h"
 #include "../../Types/Direction.h"
 #include "MatchGrid.h"
 #include "../Match/Element.h"
 
-extern maoutch::Vector2 ELEMENT_SIZE;
-extern float ELEMENT_SNAP_DISTANCE;
-extern float ELEMENT_DT_MULTIPLIER;
-extern float ELEMENT_SWIPE_DISTANCE;
-
 namespace maoutch
 {
 	MatchElement::MatchElement(MatchGrid& grid, const Vector2& startPos, const Vector2i& gridPos, const Element& element) :
-		GameObject("MatchBox"),
+		GameObject("MatchBox", 0, false),
 		_type(element),
 		_grid(grid),
 		_gridPos(gridPos),
@@ -26,19 +21,22 @@ namespace maoutch
 		_isSelectd(false),
 		_isMoving(false),
 		_moveTimerFinished(false),
+		_disableAfterMoving(false),
 		_moveTimer(random::Float(0, 2), &MatchElement::_OnMoveToPositionTimer, this),
-		_selectedAnimation(_animationTime, &AssetLoader::GetInstance()->GetTexture("Selected Animation"), Vector2i::From(ELEMENT_SIZE), Vector2i::Zero(), true)
+		_currentMoveTime(0),
+		_selectedAnimation(Assets::Config<float>("Element", "SelectedAnimationTime"), &Assets::GetInstance()->GetTexture("Selected Animation"), Vector2i::From({ Assets::Config<float>("Element", "Size") }), Vector2i::Zero(), true)
 	{
-		_sprite->setTexture(AssetLoader::GetInstance()->GetTexture("Elements"));
+		const Vector2 elementSize = { Assets::Config<float>("Element", "Size") };
+		_sprite->setTexture(Assets::GetInstance()->GetTexture("Elements"));
 		_sprite->setTextureRect(
-			sf::IntRect(Vector2i((int)_type.Value(), 0) * ELEMENT_SIZE, ELEMENT_SIZE)
+			sf::IntRect(Vector2i((int)_type.Value(), 0) * elementSize, elementSize)
 		);
 
 		for (int i = 0; i < 12; ++i)
 			_selectedAnimation.AddFrame({ i, 0 });
 		
 		SetPosition(startPos);
-		SetOrigin(ELEMENT_SIZE / 2.f);
+		SetOrigin(elementSize / 2.f);
 	}
 	MatchElement::~MatchElement()
 	{
@@ -47,7 +45,7 @@ namespace maoutch
 
 	void MatchElement::ProcessInputs()
 	{
-		if (_grid.GetState() != GridState::INPUTS) return;
+		if (_grid.GetState() != GridState::Inputs) return;
 
 		Vector2 mousePos = InputHandler::GetInstance()->GetMousePosition();
 		if (!_isSelectd && transform::Contains(*_sprite, _transform, mousePos))
@@ -63,21 +61,20 @@ namespace maoutch
 	{
 		if (_moveTimerFinished && _isMoving)
 		{
-			// Move Horizontal
-			if (std::abs(GetPosition().x - _goalPosition.x) > ELEMENT_SNAP_DISTANCE)
-				SetPosition({ GetPosition().Lerp(_goalPosition, dt * ELEMENT_DT_MULTIPLIER).x, GetPosition().y});
-			else SetPosition({ _goalPosition.x, GetPosition().y });
+			_currentMoveTime += dt;
 
-			// Move Vertical
-			if (std::abs(GetPosition().y - _goalPosition.y) > ELEMENT_SNAP_DISTANCE)
-				SetPosition({ GetPosition().x, GetPosition().Lerp(_goalPosition, dt * ELEMENT_DT_MULTIPLIER).y });
-			else SetPosition({ GetPosition().x, _goalPosition.y });
+			const float moveTime = Assets::Config<float>("Element", "MoveTime");
+			float t = _currentMoveTime / moveTime;
+			SetPosition(_startMovePosition.Lerp(_goalPosition, t, _easeType));
 
-			if (GetPosition() == _goalPosition)
+			if (_currentMoveTime >= moveTime)
 			{
 				_isMoving = false;
 				_moveTimerFinished = false;
 				SetZIndex(0);
+				SetPosition(_goalPosition);
+
+				if (_disableAfterMoving) SetActive(false);
 			}
 		}
 	}
@@ -97,9 +94,10 @@ namespace maoutch
 
 	void MatchElement::SetElement(const Element& element)
 	{
+		const Vector2 elementSize = { Assets::Config<float>("Element", "Size") };
 		_type = element;
 		_sprite->setTextureRect(
-			sf::IntRect(Vector2i((int)_type.Value(), 0) * ELEMENT_SIZE, ELEMENT_SIZE)
+			sf::IntRect(Vector2i((int)_type.Value(), 0) * elementSize, elementSize)
 		);
 	}
 	void MatchElement::SetIsMatched()
@@ -120,36 +118,40 @@ namespace maoutch
 		_gridPos = gridPos;
 		SetName((std::string)gridPos + " Element");
 	}
-	void MatchElement::SetAndMoveToGridPos(const Vector2i& gridPos, const float& minStartMoveTime, const float& maxStartMoveTime)
+	void MatchElement::SetAndMoveToGridPos(const Vector2i& gridPos, const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType, const bool& disableAfterMove)
 	{
 		SetGridPos(gridPos);
-		MoveToGridPos(minStartMoveTime, maxStartMoveTime);
+		MoveToGridPos(minStartMoveTime, maxStartMoveTime, easeType, disableAfterMove);
 	}
-	void MatchElement::SetAndMoveToGridPos(const Vector2i& gridPos, const float& moveTime)
+	void MatchElement::SetAndMoveToGridPos(const Vector2i& gridPos, const float& moveTime, const easing::EaseType& easeType, const bool& disableAfterMove)
 	{
-		SetAndMoveToGridPos(gridPos, moveTime, moveTime);
+		SetAndMoveToGridPos(gridPos, moveTime, moveTime, easeType, disableAfterMove);
 	}
-	void MatchElement::MoveToGridPos(const float& minStartMoveTime, const float& maxStartMoveTime)
+	void MatchElement::MoveToGridPos(const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType, const bool& disableAfterMove)
 	{
+		_easeType = easeType;
 		_isMoving = true;
+		_disableAfterMoving = disableAfterMove;
 		_goalPosition = _grid.GetCenterGridPosition(_gridPos);
 		_moveTimer.SetTime(random::Float(minStartMoveTime, maxStartMoveTime));
 		_moveTimer.Start();
 	}
-	void MatchElement::MoveToGridPos(const float& moveTime)
+	void MatchElement::MoveToGridPos(const float& moveTime, const easing::EaseType& easeType, const bool& disableAfterMove)
 	{
-		MoveToGridPos(moveTime, moveTime);
+		MoveToGridPos(moveTime, moveTime, easeType, disableAfterMove);
 	}
-	void MatchElement::MoveToPos(const Vector2& position, const float& minStartMoveTime, const float& maxStartMoveTime)
+	void MatchElement::MoveToPos(const Vector2& position, const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType, const bool& disableAfterMove)
 	{
+		_easeType = easeType;
 		_isMoving = true;
+		_disableAfterMoving = disableAfterMove;
 		_goalPosition = position;
 		_moveTimer.SetTime(random::Float(minStartMoveTime, maxStartMoveTime));
 		_moveTimer.Start();
 	}
-	void MatchElement::MoveToPos(const Vector2& position, const float& moveTime)
+	void MatchElement::MoveToPos(const Vector2& position, const float& moveTime, const easing::EaseType& easeType, const bool& disableAfterMove)
 	{
-		MoveToPos(position, moveTime, moveTime);
+		MoveToPos(position, moveTime, moveTime, easeType, disableAfterMove);
 	}
 
 	void MatchElement::UpdatePosition()
@@ -164,7 +166,7 @@ namespace maoutch
 	void MatchElement::OnPointerUpdate()
 	{
 		_endClickPosition = InputHandler::GetInstance()->GetMousePosition();
-		if (_endClickPosition.Distance(_startClickPosition) > ELEMENT_SWIPE_DISTANCE)
+		if (_endClickPosition.Distance(_startClickPosition) > Assets::Config<float>("Element", "SwipeDistance"))
 		{
 			// Calculate swipe angle
 			// Angle between 0 and 360 deg
@@ -186,6 +188,9 @@ namespace maoutch
 	void MatchElement::_OnMoveToPositionTimer()
 	{
 		_moveTimerFinished = true;
+		_currentMoveTime = 0;
+		_startMovePosition = GetPosition();
+		SetVisible(true);
 		SetZIndex(1);
 	}
 }

@@ -6,6 +6,7 @@ namespace sf
 
 #include "../../Engine/Objects/GameObject.h"
 #include "../../Engine/Tools/Timer.h"
+#include "../../Tools/Easing.h"
 #include "../../Types/Vector2i.h"
 #include "../Match/Element.h"
 #include "../../Engine/Graphics/AnimatedSprite.h"
@@ -34,12 +35,12 @@ namespace maoutch
 		void SetIsSelected(const bool& isSelected);
 
 		void SetGridPos(const Vector2i& gridPos);
-		void SetAndMoveToGridPos(const Vector2i& gridPos, const float& minStartMoveTime, const float& maxStartMoveTime);
-		void SetAndMoveToGridPos(const Vector2i& gridPos, const float& moveTime = 0);
-		void MoveToGridPos(const float& minStartMoveTime, const float& maxStartMoveTime);
-		void MoveToGridPos(const float& moveTime = 0);
-		void MoveToPos(const Vector2& position, const float& minStartMoveTime, const float& maxStartMoveTime);
-		void MoveToPos(const Vector2& position, const float& moveTime = 0);
+		void SetAndMoveToGridPos(const Vector2i& gridPos, const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType = easing::EaseType::None, const bool& disableAfterMove = false);
+		void SetAndMoveToGridPos(const Vector2i& gridPos, const float& moveTime = 0, const easing::EaseType& easeType = easing::EaseType::None, const bool& disableAfterMove = false);
+		void MoveToGridPos(const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType = easing::EaseType::None, const bool& disableAfterMove = false);
+		void MoveToGridPos(const float& moveTime = 0, const easing::EaseType& easeType = easing::EaseType::None, const bool& disableAfterMove = false);
+		void MoveToPos(const Vector2& position, const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType = easing::EaseType::None, const bool& disableAfterMove = false);
+		void MoveToPos(const Vector2& position, const float& moveTime = 0, const easing::EaseType& easeType = easing::EaseType::None, const bool& disableAfterMove = false);
 
 		void UpdatePosition();
 		void OnPointerDown();
@@ -47,8 +48,6 @@ namespace maoutch
 		void OnPointerUp();
 
 	private:
-		static constexpr float _animationTime = .1f;
-
 		Element _type;
 
 		MatchGrid& _grid;
@@ -59,10 +58,14 @@ namespace maoutch
 		bool _isSelectd;
 		bool _isMoving;
 		bool _moveTimerFinished;
+		bool _disableAfterMoving;
 		Timer<MatchElement> _moveTimer;
 		Vector2 _startClickPosition;
 		Vector2 _endClickPosition;
+		Vector2 _startMovePosition;
 		Vector2 _goalPosition;
+		float _currentMoveTime;
+		easing::EaseType _easeType;
 
 		AnimatedSprite _selectedAnimation;
 

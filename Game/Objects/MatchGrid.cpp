@@ -4,15 +4,12 @@
 
 #include "MatchGrid.h"
 #include "MatchGridBackGround.h"
+#include "../Effects/ObjectShaker.h"
 #include "../../Engine/Objects/GameObjectHandler.h"
+#include "../../Engine/Assets.h"
 #include "../../Engine/Graphics/ParticleEmitter.h"
 #include "../../Types/Direction.h"
 #include "MatchHint.h"
-
-extern int WINDOW_WIDTH;
-extern int WINDOW_HEIGHT;
-extern maoutch::Vector2 ELEMENT_SIZE;
-extern maoutch::Vector2 ELEMENT_SCALE;
 
 namespace maoutch
 {
@@ -20,22 +17,22 @@ namespace maoutch
 		GameObject("Match Grid", 0),
 		_matchGridBackGround(new MatchGridBackGround()),
 		_emptyPositions({}),
-		_state(GridState::STARTING),
+		_state(GridState::Starting),
 		_matchFinder(&_grid),
 		_moveChecked(false),
-		_lastSwapDir(Direction::DirectionValue::NONE),
-		_destroyTimer(destroyTime, &MatchGrid::_DestroyMatched, this),
-		_collapseTimer(collapseTime, &MatchGrid::_CollapseColumns, this),
-		_refillTimer(refillTime, &MatchGrid::_RefillBoard, this),
-		_afterRefillTimer(afterRefillTime, &MatchGrid::_AfterRefill, this),
-		_startResetTimer(startResetTime, &MatchGrid::StartReset, this),
-		_endResetTimer(endResetTime, &MatchGrid::_Reset, this),
-		_swapBackTimer(swapBackTime, &MatchGrid::_SwapBack, this),
-		_processMatchTimer(processMatchTime, &MatchGrid::_ProcessMatches, this),
-		_processPossibleMatchTimer(processPossibleMatchTime, &MatchGrid::_ProcessPossibleMatches, this),
-		_showHintTimer(showHintTime, &MatchGrid::_SetPossibleMatch, this)
+		_lastSwapDir(Direction::DirectionValue::None),
+		_startTimer(Assets::Config<float>("Element", "MoveTime"), &MatchGrid::_Start, this),
+		_destroyTimer(Assets::Config<float>("Grid", "DestroyTime"), &MatchGrid::_DestroyMatched, this),
+		_collapseTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "CollapseTime"), &MatchGrid::_CollapseColumns, this),
+		_refillTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "RefillTime"), &MatchGrid::_RefillBoard, this),
+		_afterRefillTimer(0, &MatchGrid::_AfterRefill, this),
+		_startResetTimer(Assets::Config<float>("Element", "MoveTime"), &MatchGrid::StartReset, this),
+		_endResetTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ResetMaxMoveTime"), &MatchGrid::_Reset, this),
+		_swapBackTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ProcessMatchTime"), &MatchGrid::_SwapBack, this),
+		_processMatchTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "SwapBackTime"), &MatchGrid::_ProcessMatches, this),
+		_showHintTimer(Assets::Config<float>("Grid", "ShowHintTime"), &MatchGrid::_SetPossibleMatch, this)
 	{
-		SetScale(ELEMENT_SCALE);
+		SetScale(Assets::Config<float>("Grid", "Scale"));
 		SetPosition(position);
 		Setup(fileName);
 
@@ -45,22 +42,9 @@ namespace maoutch
 		AddChildren(new MatchHint());
 	}
 
-	void MatchGrid::FixedUpdate(float dt)
-	{
-		switch (_state)
-		{
-			case GridState::STARTING:
-				if (!IsMoving())
-					SetState(GridState::INPUTS);
-				break;
-
-			default: break;
-		}	
-	}
-
 	void MatchGrid::Setup(const std::string& fileName)
 	{
-		std::ifstream file(gridPath + fileName);
+		std::ifstream file(Assets::Config<std::string>("Grid", "Path") + fileName);
 		std::string line;
 
 		getline(file, line);
@@ -83,13 +67,18 @@ namespace maoutch
 			_grid.EmplaceBack(nullptr);
 
 		_FillGrid();
-		UpdateElementsPosition(setupMinFallTime, setupMaxFallTime);
+		UpdateElementsPosition(
+			Assets::Config<float>("Grid", "SetupMinFallTime"),
+			Assets::Config<float>("Grid", "SetupMaxFallTime"),
+			easing::EaseType::EaseOutCubic
+		);
 
 		_showHintTimer.Restart();
+		_startTimer.Start();
 	}
 	void MatchGrid::SetupGridPos(const Vector2i& gridPos)
 	{
-		if (_grid.GetGridElement(gridPos) == nullptr) return;
+		if (!_grid.GetGridElement(gridPos)) return;
 
 		Element element = _grid.GetGridElement(gridPos)->GetElement();
 
@@ -109,7 +98,7 @@ namespace maoutch
 		return std::any_of(
 			_grid.array.begin(),
 			_grid.array.end(),
-			[](const MatchElement* element) { return element != nullptr && element->IsMoving(); });
+			[](const MatchElement* element) { return element && element->IsMoving(); });
 	}
 	bool MatchGrid::IsValidGridPosition(const Vector2i& gridPos) const
 	{
@@ -119,36 +108,52 @@ namespace maoutch
 
 	void MatchGrid::StartReset()
 	{
-		SetState(GridState::MOVING);
+		SetState(GridState::Moving);
 
 		_DisableMatchHint();
-		_SpawnParticle(particlesPath + "Elements_particle", Vector2::Zero());
+		_SpawnParticle(Assets::Config<std::string>("Particle", "Path") + "Elements_particle", Vector2::Zero());
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
-				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos) != nullptr)
-					_grid.GetGridElement(gridPos)->MoveToPos(Vector2(0, 0), 0, .5f);
+				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos))
+					_grid.GetGridElement(gridPos)->MoveToPos(
+						Vector2(0, 0),
+						Assets::Config<float>("Grid", "ResetMinMoveTime"),
+						Assets::Config<float>("Grid", "ResetMaxMoveTime"),
+						easing::EaseType::EaseInBack,
+						true
+					);
+
+		ObjectShaker::Shake(this,
+			random::Float(
+				Assets::Config<float>("Grid", "ResetShakeMinTime"),
+				Assets::Config<float>("Grid", "ResetShakeMaxTime")
+			),
+			Assets::Config<float>("Grid", "ResetShakeMaxRadius"),
+			Assets::Config<float>("Grid", "ResetShakeMagnitude"),
+			Assets::Config<float>("Grid", "ResetShakeDecreaseFactor")
+		);
 
 		_endResetTimer.Start();
 	}
 
 	void MatchGrid::Swap(const Vector2i gridPos, const Direction dir)
 	{
-		SetState(GridState::MOVING);
+		SetState(GridState::Moving);
 
 		Vector2i goalPos = gridPos + dir;
 		if (!IsValidGridPosition(goalPos))
 		{
-			SetState(GridState::INPUTS);
+			SetState(GridState::Inputs);
 			return;
 		}
-		if (_grid.GetGridElement(gridPos) == nullptr || _grid.GetGridElement(goalPos) == nullptr) return;
+		if (!_grid.GetGridElement(gridPos) || !_grid.GetGridElement(goalPos)) return;
 
 		_DisableMatchHint();
 
-		_grid.GetGridElement(gridPos)->SetAndMoveToGridPos(goalPos);
-		_grid.GetGridElement(goalPos)->SetAndMoveToGridPos(gridPos);
+		_grid.GetGridElement(gridPos)->SetAndMoveToGridPos(goalPos, 0, easing::EaseType::EaseInOutQuart);
+		_grid.GetGridElement(goalPos)->SetAndMoveToGridPos(gridPos, 0, easing::EaseType::EaseInOutQuart);
 
 		// Swap elements memory
 		std::swap(_grid.GetGridElement(gridPos), _grid.GetGridElement(goalPos));
@@ -156,31 +161,31 @@ namespace maoutch
 		_lastSwapGoalPos = goalPos;
 		_lastSwapDir = dir;
 
-		if (!_moveChecked) _ProcessMatches();
+		if (!_moveChecked) _processMatchTimer.Start();
 	}
 	void MatchGrid::DestroyGridPos(const Vector2i& gridPos)
 	{
-		if (!IsValidGridPosition(gridPos) || _grid.GetGridElement(gridPos) == nullptr) return;
+		if (!IsValidGridPosition(gridPos) || !_grid.GetGridElement(gridPos) ) return;
 
 		GameObjectHandler::instance->Destroy(_grid.GetGridElement(gridPos));
 		_grid.GetGridElement(gridPos) = nullptr;
 	}
 
-	void MatchGrid::UpdateElementsPosition(const float& minStartMoveTime, const float& maxStartMoveTime)
+	void MatchGrid::UpdateElementsPosition(const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType)
 	{
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
 		{
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
 			{
-				if (_grid.GetGridElement(gridPos) != nullptr)
-					_grid.GetGridElement(gridPos)->MoveToGridPos(minStartMoveTime, maxStartMoveTime);
+				if (_grid.GetGridElement(gridPos))
+					_grid.GetGridElement(gridPos)->MoveToGridPos(minStartMoveTime, maxStartMoveTime, easeType);
 			}
 		}
 	}
-	void MatchGrid::UpdateElementsPosition(const float& moveTime)
+	void MatchGrid::UpdateElementsPosition(const float& moveTime, const easing::EaseType& easeType)
 	{
-		UpdateElementsPosition(moveTime, moveTime);
+		UpdateElementsPosition(moveTime, moveTime, easeType);
 	}
 
 	Vector2 MatchGrid::GetCenterGridPosition(const Vector2i& gridPos) const
@@ -189,7 +194,8 @@ namespace maoutch
 		const float halfHeight = (_grid.GetHeight() / 2.f) - .5f;
 
 		Vector2 offsetPos = gridPos - Vector2(halfWidth, halfHeight);
-		return offsetPos * ELEMENT_SIZE;
+		const float elementSize = Assets::Config<float>("Element", "Size");
+		return offsetPos * elementSize;
 	}
 	GridState MatchGrid::GetState() const { return _state; }
 	void MatchGrid::SetState(const GridState& state) { _state = state; }
@@ -203,7 +209,7 @@ namespace maoutch
 			{
 				if (x != 0) value += " , ";
 
-				if (_grid.GetGridElement(Vector2i(x, y)) == nullptr) value += "null";
+				if (!_grid.GetGridElement(Vector2i(x, y))) value += "null";
 				else value += std::to_string((int)_grid.GetGridElement(Vector2i(x, y))->GetElement().Value());
 			}
 			value += "\n";
@@ -214,6 +220,7 @@ namespace maoutch
 	void MatchGrid::_DestroyMatched()
 	{
 		bool matched = false;
+		float matchedCount = 0;
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
@@ -221,18 +228,27 @@ namespace maoutch
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
 			{
 				if (IsValidGridPosition(gridPos))
-					if (_grid.GetGridElement(gridPos) != nullptr && _grid.GetGridElement(gridPos)->IsMatched())
+					if (_grid.GetGridElement(gridPos) && _grid.GetGridElement(gridPos)->IsMatched())
 					{
 						matched = true;
+						matchedCount++;
 						_SpawnParticle(_grid.GetGridElement(gridPos)->GetElement(), gridPos);
 						DestroyGridPos(gridPos);
 					}
 			}
 		}
-
 		_moveChecked = true;
 
-		if (matched) _collapseTimer.Start();
+		if (matched)
+		{
+			ObjectShaker::Shake(this,
+				Assets::Config<float>("Grid", "ShakeTime") * matchedCount,
+				Assets::Config<float>("Grid", "ShakeMaxRadius") * matchedCount,
+				Assets::Config<float>("Grid", "ShakeMagnitude") * matchedCount,
+				Assets::Config<float>("Grid", "ShakeDecreaseFactor")
+			);
+			_collapseTimer.Start();
+		}
 		else _swapBackTimer.Start();
 	}
 	void MatchGrid::_CollapseColumns()
@@ -244,14 +260,14 @@ namespace maoutch
 			for (gridPos.y = _grid.GetHeight() - 1; gridPos.y >= 0; --gridPos.y)
 			{
 				const bool validPos = IsValidGridPosition(gridPos);
-				if (validPos && _grid.GetGridElement(gridPos) == nullptr)
+				if (validPos && !_grid.GetGridElement(gridPos))
 					nullCount++;
 				else if (nullCount > 0)
 				{
 					if (!validPos) break;
 
 					Vector2i pos = { gridPos.x, gridPos.y + nullCount };
-					_grid.GetGridElement(gridPos)->SetAndMoveToGridPos(pos);
+					_grid.GetGridElement(gridPos)->SetAndMoveToGridPos(pos, 0, easing::EaseType::EaseInOutQuart);
 
 					// Swap elements memory
 					std::swap(_grid.GetGridElement(gridPos), _grid.GetGridElement(pos));
@@ -272,22 +288,22 @@ namespace maoutch
 			bool lineRefilled = false;
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
 			{
-				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos) == nullptr)
+				if (IsValidGridPosition(gridPos) && !_grid.GetGridElement(gridPos))
 				{
 					Vector2 position = GetCenterGridPosition(gridPos);
-					_grid.GetGridElement(gridPos) = new MatchElement(*this, Vector2(position.x, -WINDOW_HEIGHT - position.y), gridPos, Element::Random());
+					_grid.GetGridElement(gridPos) = new MatchElement(*this, Vector2(position.x, -Assets::Config<float>("Window", "Height") - position.y), gridPos, Element::Random());
 					_grid.GetGridElement(gridPos)->SetName((std::string)gridPos + " Element");
 					AddChildren(_grid.GetGridElement(gridPos));
 
-					_grid.GetGridElement(gridPos)->MoveToGridPos(moveTimeDelay);
+					_grid.GetGridElement(gridPos)->MoveToGridPos(moveTimeDelay, 0, easing::EaseType::EaseInOutQuart);
 
 					lineRefilled = true;
 				}
 			}
-			if (lineRefilled) moveTimeDelay += refillDelayTime;
+			if (lineRefilled) moveTimeDelay += Assets::Config<float>("Grid", "RefillDelayTime");
 		}
 
-		_afterRefillTimer.SetTime(afterRefillTime + moveTimeDelay);
+		_afterRefillTimer.SetTime(moveTimeDelay);
 		_afterRefillTimer.Start();
 	}
 	void MatchGrid::_AfterRefill()
@@ -295,19 +311,18 @@ namespace maoutch
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
-				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos) != nullptr)
+				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos))
 					if (_matchFinder.MatchAt(gridPos, _grid.GetGridElement(gridPos)->GetElement()))
 					{
 						_processMatchTimer.Start();
 						return;
 					}
-
-		_processPossibleMatchTimer.Start();
+		_ProcessPossibleMatches();
 	}
 	void MatchGrid::_Reset()
 	{
 		_moveChecked = false;
-		SetState(GridState::STARTING);
+		SetState(GridState::Starting);
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
@@ -315,9 +330,14 @@ namespace maoutch
 				DestroyGridPos(gridPos);
 
 		_FillGrid(true);
-		UpdateElementsPosition(resetMinMoveTime, resetMaxMoveTime);
+		UpdateElementsPosition(
+			Assets::Config<float>("Grid", "ResetMinMoveTime"),
+			Assets::Config<float>("Grid", "ResetMaxMoveTime"),
+			easing::EaseType::EaseOutBack
+		);
 
 		_showHintTimer.Restart();
+		_startTimer.Start();
 	}
 
 	void MatchGrid::_ProcessMatches()
@@ -325,7 +345,7 @@ namespace maoutch
 		_matchFinder.FindMatches();
 		for (Match& match : _matchFinder.matches)
 			for (Vector2i gridPos : match.positions)
-				if (_grid.GetGridElement(gridPos) != nullptr)
+				if (_grid.GetGridElement(gridPos))
 					_grid.GetGridElement(gridPos)->SetIsMatched();
 
 		_destroyTimer.Start();
@@ -337,7 +357,7 @@ namespace maoutch
 			Vector2i gridPos;
 			for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
 				for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
-					if (_grid.GetGridElement(gridPos) != nullptr)
+					if (_grid.GetGridElement(gridPos))
 						_grid.GetGridElement(gridPos)->SetIsMatched();
 
 			_startResetTimer.Start();
@@ -346,10 +366,14 @@ namespace maoutch
 		{
 			_showHintTimer.Restart();
 			_moveChecked = false;
-			SetState(GridState::INPUTS);
+			SetState(GridState::Inputs);
 		}
 	}
 
+	void MatchGrid::_Start()
+	{
+		SetState(GridState::Inputs);
+	}
 	void MatchGrid::_DisableMatchHint()
 	{
 		_showHintTimer.Reset();
@@ -365,11 +389,11 @@ namespace maoutch
 	}
 	void MatchGrid::_SwapBack()
 	{
-		if (_grid.GetGridElement(_lastSwapGoalPos) != nullptr && _grid.GetGridElement(_lastSwapGoalPos + !_lastSwapDir) != nullptr)
+		if (_grid.GetGridElement(_lastSwapGoalPos) && _grid.GetGridElement(_lastSwapGoalPos + !_lastSwapDir))
 			Swap(_lastSwapGoalPos, !_lastSwapDir);
 
 		_moveChecked = false;
-		SetState(GridState::INPUTS);
+		_startTimer.Start();
 	}
 	void MatchGrid::_FillGrid(bool createAtCenter)
 	{
@@ -381,7 +405,7 @@ namespace maoutch
 					Vector2 position = GetCenterGridPosition(gridPos);
 					_grid.GetGridElement(gridPos) = new MatchElement(
 						*this,
-						createAtCenter? Vector2::Zero() : Vector2(position.x,-WINDOW_HEIGHT - position.y),
+						createAtCenter? Vector2::Zero() : Vector2(position.x,-Assets::Config<float>("Window", "Height") - position.y),
 						gridPos,
 						Element::Random()
 					);
@@ -403,7 +427,7 @@ namespace maoutch
 	}
 	void MatchGrid::_SpawnParticle(const Element& element, const Vector2i& gridPos)
 	{
-		const std::string particleFileName = particlesPath + "Elements\\" + element.ToString() + "_particle";
+		const std::string particleFileName = Assets::Config<std::string>("Particle", "Path") + "Elements\\" + element.ToString() + "_particle";
 		
 		ParticleEmitter* emitter = new ParticleEmitter();
 		emitter->SetZIndex(3);

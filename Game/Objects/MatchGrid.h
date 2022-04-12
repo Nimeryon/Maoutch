@@ -5,43 +5,24 @@
 #include "../../Engine/Tools/Timer.h"
 #include "../Match/MatchFinder.h"
 #include "../../Types/Direction.h"
+#include "../../Tools/Easing.h"
 
 namespace maoutch
 {
 	class MatchGridBackGround;
 
-	static const std::string gridPath = "Assets\\Grids\\";
-
-	static constexpr float destroyTime = .2f;
-	static constexpr float collapseTime = .15f;
-	static constexpr float refillTime = .25f;
-	static constexpr float refillDelayTime = .1f;
-	static constexpr float afterRefillTime = 0.f;
-	static constexpr float startResetTime = .5f;
-	static constexpr float endResetTime = .5f;
-	static constexpr float swapBackTime = .2f;
-	static constexpr float processMatchTime = .2f;
-	static constexpr float processPossibleMatchTime = .2f;
-	static constexpr float showHintTime = 8.f;
-	static constexpr float setupMinFallTime = 0.f;
-	static constexpr float setupMaxFallTime = 1.75f;
-	static constexpr float resetMinMoveTime = 0.f;
-	static constexpr float resetMaxMoveTime = .5f;
-
 	enum class GridState
 	{
-		STARTING,
-		MOVING,
-		INPUTS
+		Starting,
+		Moving,
+		Inputs
 	};
 
 	class MatchGrid : public GameObject
 	{
 	public:
 		MatchGrid(const std::string& fileName, const Vector2& position);
-
-		void FixedUpdate(float dt) override;
-
+		
 		void Setup(const std::string& fileName);
 		void SetupGrid(const Vector2i& gridSize);
 		void SetupGridPos(const Vector2i& gridPos);
@@ -54,8 +35,8 @@ namespace maoutch
 		void Swap(const Vector2i gridPos, const Direction dir);
 		void DestroyGridPos(const Vector2i& gridPos);
 
-		void UpdateElementsPosition(const float& minStartMoveTime, const float& maxStartMoveTime);
-		void UpdateElementsPosition(const float& moveTime = 0);
+		void UpdateElementsPosition(const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType = easing::EaseType::None);
+		void UpdateElementsPosition(const float& moveTime = 0, const easing::EaseType& easeType = easing::EaseType::None);
 
 		Vector2 GetCenterGridPosition(const Vector2i& gridPos) const;
 		GridState GetState() const;
@@ -74,7 +55,8 @@ namespace maoutch
 		bool _moveChecked;
 		Vector2i _lastSwapGoalPos;
 		Direction _lastSwapDir;
-		
+
+		Timer<MatchGrid> _startTimer;
 		Timer<MatchGrid> _destroyTimer;
 		Timer<MatchGrid> _collapseTimer;
 		Timer<MatchGrid> _refillTimer;
@@ -83,7 +65,6 @@ namespace maoutch
 		Timer<MatchGrid> _endResetTimer;
 		Timer<MatchGrid> _swapBackTimer;
 		Timer<MatchGrid> _processMatchTimer;
-		Timer<MatchGrid> _processPossibleMatchTimer;
 		Timer<MatchGrid> _showHintTimer;
 
 		void _DestroyMatched();
@@ -95,6 +76,7 @@ namespace maoutch
 		void _ProcessMatches();
 		void _ProcessPossibleMatches();
 
+		void _Start();
 		void _DisableMatchHint();
 		void _SetPossibleMatch();
 		void _SwapBack();
