@@ -1,6 +1,5 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
-#include <SFML/Graphics.hpp>
 
 #include "Game.h"
 
@@ -9,17 +8,27 @@
 #include "../Engine/States/GameState.h"
 #include "../Engine/InputHandler.h"
 
-extern int WINDOW_WIDTH;
-extern int WINDOW_HEIGHT;
-
 namespace maoutch
 {
 	Game::Game(std::string title)
 	{
+		// Try initing assets
+		if (!Assets::GetInstance()->Init())
+		{
+			std::cout << "Loading error!\n";
+			return;
+		}
+
+		const float windowWidth = Assets::Config<float>("Window", "Width");
+		const float windowHeight = Assets::Config<float>("Window", "Height");
 		_data->window.create(
-			sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT),
-			title, sf::Style::Close | sf::Style::Titlebar | sf::Style::Resize
+			sf::VideoMode(windowWidth, windowHeight),
+			title
 		);
+		_data->letterBowView.setSize(windowWidth, windowHeight);
+		_data->letterBowView.setCenter(windowWidth / 2, windowHeight / 2);
+		_data->window.setView(_data->letterBowView);
+
 		ImGui::SFML::Init(_data->window);
 		InputHandler::GetInstance()->SetWindow(&_data->window);
 
@@ -28,13 +37,6 @@ namespace maoutch
 
 		// Setup logic time
 		_data->logicDeltatime = sf::milliseconds(1000.f / 60.f);
-
-		// Try initing assets
-		if (!AssetLoader::GetInstance()->Init())
-		{
-			std::cout << "Loading error!\n";
-			return;
-		}
 
 		// Add default state
 		_data->stateMachine.AddState(std::make_unique<GameState>());
@@ -98,10 +100,23 @@ namespace maoutch
 			if (event.type == sf::Event::Closed)
 				_data->window.close();
 
+			if (event.type == sf::Event::Resized)
+				_UpdateLetterBoxView(event.size.width, event.size.height);
+
 			ImGui::SFML::ProcessEvent(_data->window, event);
 			InputHandler::GetInstance()->ProcessEvent(event);
 		}
 
 		_data->stateMachine.ProcessInputs();
+	}
+	void Game::_UpdateLetterBoxView(int width, int height)
+	{
+		const float aspectRatio = (float)width / (float)height;
+		const float viewAspectRatio = (float)_data->letterBowView.getSize().x / (float)_data->letterBowView.getSize().y;
+		
+		float sizeX = viewAspectRatio / aspectRatio;
+		float posX = (1 - sizeX) / 2.f;
+
+		_data->letterBowView.setViewport(sf::FloatRect(posX, 0, sizeX, 1));
 	}
 }

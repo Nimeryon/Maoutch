@@ -1,8 +1,8 @@
 #pragma once
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "../Engine/StateMachine.h"
-#include "../Engine/AssetLoader.h"
+#include "../Engine/Assets.h"
 
 namespace maoutch
 {
@@ -10,6 +10,7 @@ namespace maoutch
 	{
 		StateMachine stateMachine;
 		sf::RenderWindow window;
+		sf::View letterBowView;
 		sf::Time logicDeltatime;
 	};
 
@@ -27,5 +28,6 @@ namespace maoutch
 
 		void _Run();
 		void _ProcessInputs();
+		void _UpdateLetterBoxView(int width, int height);
 	};
 }
