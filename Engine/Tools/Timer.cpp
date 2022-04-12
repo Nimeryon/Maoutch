@@ -2,5 +2,5 @@
 
 namespace maoutch
 {
-	Event<float> TimerBase::timerEvent;
+	Event<const float&> TimerBase::timerEvent;
 }

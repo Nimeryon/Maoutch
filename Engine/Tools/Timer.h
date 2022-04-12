@@ -26,7 +26,7 @@ namespace maoutch
 			if (_started) return;
 
 			_started = true;
-			timerEvent += EventHandler::Bind<float, TimerBase>(&TimerBase::Update, this);
+			timerEvent += EventHandler::Bind<const float&, TimerBase>(&TimerBase::Update, this);
 		}
 		void Restart()
 		{
@@ -36,7 +36,7 @@ namespace maoutch
 		void Stop()
 		{
 			_started = false;
-			timerEvent -= EventHandler::Bind<float, TimerBase>(&TimerBase::Update, this);
+			timerEvent -= EventHandler::Bind<const float&, TimerBase>(&TimerBase::Update, this);
 		}
 		void Reset()
 		{
@@ -44,7 +44,7 @@ namespace maoutch
 			_currentTime = 0;
 		}
 
-		void Update(float& dt)
+		void Update(const float& dt)
 		{
 			_currentTime += dt;
 			if (_currentTime >= _time)
@@ -56,7 +56,7 @@ namespace maoutch
 			}
 		}
 
-		static Event<float> timerEvent;
+		static Event<const float&> timerEvent;
 
 	private:
 		virtual void _OnTimerEvent() = 0;
