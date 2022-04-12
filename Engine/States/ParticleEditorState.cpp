@@ -7,25 +7,58 @@
 #include "../Graphics/Particle.h"
 #include "../../Tools/Colors.h"
 #include "../../Tools/String.h"
-#include "../AssetLoader.h"
-
-extern int WINDOW_WIDTH;
-extern int WINDOW_HEIGHT;
+#include "../Assets.h"
 
 namespace maoutch
 {
 	std::vector<std::string> filePaths = {};
 	char fileName[255] = {};
 	static const char* emitterTypes[]{"Fixed", "Random", "Lerp", "RandomLerp"};
+	static const char* easingTypes[]
+	{
+		"None",
+		"EaseInSine",
+		"EaseOutSine",
+		"EaseInOutSine",
+		"EaseInQuad",
+		"EaseOutQuad",
+		"EaseInOutQuad",
+		"EaseInCubic",
+		"EaseOutCubic",
+		"EaseInOutCubic",
+		"EaseInQuart",
+		"EaseOutQuart",
+		"EaseInOutQuart",
+		"EaseInQuint",
+		"EaseOutQuint",
+		"EaseInOutQuint",
+		"EaseInExpo",
+		"EaseOutExpo",
+		"EaseInOutExpo",
+		"EaseInCirc",
+		"EaseOutCirc",
+		"EaseInOutCirc",
+		"EaseInBack",
+		"EaseOutBack",
+		"EaseInOutBack",
+		"EaseInElastic",
+		"EaseOutElastic",
+		"EaseInOutElastic",
+		"EaseInBounce",
+		"EaseOutBounce",
+		"EaseInOutBounce"
+	};
 
 	ParticleEditorState::ParticleEditorState() :
 		_startColor{ 1, 1, 0, 1 },
 		_endColor{1, 0, 0, 1},
 		_textureRectSize{16, 16},
+		_colorEaseType(0),
+		_directionEaseType(0),
 		_xDirection{-1, 1},
 		_yDirection{-1, 1}
 	{
-		for (const auto& filePath : std::filesystem::recursive_directory_iterator(particlesPath))
+		for (const auto& filePath : std::filesystem::recursive_directory_iterator(Assets::Config<std::string>("Particle", "Path")))
 			filePaths.push_back(filePath.path().string());
 	}
 	ParticleEditorState::~ParticleEditorState()
@@ -50,7 +83,7 @@ namespace maoutch
 	
 	void ParticleEditorState::ImGui(float dt)
 	{
-		if (!ImGui::Begin("Particle Editor") || _particle == nullptr)
+		if (!ImGui::Begin("Particle Editor") || !_particle)
 		{
 			ImGui::End();
 			return;
@@ -97,7 +130,7 @@ namespace maoutch
 			{
 				if (ImGui::BeginCombo("Textures", &_particle->GetTextureName()[0]))
 				{
-					for (const auto& textureValue : AssetLoader::GetInstance()->GetTexturesMap())
+					for (const auto& textureValue : Assets::GetInstance()->GetTexturesMap())
 						if (ImGui::Selectable(&textureValue.first[0]))
 							_particle->SetTextureName(textureValue.first);
 					ImGui::EndCombo();
@@ -201,6 +234,9 @@ namespace maoutch
 			{
 				ImGui::DragFloat(&("Start " + editorName)[0], &emitter.minXValue);
 				ImGui::DragFloat(&("End " + editorName)[0], &emitter.maxXValue);
+				int easeType = (int)emitter.easeType;
+				if (ImGui::Combo(&(editorName + " Ease Type")[0], &easeType, easingTypes, IM_ARRAYSIZE(easingTypes)))
+					emitter.easeType = (easing::EaseType)easeType;
 			}
 			ImGui::Combo(&(editorName + " Type")[0], &emitter.type, emitterTypes, IM_ARRAYSIZE(emitterTypes));
 
@@ -223,6 +259,8 @@ namespace maoutch
 					_particle->GetParticleColors()->startColor = colors::FromFloat4(_startColor);
 				if (ImGui::ColorEdit4("End Color", _endColor))
 					_particle->GetParticleColors()->endColor = colors::FromFloat4(_endColor);
+				if (ImGui::Combo(&("Color Ease Type")[0], &_colorEaseType, easingTypes, IM_ARRAYSIZE(easingTypes)))
+					_particle->GetParticleColors()->easeType = (easing::EaseType)_colorEaseType;
 			}
 
 			if (ImGui::Combo("Color Type", &_particle->GetParticleColors()->type, emitterTypes, IM_ARRAYSIZE(emitterTypes) - 1))
@@ -250,6 +288,8 @@ namespace maoutch
 					_particle->GetParticleDirection()->xVector = Vector2(_xDirection[0], _xDirection[1]);
 				if (ImGui::DragFloat2(_particle->GetParticleDirection()->type == 1 ? "Y Direction" : "End Direction", _yDirection, .001f, -1, 1))
 					_particle->GetParticleDirection()->yVector = Vector2(_yDirection[0], _yDirection[1]);
+				if (ImGui::Combo(&("Direction Ease Type")[0], &_directionEaseType, easingTypes, IM_ARRAYSIZE(easingTypes)))
+					_particle->GetParticleDirection()->easeType = (easing::EaseType)_colorEaseType;
 			}
 			ImGui::Combo("Direction Type", &_particle->GetParticleDirection()->type, emitterTypes, IM_ARRAYSIZE(emitterTypes) - 1);
 
@@ -275,7 +315,7 @@ namespace maoutch
 							fileName[i] = (char)0;
 
 						// Update file list
-						std::string newName = string::Replace(filePath, particlesPath, "");
+						std::string newName = string::Replace(filePath, Assets::Config<std::string>("Particle", "Path"), "");
 						for (int i = 0; i < newName.size(); ++i)
 							fileName[i] = newName[i];
 
@@ -288,6 +328,9 @@ namespace maoutch
 						_xDirection[1] = _particle->GetParticleDirection()->xVector.y;
 						_yDirection[0] = _particle->GetParticleDirection()->yVector.x;
 						_yDirection[1] = _particle->GetParticleDirection()->yVector.y;
+
+						_colorEaseType = (int)_particle->GetParticleColors()->easeType;
+						_directionEaseType = (int)_particle->GetParticleDirection()->easeType;
 
 						// Update positions
 						_terturePositions.clear();
@@ -310,7 +353,7 @@ namespace maoutch
 					_particle->SaveToFile(name);
 
 					filePaths.clear();
-					for (const auto& filePath : std::filesystem::directory_iterator(particlesPath))
+					for (const auto& filePath : std::filesystem::directory_iterator(Assets::Config<std::string>("Particle", "Path")))
 						filePaths.push_back(filePath.path().string());
 				}
 			}

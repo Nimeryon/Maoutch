@@ -34,6 +34,8 @@ namespace maoutch
 		float _startColor[4];
 		float _endColor[4];
 		int _textureRectSize[2];
+		int _colorEaseType;
+		int _directionEaseType;
 		float _xDirection[2];
 		float _yDirection[2];
 		std::vector<int*> _terturePositions = {};
