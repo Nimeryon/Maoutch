@@ -1,18 +1,13 @@
 #include "MatchFinder.h"
-#include "Element.h"
 #include "../Objects/MatchGrid.h"
 #include "../Objects/MatchElement.h"
+#include "Data/Element.h"
+#include "Data/Match.h"
+#include "Data/PossibleMatch.h"
 
 namespace maoutch
 {
-	Match::Match() :
-		positions({}),
-		element(Element::ElementValue::None)
-	{}
 
-	PossibleMatch::PossibleMatch() :
-		direction(Direction::DirectionValue::None)
-	{}
 
 	MatchFinder::MatchFinder(Grid<MatchElement*>* grid) : _grid(grid) {}
 

@@ -1,31 +1,15 @@
 #pragma once
 #include <vector>
 
-#include "../../Types/Vector2i.h"
 #include "../../Types/Grid.h"
-#include "../../Types/Direction.h"
-#include "Element.h"
+#include "../../Types/Vector2i.h"
 
 namespace maoutch
 {
 	class MatchElement;
-
-	struct Match
-	{
-		Match();
-
-		std::vector<Vector2i> positions;
-		Element element;
-	};
-
-	struct PossibleMatch
-	{
-		PossibleMatch();
-
-		Match match;
-		Vector2i gridPos;
-		Direction direction;
-	};
+	struct Match;
+	struct PossibleMatch;
+	class Element;
 
 	class MatchFinder
 	{
