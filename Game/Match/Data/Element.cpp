@@ -1,6 +1,6 @@
 #include "Element.h"
-#include "../../Tools/String.h"
-#include "../../Tools/Random.h"
+#include "../../../Tools/String.h"
+#include "../../../Tools/Random.h"
 
 namespace maoutch
 {
