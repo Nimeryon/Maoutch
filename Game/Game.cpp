@@ -10,7 +10,8 @@
 
 namespace maoutch
 {
-	Game::Game(std::string title)
+	Game::Game(std::string title) :
+		_title(title)
 	{
 		// Try initing assets
 		if (!Assets::GetInstance()->Init())
@@ -22,8 +23,8 @@ namespace maoutch
 		const float windowWidth = Assets::Config<float>("Window", "Width");
 		const float windowHeight = Assets::Config<float>("Window", "Height");
 		_data->window.create(
-			sf::VideoMode(windowWidth, windowHeight),
-			title
+			sf::VideoMode(windowWidth, windowHeight, 1),
+			_title
 		);
 		_data->letterBoxView.setSize(windowWidth, windowHeight);
 		_data->letterBoxView.setCenter(windowWidth / 2, windowHeight / 2);
@@ -33,7 +34,7 @@ namespace maoutch
 		InputHandler::GetInstance()->SetWindow(&_data->window);
 
 		// Setup framerate
-		_data->window.setFramerateLimit(240);
+		// _data->window.setFramerateLimit(240);
 
 		// Setup logic time
 		_data->logicDeltatime = sf::milliseconds(1000.f / 60.f);

@@ -26,6 +26,8 @@ namespace maoutch
 		sf::Time _logicUpdateTime;
 		GameDataRef _data = std::make_shared<GameData>();
 
+		std::string _title;
+
 		void _Run();
 		void _ProcessInputs();
 		void _UpdateLetterBoxView(int width, int height);
