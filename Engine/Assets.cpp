@@ -30,6 +30,9 @@ namespace maoutch
 		if (!GetInstance()->LoadTexture("Elements Background", "elements_background.png")) return false;
 		if (!GetInstance()->LoadTexture("Selected Animation", "selected_animation.png")) return false;
 		if (!GetInstance()->LoadTexture("Hint Arrow Animation", "hint_arrow_animation.png")) return false;
+		if (!GetInstance()->LoadTexture("HealthBar", "healthBar.png")) return false;
+		if (!GetInstance()->LoadTexture("HealthBar Eye", "healthBarEye.png")) return false;
+		if (!GetInstance()->LoadTexture("HealthBar Skull", "healthBarSkull.png")) return false;
 		if (!GetInstance()->LoadTexture("BackGround", "background_test.jpg")) return false;
 
 		return true;
