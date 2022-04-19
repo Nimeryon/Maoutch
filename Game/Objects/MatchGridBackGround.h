@@ -7,7 +7,7 @@ namespace sf
 }
 
 #include "../../Engine/Objects/GameObject.h"
-#include "../Match/Element.h"
+#include "../Match/Data/Element.h"
 #include "../../Types/Grid.h"
 #include "../../Types/Vector2i.h"
 
@@ -53,7 +53,7 @@ namespace maoutch
 	class MatchGridBackGround : public GameObject
 	{
 	public:
-		explicit MatchGridBackGround();
+		explicit MatchGridBackGround(const Element& element = Element::ElementValue::None);
 		~MatchGridBackGround() override;
 
 		void Setup(Grid<MatchElement*>& grid);
@@ -61,6 +61,8 @@ namespace maoutch
 	private:
 		sf::RenderStates _renderState;
 		sf::VertexArray* _vertexArray;
+
+		Element _element;
 
 		bool _IsTileValid(Grid<MatchElement*>& grid, const Vector2i& gridPos);
 		Vector2i _CalculateAutoTiling(Grid<MatchElement*>& grid, const Vector2i& gridPos);

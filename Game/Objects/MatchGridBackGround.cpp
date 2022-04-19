@@ -8,9 +8,10 @@
 
 namespace maoutch
 {
-	MatchGridBackGround::MatchGridBackGround() :
+	MatchGridBackGround::MatchGridBackGround(const Element& element) :
 		GameObject("MatchGrid BackGround", -1),
-		_vertexArray(new sf::VertexArray())
+		_vertexArray(new sf::VertexArray()),
+		_element(element)
 	{
 		_renderState.texture = &Assets::GetInstance()->GetTexture("Elements Background");
 		_vertexArray->setPrimitiveType(sf::Quads);
@@ -40,6 +41,7 @@ namespace maoutch
 
 				Vector2i texturePosition = _CalculateAutoTiling(grid, gridPos);
 				if (!isBlackTile) texturePosition.x += 8;
+				texturePosition.y += (int)_element.Value() * 6;
 
 				std::array<sf::Vertex, 4> vertices;
 				texture::SetTextureCoord(vertices, texturePosition, Vector2i::From(elementSize));
