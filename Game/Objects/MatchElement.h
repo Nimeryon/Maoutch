@@ -8,12 +8,13 @@ namespace sf
 #include "../../Engine/Tools/Timer.h"
 #include "../../Tools/Easing.h"
 #include "../../Types/Vector2i.h"
-#include "../Match/Element.h"
+#include "../Match/Data/Element.h"
 #include "../../Engine/Graphics/AnimatedSprite.h"
 
 namespace maoutch
 {
 	class MatchGrid;
+	class Element;
 
 	class MatchElement : public GameObject
 	{

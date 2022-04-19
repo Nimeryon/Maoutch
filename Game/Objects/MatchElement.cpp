@@ -7,7 +7,7 @@
 #include "../../Tools/Random.h"
 #include "../../Types/Direction.h"
 #include "MatchGrid.h"
-#include "../Match/Element.h"
+#include "../Match/Data/Element.h"
 
 namespace maoutch
 {
@@ -24,6 +24,7 @@ namespace maoutch
 		_disableAfterMoving(false),
 		_moveTimer(random::Float(0, 2), &MatchElement::_OnMoveToPositionTimer, this),
 		_currentMoveTime(0),
+		_easeType(easing::EaseType::None),
 		_selectedAnimation(Assets::Config<float>("Element", "SelectedAnimationTime"), &Assets::GetInstance()->GetTexture("Selected Animation"), Vector2i::From({ Assets::Config<float>("Element", "Size") }), Vector2i::Zero(), true)
 	{
 		const Vector2 elementSize = { Assets::Config<float>("Element", "Size") };
