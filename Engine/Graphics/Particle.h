@@ -38,9 +38,11 @@ namespace maoutch
 		Vector2i _texturePosition;
 		Vector2i _textureRectSize;
 		Vector2 _position;
+
 		float _currentLifetime;
 		float _lifetime;
 		float _currentRotation;
+
 		LerpableValue<Vector2> _direction;
 		LerpableValue<sf::Color> _color;
 		LerpableValue<float> _size;
