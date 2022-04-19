@@ -1,3 +1,4 @@
+#pragma warning( disable : 4267 )
 #pragma once
 namespace sf
 {

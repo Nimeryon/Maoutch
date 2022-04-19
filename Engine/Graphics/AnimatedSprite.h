@@ -1,3 +1,4 @@
+#pragma warning( disable : 4267 )
 #pragma once
 namespace sf
 {
@@ -15,7 +16,7 @@ namespace maoutch
 	class AnimatedSprite
 	{
 	public:
-		AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake);
+		AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake = true);
 		~AnimatedSprite();
 
 		float GetAnimationSpeed() const;
