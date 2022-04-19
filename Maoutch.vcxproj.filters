@@ -94,6 +94,18 @@
     <Filter Include="Source Files\Game\Effects">
       <UniqueIdentifier>{58ed489d-04b1-4338-9815-5cb7af42de65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Game\Match\Data">
+      <UniqueIdentifier>{da5f6ac0-014d-472f-9a57-38172e18d4d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game\Match\Data">
+      <UniqueIdentifier>{c4c91c31-e30e-4136-ab4b-8c70097f5b92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game\Entities">
+      <UniqueIdentifier>{2880c982-be2e-4c55-9895-87b130cd0601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Entities">
+      <UniqueIdentifier>{ff49098e-9360-4f25-8b1a-e6e8e13f1674}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -171,9 +183,6 @@
     <ClCompile Include="Game\Objects\MatchElement.cpp">
       <Filter>Source Files\Game\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Match\Element.cpp">
-      <Filter>Source Files\Game\Match</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Match\MatchFinder.cpp">
       <Filter>Source Files\Game\Match</Filter>
     </ClCompile>
@@ -194,6 +203,27 @@
     </ClCompile>
     <ClCompile Include="Tools\Easing.cpp">
       <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Match\Data\Match.cpp">
+      <Filter>Source Files\Game\Match\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Match\Data\PossibleMatch.cpp">
+      <Filter>Source Files\Game\Match\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Match\Data\Element.cpp">
+      <Filter>Source Files\Game\Match\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Entities\HealthBar.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Sprite.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Entities\HealthBarSkull.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Entities\HealthBarEye.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,9 +332,6 @@
     <ClInclude Include="Types\Direction.h">
       <Filter>Header Files\Types</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Match\Element.h">
-      <Filter>Header Files\Game\Match</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Match\MatchFinder.h">
       <Filter>Header Files\Game\Match</Filter>
     </ClInclude>
@@ -325,6 +352,27 @@
     </ClInclude>
     <ClInclude Include="Tools\Easing.h">
       <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Match\Data\Element.h">
+      <Filter>Header Files\Game\Match\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Match\Data\Match.h">
+      <Filter>Header Files\Game\Match\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Match\Data\PossibleMatch.h">
+      <Filter>Header Files\Game\Match\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Entities\HealthBar.h">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Sprite.h">
+      <Filter>Header Files\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Entities\HealthBarSkull.h">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Entities\HealthBarEye.h">
+      <Filter>Header Files\Game\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +408,9 @@
     </None>
     <None Include="Assets\Grids\big_grid">
       <Filter>Resource Files\Grids</Filter>
+    </None>
+    <None Include="Assets\config.json">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
 </Project>

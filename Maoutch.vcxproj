@@ -151,6 +151,7 @@
     <ClCompile Include="Engine\Graphics\AnimatedSprite.cpp" />
     <ClCompile Include="Engine\Graphics\Particle.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleEmitter.cpp" />
+    <ClCompile Include="Engine\Graphics\Sprite.cpp" />
     <ClCompile Include="Engine\InputHandler.cpp" />
     <ClCompile Include="Engine\Objects\GameObject.cpp" />
     <ClCompile Include="Engine\Objects\GameObjectHandler.cpp" />
@@ -159,8 +160,13 @@
     <ClCompile Include="Engine\States\ParticleEditorState.cpp" />
     <ClCompile Include="Engine\Tools\Timer.cpp" />
     <ClCompile Include="Game\Effects\ObjectShaker.cpp" />
+    <ClCompile Include="Game\Entities\HealthBar.cpp" />
+    <ClCompile Include="Game\Entities\HealthBarEye.cpp" />
+    <ClCompile Include="Game\Entities\HealthBarSkull.cpp" />
     <ClCompile Include="Game\Game.cpp" />
-    <ClCompile Include="Game\Match\Element.cpp" />
+    <ClCompile Include="Game\Match\Data\Element.cpp" />
+    <ClCompile Include="Game\Match\Data\Match.cpp" />
+    <ClCompile Include="Game\Match\Data\PossibleMatch.cpp" />
     <ClCompile Include="Game\Match\MatchFinder.cpp" />
     <ClCompile Include="Game\Objects\MatchElement.cpp" />
     <ClCompile Include="Game\Objects\MatchGrid.cpp" />
@@ -186,6 +192,7 @@
     <ClInclude Include="Engine\Graphics\AnimatedSprite.h" />
     <ClInclude Include="Engine\Graphics\Particle.h" />
     <ClInclude Include="Engine\Graphics\ParticleEmitter.h" />
+    <ClInclude Include="Engine\Graphics\Sprite.h" />
     <ClInclude Include="Engine\InputHandler.h" />
     <ClInclude Include="Engine\Objects\GameObject.h" />
     <ClInclude Include="Engine\Objects\GameObjectHandler.h" />
@@ -195,8 +202,13 @@
     <ClInclude Include="Engine\States\State.h" />
     <ClInclude Include="Engine\Tools\Timer.h" />
     <ClInclude Include="Game\Effects\ObjectShaker.h" />
+    <ClInclude Include="Game\Entities\HealthBar.h" />
+    <ClInclude Include="Game\Entities\HealthBarEye.h" />
+    <ClInclude Include="Game\Entities\HealthBarSkull.h" />
     <ClInclude Include="Game\Game.h" />
-    <ClInclude Include="Game\Match\Element.h" />
+    <ClInclude Include="Game\Match\Data\Element.h" />
+    <ClInclude Include="Game\Match\Data\Match.h" />
+    <ClInclude Include="Game\Match\Data\PossibleMatch.h" />
     <ClInclude Include="Game\Match\MatchFinder.h" />
     <ClInclude Include="Game\Objects\MatchElement.h" />
     <ClInclude Include="Game\Objects\MatchGrid.h" />
@@ -227,6 +239,7 @@
     <ClInclude Include="Types\Vector2i.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\config.json" />
     <None Include="Assets\Grids\big_grid" />
     <None Include="Assets\Grids\circle_grid" />
     <None Include="Assets\Grids\small_grid" />
@@ -242,4 +255,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties Assets_4config_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
