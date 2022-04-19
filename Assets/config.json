@@ -24,7 +24,7 @@
       "RefillTime": -0.25,
       "RefillDelayTime": 0.1,
       "SwapBackTime": -0.33,
-      "ProcessMatchTime": -0.1,
+      "ProcessMatchTime": -0.33,
       "ShowHintTime": 8,
       "SetupMinFallTime": 0,
       "SetupMaxFallTime": 1.75,
@@ -33,14 +33,23 @@
       "ShakeTime": 0.05,
       "ShakeMaxRadius": 1,
       "ShakeMagnitude": 75,
-      "ShakeDecreaseFactor": 300,
-      "ResetShakeMinTime": 0.8,
-      "ResetShakeMaxTime": 1,
-      "ResetShakeMaxRadius": 8,
-      "ResetShakeMagnitude": 400,
-      "ResetShakeDecreaseFactor": 500
+      "ShakeDecreaseFactor": 300
     },
     "Hint": {
       "AnimationTime": 0.1
+    },
+    "HealthBar": {
+      "PartSize": 38,
+      "SkullSize": 24,
+      "SkullScale": 1.3, 
+      "SkullOriginY": 6,
+      "EyeSize": 8,
+      "EyeOffsetX": 1,
+      "EyeOffsetY": 1.5, 
+      "LeftEyePosX": 8,
+      "LeftEyePosY": 12,
+      "RightEyePosX": 16,
+      "RightEyePosY": 12,
+      "AnimationTime": 0.2
     }
   }
