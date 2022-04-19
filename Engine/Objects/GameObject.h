@@ -33,6 +33,7 @@ namespace maoutch
 		// Function called at the end of a frame after draw calls
 		virtual void LateUpdate(float dt) {}
 
+		void TransformUpdate();
 		void DrawCall(sf::RenderWindow& window);
 
 		GameObject* GetChildren(const int& index);

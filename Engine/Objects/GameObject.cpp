@@ -19,21 +19,25 @@ namespace maoutch
 	}
 	GameObject::~GameObject() = default;
 
-	void GameObject::DrawCall(sf::RenderWindow& window)
+	void GameObject::TransformUpdate()
 	{
-		if (!IsVisible()) return;
-
 		if (_needUpdate)
 		{
 			if (!parent) _transform = _localTransform;
 			else _transform = transform::Compose(_localTransform, parent->_transform);
 
 			for (GameObject* child : childrens)
+			{
 				child->NeedUpdate();
+				child->TransformUpdate();
+			}
 
 			_needUpdate = false;
 		}
-
+	}
+	void GameObject::DrawCall(sf::RenderWindow& window)
+	{
+		if (!IsVisible()) return;
 		_OnDraw(window, _transform.getTransform());
 	}
 

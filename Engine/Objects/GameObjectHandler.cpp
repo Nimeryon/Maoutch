@@ -58,8 +58,11 @@ namespace maoutch
 	void GameObjectHandler::EarlyUpdate(float dt)
 	{
 		for (GameObject* object : _objects)
+		{
+			object->TransformUpdate();
 			if (object->IsActive())
 				object->EarlyUpdate(dt);
+		}
 	}
 	void GameObjectHandler::Update(float dt)
 	{
