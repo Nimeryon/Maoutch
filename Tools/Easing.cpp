@@ -42,6 +42,7 @@ namespace maoutch
                 case EaseType::EaseInBounce: return EaseInBounce(t);
                 case EaseType::EaseOutBounce: return EaseOutBounce(t);
                 case EaseType::EaseInOutBounce: return EaseInOutBounce(t);
+                default: return t;
 	        }   
         }
 
