@@ -1,3 +1,4 @@
+#pragma warning( disable : 4267 )
 #pragma once
 #include "MatchElement.h"
 #include "../../Types/Grid.h"
@@ -22,7 +23,7 @@ namespace maoutch
 	class MatchGrid : public GameObject
 	{
 	public:
-		MatchGrid(const std::string& fileName, const Vector2& position);
+		MatchGrid(const std::string& fileName, const Vector2& position, const Element& element = Element::ElementValue::None);
 		
 		void Setup(const std::string& fileName);
 		void SetupGrid(const Vector2i& gridSize);
@@ -57,6 +58,12 @@ namespace maoutch
 		bool _moveChecked;
 		Vector2i _lastSwapGoalPos;
 		Direction _lastSwapDir;
+
+		float _shakeMinTime;
+		float _shakeMaxTime;
+		float _shakeMaxRadius;
+		float _shakeMagnitude;
+		float _shakeDecreaseFactor;
 
 		Timer<MatchGrid> _startTimer;
 		Timer<MatchGrid> _destroyTimer;

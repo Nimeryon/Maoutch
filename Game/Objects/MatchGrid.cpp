@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <SFML/Graphics.hpp>
 
 #include "MatchGrid.h"
 #include "MatchGridBackGround.h"
@@ -13,9 +12,9 @@
 
 namespace maoutch
 {
-	MatchGrid::MatchGrid(const std::string& fileName, const Vector2& position) :
+	MatchGrid::MatchGrid(const std::string& fileName, const Vector2& position, const Element& element) :
 		GameObject("Match Grid", 0),
-		_matchGridBackGround(new MatchGridBackGround()),
+		_matchGridBackGround(new MatchGridBackGround(element)),
 		_emptyPositions({}),
 		_state(GridState::Starting),
 		_matchFinder(&_grid),
@@ -28,8 +27,8 @@ namespace maoutch
 		_afterRefillTimer(0, &MatchGrid::_AfterRefill, this),
 		_startResetTimer(Assets::Config<float>("Element", "MoveTime"), &MatchGrid::StartReset, this),
 		_endResetTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ResetMaxMoveTime"), &MatchGrid::_Reset, this),
-		_swapBackTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ProcessMatchTime"), &MatchGrid::_SwapBack, this),
-		_processMatchTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "SwapBackTime"), &MatchGrid::_ProcessMatches, this),
+		_swapBackTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "SwapBackTime"), &MatchGrid::_SwapBack, this),
+		_processMatchTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ProcessMatchTime"), &MatchGrid::_ProcessMatches, this),
 		_showHintTimer(Assets::Config<float>("Grid", "ShowHintTime"), &MatchGrid::_SetPossibleMatch, this)
 	{
 		SetScale(Assets::Config<float>("Grid", "Scale"));
@@ -67,6 +66,15 @@ namespace maoutch
 			getline(file, line);
 			_respawnPoints.emplace_back(Vector2::FromString(line));
 		}
+
+		// Shake Parameters
+		getline(file, line);
+		std::vector<std::string> values = string::Split(line, ',');
+		_shakeMinTime = std::atoi(&values[0][0]);
+		_shakeMaxTime = std::atoi(&values[1][0]);
+		_shakeMaxRadius = std::atoi(&values[2][0]);
+		_shakeMagnitude = std::atoi(&values[3][0]);
+		_shakeDecreaseFactor = std::atoi(&values[4][0]);
 
 		SetupGrid(gridSize);
 	}
@@ -140,14 +148,15 @@ namespace maoutch
 					);
 			}
 
-		ObjectShaker::Shake(this,
+		ObjectShaker::Shake(
+			this,
 			random::Float(
-				Assets::Config<float>("Grid", "ResetShakeMinTime"),
-				Assets::Config<float>("Grid", "ResetShakeMaxTime")
+				_shakeMinTime,
+				_shakeMaxTime
 			),
-			Assets::Config<float>("Grid", "ResetShakeMaxRadius"),
-			Assets::Config<float>("Grid", "ResetShakeMagnitude"),
-			Assets::Config<float>("Grid", "ResetShakeDecreaseFactor")
+			_shakeMaxRadius,
+			_shakeMagnitude,
+			_shakeDecreaseFactor
 		);
 
 		_endResetTimer.Start();
