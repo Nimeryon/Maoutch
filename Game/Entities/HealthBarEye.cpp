@@ -22,8 +22,9 @@ namespace maoutch
 		if (_originalPosition == Vector2::Zero())
 			_originalPosition = GetPosition();
 		SetPosition(_originalPosition);
-		
-		Vector2 mouseDirection = InputHandler::GetInstance()->GetMousePosition() - GetGlobalPosition();
+
+		const Vector2 mousePos = InputHandler::GetInstance()->GetMousePosition();
+		Vector2 mouseDirection = mousePos - GetGlobalPosition();
 		mouseDirection = mouseDirection.Normalized();
 
 		Move(Vector2(
