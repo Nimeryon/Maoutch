@@ -15,6 +15,7 @@ namespace maoutch
 	private:
 		Sprite* _sprite;
 		Vector2 _originalPosition;
+		Vector2 _originalGlobalPosition;
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 	};
