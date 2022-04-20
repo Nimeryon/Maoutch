@@ -2,13 +2,9 @@
 #include "../Objects/MatchGrid.h"
 #include "../Objects/MatchElement.h"
 #include "Data/Element.h"
-#include "Data/Match.h"
-#include "Data/PossibleMatch.h"
 
 namespace maoutch
 {
-
-
 	MatchFinder::MatchFinder(Grid<MatchElement*>* grid) : _grid(grid) {}
 
 	bool MatchFinder::MatchAt(const Vector2i& gridPos, const Element& element) const

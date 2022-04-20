@@ -3,12 +3,12 @@
 
 #include "../../Types/Grid.h"
 #include "../../Types/Vector2i.h"
+#include "Data/Match.h"
+#include "Data/PossibleMatch.h"
 
 namespace maoutch
 {
 	class MatchElement;
-	struct Match;
-	struct PossibleMatch;
 	class Element;
 
 	class MatchFinder
