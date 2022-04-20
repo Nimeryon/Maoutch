@@ -1,17 +1,36 @@
 #include "HealthBarSkull.h"
-#include "../../Engine/Assets.h"
 #include "HealthBarEye.h"
+#include "../../Engine/Assets.h"
+#include "../../Tools/Random.h"
 
 namespace maoutch
 {
 	HealthBarSkull::HealthBarSkull() :
 		GameObject("HealthBar Skull", 102),
-		_sprite(new Sprite(
+		_animatedSprite(new AnimatedSprite(
+			Assets::Config<float>("HealthBar", "SkullAnimationTime"),
 			&Assets::GetInstance()->GetTexture("HealthBar Skull"),
 			Vector2i(Assets::Config<int>("HealthBar", "SkullSize")),
-			Vector2i::Zero()
-		))
+			Vector2i::Zero(),
+			false,
+			true
+		)),
+		_blinkTimer(
+			random::Float(
+				Assets::Config<float>("HealthBar", "SkullBlinkMinTime"),
+				Assets::Config<float>("HealthBar", "SkullBlinkMaxTime")
+			),
+			&HealthBarSkull::_OnBlink, 
+			this,
+			true
+		)
 	{
+		_animatedSprite->AddFrame(Vector2i(1, 0));
+		_animatedSprite->AddFrame(Vector2i(2, 0));
+		_animatedSprite->AddFrame(Vector2i(2, 0));
+		_animatedSprite->AddFrame(Vector2i(1, 0));
+		_animatedSprite->AddFrame(Vector2i(0, 0));
+
 		HealthBarEye* leftEye = new HealthBarEye();
 		leftEye->SetName("HealthBar Eye Left"); 
 		leftEye->SetOrigin(Vector2(Assets::Config<float>("HealthBar", "EyeSize") / 2.f));
@@ -31,10 +50,11 @@ namespace maoutch
 		AddChildren(rightEye);
 
 		SetScale(Vector2(Assets::Config<float>("HealthBar", "SkullScale")));
+		_blinkTimer.Start();
 	}
 	HealthBarSkull::~HealthBarSkull()
 	{
-		delete _sprite;
+		delete _animatedSprite;
 	}
 
 	void HealthBarSkull::SetActive(const bool& isActive)
@@ -47,6 +67,18 @@ namespace maoutch
 
 	void HealthBarSkull::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		_sprite->Draw(window, transform);
+		_animatedSprite->Draw(window, transform);
 	}
+
+	void HealthBarSkull::_OnBlink()
+	{
+		std::cout << "Blink\n";
+		_blinkTimer.SetTime(random::Float(
+			Assets::Config<float>("HealthBar", "SkullBlinkMinTime"),
+			Assets::Config<float>("HealthBar", "SkullBlinkMaxTime")
+		));
+
+		_animatedSprite->Play();
+	}
+
 }
