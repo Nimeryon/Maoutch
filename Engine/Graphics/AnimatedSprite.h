@@ -16,7 +16,7 @@ namespace maoutch
 	class AnimatedSprite
 	{
 	public:
-		AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake = true);
+		AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake = true, const bool& playOnce = false);
 		~AnimatedSprite();
 
 		float GetAnimationSpeed() const;
@@ -36,6 +36,7 @@ namespace maoutch
 		sf::VertexArray _vertexArray;
 
 		bool _playOnAwake;
+		bool _playOnce;
 		int _currentFrame;
 		std::vector<Vector2i> _framePositions;
 		Vector2i _frameSize;

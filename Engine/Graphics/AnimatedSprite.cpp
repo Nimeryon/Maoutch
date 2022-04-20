@@ -8,8 +8,9 @@
 
 namespace maoutch
 {
-	AnimatedSprite::AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake) :
+	AnimatedSprite::AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake, const bool& playOnce) :
 		_playOnAwake(playOnAwake),
+		_playOnce(playOnce),
 		_currentFrame(0),
 		_frameSize(frameSize),
 		_frameTimer(animationSpeed, &AnimatedSprite::_OnFrameTimer, this, true)
@@ -18,6 +19,7 @@ namespace maoutch
 		_vertexArray.setPrimitiveType(sf::Quads);
 
 		_framePositions.emplace_back(framePosition);
+		_SetFrame();
 
 		if (_playOnAwake) _frameTimer.Start();
 	}
@@ -62,5 +64,12 @@ namespace maoutch
 	{
 		_currentFrame = ++_currentFrame % GetFrameCount();
 		_SetFrame();
+
+		if (_playOnce && _currentFrame == _framePositions.size() - 1)
+		{
+			_currentFrame = 0;
+			_SetFrame();
+			Stop();
+		}
 	}
 }
