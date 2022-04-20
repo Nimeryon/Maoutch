@@ -24,6 +24,8 @@ namespace maoutch
 		HealthBar(const float& health, const bool& isBossBar = false, int width = 3);
 		~HealthBar() override;
 
+		void FixedUpdate(float dt) override;
+
 		void Damage(const float& damage);
 		void SetIsBossBar(const bool& isBossBar);
 
@@ -35,6 +37,12 @@ namespace maoutch
 		float _currentHealth;
 		float _health;
 		bool _isBossBar;
+		float _scale;
+
+		bool _breathIn;
+		float _breathScale;
+		float _currentBreathTime;
+		float _breathTime;
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 	};

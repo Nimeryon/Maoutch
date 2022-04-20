@@ -20,7 +20,11 @@ namespace maoutch
 		_healthRectangle(new sf::RectangleShape()),
 		_currentHealth(health),
 		_health(health),
-		_isBossBar(isBossBar)
+		_isBossBar(isBossBar),
+		_breathIn(false),
+		_breathScale(Assets::Config<float>("HealthBar", "BreathScale")),
+		_currentBreathTime(0),
+		_breathTime(Assets::Config<float>("HealthBar", "BreathTime"))
 	{
 		Vector2 partSize = Vector2(
 			Assets::Config<float>("HealthBar", "PartSize"),
@@ -55,7 +59,7 @@ namespace maoutch
 		skull->SetOrigin(Vector2(Assets::Config<float>("HealthBar", "SkullSize") / 2.f, Assets::Config<float>("HealthBar", "SkullOriginY")));
 		skull->SetPosition(Vector2(_size.x / 2.f, 0));
 		AddChildren(skull);
-
+		
 		SetIsBossBar(_isBossBar);
 	}
 	HealthBar::~HealthBar()
@@ -63,6 +67,21 @@ namespace maoutch
 		delete _healthRectangle;
 		for (auto& decorator : _decorators)
 			delete decorator.sprite;
+	}
+
+	void HealthBar::FixedUpdate(float dt)
+	{
+		_currentBreathTime += dt;
+
+		const float t = _currentBreathTime / _breathTime;
+		if (_breathIn) SetScale(_scale + _breathScale * Ease(easing::EaseType::EaseInSine, t));
+		else SetScale(_scale + _breathScale * Ease(easing::EaseType::EaseOutSine, 1 - t));
+			
+		if (_currentBreathTime >= _breathTime)
+		{
+			_currentBreathTime -= _breathTime;
+			_breathIn = !_breathIn;
+		}
 	}
 	
 	void HealthBar::Damage(const float& damage)
@@ -83,8 +102,10 @@ namespace maoutch
 		_isBossBar = isBossBar;
 		GetChildren("HealthBar Skull")->SetActive(_isBossBar);
 
-		if (_isBossBar) SetScale(Vector2(2.f));
-		else SetScale(1.5f);
+		_scale = _isBossBar
+			? Assets::Config<float>("HealthBar", "BossBarScale")
+			: Assets::Config<float>("HealthBar", "NormalBarScale");
+		SetScale(_scale);
 	}
 
 	void HealthBar::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
