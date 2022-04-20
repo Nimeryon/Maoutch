@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <json.hpp>
 
 #include "MatchGrid.h"
 #include "MatchGridBackGround.h"
@@ -31,7 +32,6 @@ namespace maoutch
 		_processMatchTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ProcessMatchTime"), &MatchGrid::_ProcessMatches, this),
 		_showHintTimer(Assets::Config<float>("Grid", "ShowHintTime"), &MatchGrid::_SetPossibleMatch, this)
 	{
-		SetScale(Assets::Config<float>("Grid", "Scale"));
 		SetPosition(position);
 		Setup(fileName);
 
@@ -43,38 +43,33 @@ namespace maoutch
 
 	void MatchGrid::Setup(const std::string& fileName)
 	{
-		std::ifstream file(Assets::Config<std::string>("Grid", "Path") + fileName);
-		std::string line;
-
-		getline(file, line);
-		const Vector2i gridSize = Vector2i::FromString(line);
+		std::ifstream file(Assets::Config<std::string>("Grid", "Path") + fileName + ".json");
+		nlohmann::json json = nlohmann::json::parse(file);
 
 		// Empty Pos
+		const Vector2i gridSize = Vector2i::FromString(json["GridSize"].get<std::string>());
+		std::vector<std::string> grid = json["Grid"];
 		for (int y = 0; y < gridSize.y; ++y)
 		{
-			getline(file, line);
-			std::vector<std::string> values = string::Split(line, ',');
+			std::vector<std::string> values = string::Split(grid[y], ',');
 			for (int x = 0; x < gridSize.x; ++x)
 				if (values[x] == "0") _emptyPositions.emplace_back(Vector2i(x, y));
 		}
 
 		// Respawn Points
-		getline(file, line);
-		const int respawnPoints = std::atoi(&line[0]);
-		for (int i = 0; i < respawnPoints; ++i)
-		{
-			getline(file, line);
-			_respawnPoints.emplace_back(Vector2::FromString(line));
-		}
+		std::vector<std::string> respawnPoints = json["RespawnPoints"];
+		for (auto& respawnPoint : respawnPoints)
+			_respawnPoints.emplace_back(Vector2::FromString(respawnPoint));
+
+		// Scale
+		SetScale(Vector2(json["Scale"].get<float>()));
 
 		// Shake Parameters
-		getline(file, line);
-		std::vector<std::string> values = string::Split(line, ',');
-		_shakeMinTime = std::atoi(&values[0][0]);
-		_shakeMaxTime = std::atoi(&values[1][0]);
-		_shakeMaxRadius = std::atoi(&values[2][0]);
-		_shakeMagnitude = std::atoi(&values[3][0]);
-		_shakeDecreaseFactor = std::atoi(&values[4][0]);
+		_shakeMinTime = json["ShakeMinTime"].get<float>();
+		_shakeMaxTime = json["ShakeMaxTime"].get<float>();
+		_shakeMaxRadius = json["ShakeMaxRadius"].get<float>();
+		_shakeMagnitude = json["ShakeMagnitude"].get<float>();
+		_shakeDecreaseFactor = json["ShakeDecreaseFactor"].get<float>();
 
 		SetupGrid(gridSize);
 	}

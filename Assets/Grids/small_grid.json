@@ -1,0 +1,18 @@
+{
+  "GridSize": "4|4", 
+  "Grid": [
+    "1,1,1,1",
+    "1,1,1,1",
+    "1,1,1,1",
+    "1,1,1,1"
+  ],
+  "RespawnPoints": [
+    "1.5|1.5"
+  ],
+  "Scale": 2,
+  "ShakeMinTime": 0.8,
+  "ShakeMaxTime": 1,
+  "ShakeMaxRadius": 4,
+  "ShakeMagnitude": 300,
+  "ShakeDecreaseFactor": 400
+}
