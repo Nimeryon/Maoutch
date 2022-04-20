@@ -1,57 +1,68 @@
 {
-    "Window": {
-      "Width": 1280,
-      "Height": 720
-    },
-    "Assets": {
-      "TexturePath": "Assets\\Textures\\",
-      "FontPath": "Assets\\Fonts\\"
-    },
-    "Particle": {
-      "Path": "Assets\\Particles\\"
-    },
-    "Element": {
-      "Size": 38,
-      "SwipeDistance": 30,
-      "SelectedAnimationTime": 0.1,
-      "MoveTime": 0.42
-    },
-    "Grid": {
-      "Path": "Assets\\Grids\\",
-      "DestroyTime": 0.25,
-      "CollapseTime": -0.25,
-      "RefillTime": -0.25,
-      "RefillDelayTime": 0.1,
-      "SwapBackTime": -0.33,
-      "ProcessMatchTime": -0.33,
-      "ShowHintTime": 8,
-      "SetupMinFallTime": 0,
-      "SetupMaxFallTime": 1.75,
-      "ResetMinMoveTime": 0,
-      "ResetMaxMoveTime": 0.5,
-      "ShakeTime": 0.05,
-      "ShakeMaxRadius": 1,
-      "ShakeMagnitude": 75,
-      "ShakeDecreaseFactor": 300
-    },
-    "Hint": {
-      "AnimationTime": 0.1
-    },
-    "HealthBar": {
-      "PartSize": 38,
-      "SkullAnimationTime": 0.1,
-      "SkullBlinkMinTime": 1,
-      "SkullBlinkMaxTime": 8,
-      "SkullSize": 24,
-      "SkullScale": 1.2,
-      "SkullOriginY": 5,
-      "EyeSize": 8,
-      "EyeOffsetX": 1,
-      "EyeOffsetY": 1.5,
-      "LeftEyePosX": 8,
-      "LeftEyePosY": 12,
-      "RightEyePosX": 16,
-      "RightEyePosY": 12,
-      "AnimationTime": 0.2
-    }
-  }
+  "Window": {
+    "Width": 1280,
+    "Height": 720
+  },
+  "Assets": {
+    "TexturePath": "Assets\\Textures\\",
+    "FontPath": "Assets\\Fonts\\"
+  },
+  "Particle": {
+    "Path": "Assets\\Particles\\"
+  },
+  "Element": {
+    "Size": 38,
+    "SwipeDistance": 30,
+    "SelectedAnimationTime": 0.1,
+    "MoveTime": 0.42
+  },
+  "Grid": {
+    "Path": "Assets\\Grids\\",
+    "DestroyTime": 0.25,
+    "CollapseTime": -0.25,
+    "RefillTime": -0.25,
+    "RefillDelayTime": 0.1,
+    "SwapBackTime": -0.33,
+    "ProcessMatchTime": -0.33,
+    "ShowHintTime": 8,
+    "SetupMinFallTime": 0,
+    "SetupMaxFallTime": 1.75,
+    "ResetMinMoveTime": 0,
+    "ResetMaxMoveTime": 0.5,
+    "ShakeTime": 0.05,
+    "ShakeMaxRadius": 1,
+    "ShakeMagnitude": 75,
+    "ShakeDecreaseFactor": 300
+  },
+  "Hint": {
+    "AnimationTime": 0.1
+  },
+  "HealthBar": {
+    "PartSize": 38,
+    "NormalBarScale": 1.5,
+    "BossBarScale": 2,
+    "BreathTime": 2,
+    "BreathScale": 0.05,
+    "SkullAnimationTime": 0.1,
+    "SkullBlinkMinTime": 1,
+    "SkullBlinkMaxTime": 8,
+    "SkullSize": 24,
+    "SkullScale": 1.5,
+    "SkullOriginY": 8,
+    "EyeSize": 8,
+    "EyeOffsetX": 1.5,
+    "EyeOffsetY": 2,
+    "LeftEyePosX": 8,
+    "LeftEyePosY": 12,
+    "RightEyePosX": 16,
+    "RightEyePosY": 12,
+    "AnimationTime": 0.2
+  },
+  "SkullProbabilities": [
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    1
+  ]
+}
