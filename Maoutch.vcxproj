@@ -117,7 +117,7 @@
       <PreprocessorDefinitions>SFML_STATIC ;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Includes\sfml\include;$(SolutionDir)\Includes\imgui;$(SolutionDir)\Includes\json;$(SolutionDir)\Includes\sfml\bin</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,7 +135,7 @@
       <PreprocessorDefinitions>SFML_STATIC ;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Includes\sfml\include;$(SolutionDir)\Includes\imgui;$(SolutionDir)\Includes\json;$(SolutionDir)\Includes\sfml\bin</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -240,9 +240,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\config.json" />
-    <None Include="Assets\Grids\big_grid" />
-    <None Include="Assets\Grids\circle_grid" />
-    <None Include="Assets\Grids\small_grid" />
+    <None Include="Assets\Grids\big_grid.json" />
+    <None Include="Assets\Grids\circle_grid.json" />
+    <None Include="Assets\Grids\small_grid.json" />
     <None Include="Assets\Particles\Elements\Dark_particle" />
     <None Include="Assets\Particles\Elements\Earth_particle" />
     <None Include="Assets\Particles\Elements\Fire_particle" />
