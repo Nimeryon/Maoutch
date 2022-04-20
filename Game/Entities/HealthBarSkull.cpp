@@ -7,29 +7,34 @@ namespace maoutch
 {
 	HealthBarSkull::HealthBarSkull() :
 		GameObject("HealthBar Skull", 102),
-		_animatedSprite(new AnimatedSprite(
-			Assets::Config<float>("HealthBar", "SkullAnimationTime"),
-			&Assets::GetInstance()->GetTexture("HealthBar Skull"),
-			Vector2i(Assets::Config<int>("HealthBar", "SkullSize")),
-			Vector2i::Zero(),
-			false,
-			true
-		)),
 		_blinkTimer(
-			random::Float(
-				Assets::Config<float>("HealthBar", "SkullBlinkMinTime"),
-				Assets::Config<float>("HealthBar", "SkullBlinkMaxTime")
-			),
+			1,
 			&HealthBarSkull::_OnBlink, 
 			this,
 			true
 		)
 	{
-		_animatedSprite->AddFrame(Vector2i(1, 0));
-		_animatedSprite->AddFrame(Vector2i(2, 0));
-		_animatedSprite->AddFrame(Vector2i(2, 0));
-		_animatedSprite->AddFrame(Vector2i(1, 0));
-		_animatedSprite->AddFrame(Vector2i(0, 0));
+		const float objectProba = random::Float();
+		std::vector<float> probabilities = Assets::Config().at("SkullProbabilities").get<std::vector<float>>();
+		for (int i = 0; i < probabilities.size(); ++i)
+			if (objectProba <= probabilities[i])
+			{
+				_objectDecorator = i;
+				break;
+			}
+
+		_animatedSprite = new AnimatedSprite(
+			Assets::Config<float>("HealthBar", "SkullAnimationTime"),
+			&Assets::GetInstance()->GetTexture("HealthBar Skull"),
+			Vector2i(Assets::Config<int>("HealthBar", "SkullSize")),
+			Vector2i(0, _objectDecorator),
+			false,
+			true
+		);
+		_animatedSprite->AddFrame(Vector2i(1, _objectDecorator));
+		_animatedSprite->AddFrame(Vector2i(2, _objectDecorator));
+		_animatedSprite->AddFrame(Vector2i(2, _objectDecorator));
+		_animatedSprite->AddFrame(Vector2i(1, _objectDecorator));
 
 		HealthBarEye* leftEye = new HealthBarEye();
 		leftEye->SetName("HealthBar Eye Left"); 
@@ -72,7 +77,6 @@ namespace maoutch
 
 	void HealthBarSkull::_OnBlink()
 	{
-		std::cout << "Blink\n";
 		_blinkTimer.SetTime(random::Float(
 			Assets::Config<float>("HealthBar", "SkullBlinkMinTime"),
 			Assets::Config<float>("HealthBar", "SkullBlinkMaxTime")

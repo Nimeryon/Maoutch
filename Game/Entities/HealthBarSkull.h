@@ -15,8 +15,9 @@ namespace maoutch
 
 	private:
 		AnimatedSprite* _animatedSprite;
-
 		Timer<HealthBarSkull> _blinkTimer;
+
+		int _objectDecorator;
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 
