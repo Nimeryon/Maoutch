@@ -4,6 +4,7 @@
 #include "GameState.h"
 #include "../../Game/Objects/MatchGrid.h"
 #include "../../Game/Entities/HealthBar.h"
+#include "../../Game/Entities/HealthBarSkull.h"
 #include "../Assets.h"
 
 namespace maoutch
@@ -23,9 +24,10 @@ namespace maoutch
 	void GameState::Init()
 	{
 		_grid = new MatchGrid("circle_grid", Vector2(_gridPosition[0], _gridPosition[1]), Element::ElementValue::Fire);
-		
-		HealthBar* healthBarBoss = new HealthBar(100, true, 8);
-		healthBarBoss->SetPosition(Vector2(500, 75));
+
+		const float windowWidth = Assets::Config<float>("Window", "Width");
+		HealthBar* healthBarBoss = new HealthBar(100, true, 3);
+		healthBarBoss->SetPosition(Vector2(windowWidth / 2.f, 75));
 	}
 	void GameState::Draw(sf::RenderWindow& window)
 	{
