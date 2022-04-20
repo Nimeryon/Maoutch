@@ -5,6 +5,7 @@ namespace maoutch
 	{
 		#define PI 3.141592653589793238462643383279502884L /* pi */
 		#define RAD2DEG 180.L / PI
+		#define DEG2RAD PI / 180.L
 
 		float Clamp(const float& value, const float& min, const float& max);
 		int Clamp(const int& value, const int& min, const int& max);
