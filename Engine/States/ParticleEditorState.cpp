@@ -7,6 +7,8 @@
 #include "../Graphics/Particle.h"
 #include "../../Tools/Colors.h"
 #include "../../Tools/String.h"
+#include "../../Engine/StateMachine.h"
+#include "../../Engine/States/GameState.h"
 #include "../Assets.h"
 
 namespace maoutch
@@ -74,6 +76,9 @@ namespace maoutch
 	void ParticleEditorState::ProcessInputs()
 	{
 		if (InputHandler::GetInstance()->IsKeyDown(sf::Keyboard::Space)) _particle->Play();
+
+		if (InputHandler::GetInstance()->IsKeyUp(sf::Keyboard::F5))
+			StateMachine::GetInstance()->SetState(std::make_unique<GameState>());
 	}
 
 	void ParticleEditorState::Update(float dt)

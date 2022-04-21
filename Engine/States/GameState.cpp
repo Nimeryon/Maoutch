@@ -4,7 +4,9 @@
 #include "GameState.h"
 #include "../../Game/Objects/MatchGrid.h"
 #include "../../Game/Entities/HealthBar.h"
-#include "../../Game/Entities/HealthBarSkull.h"
+#include "../../Engine/StateMachine.h"
+#include "../../Engine/InputHandler.h"
+#include "../../Engine/States/ParticleEditorState.h"
 #include "../Assets.h"
 
 namespace maoutch
@@ -28,6 +30,14 @@ namespace maoutch
 		const float windowWidth = Assets::Config<float>("Window", "Width");
 		HealthBar* healthBarBoss = new HealthBar(100, true, 3);
 		healthBarBoss->SetPosition(Vector2(windowWidth / 2.f, 75));
+	}
+	void GameState::ProcessInputs()
+	{
+		if (InputHandler::GetInstance()->IsKeyUp(sf::Keyboard::F6))
+			StateMachine::GetInstance()->SetState(std::make_unique<ParticleEditorState>());
+
+		if (InputHandler::GetInstance()->IsKeyUp(sf::Keyboard::F5))
+			StateMachine::GetInstance()->SetState(std::make_unique<GameState>());
 	}
 	void GameState::Draw(sf::RenderWindow& window)
 	{

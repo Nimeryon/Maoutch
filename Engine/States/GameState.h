@@ -14,6 +14,7 @@ namespace maoutch
 		~GameState() override;
 
 		void Init() override;
+		void ProcessInputs() override;
 		void Draw(sf::RenderWindow& window) override;
 		void ImGui(float dt) override;
 
