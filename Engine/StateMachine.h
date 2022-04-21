@@ -5,6 +5,7 @@ namespace sf
 }
 #include <memory>
 #include <stack>
+#include <mutex>
 
 namespace maoutch
 {
@@ -14,11 +15,12 @@ namespace maoutch
 	class StateMachine
 	{
 	public:
-		StateMachine();
-		~StateMachine();
+		static StateMachine* GetInstance();
 
-		void AddState(StateRef state, bool isReplacing = true);
-		void RemoveState();
+		StateMachine(StateMachine const&) = delete;
+		void operator=(StateMachine const&) = delete;
+
+		void SetState(StateRef state);
 
 		void HandleStateUpdate();
 
@@ -31,15 +33,20 @@ namespace maoutch
 		void LateUpdate(float dt);
 
 		StateRef& GetState();
+
+	protected:
+		StateMachine();
+		~StateMachine();
+
 	private:
+		static StateMachine* _instance;
+		static std::mutex _mutex; // For allowing multithreaded use
+
 		std::stack<StateRef> _states;
 		StateRef _state;
-
-		bool _isRemoving;
-		bool _isAdding;
-		bool _isReplacing;
-
-		void _HandleRemoving();
-		void _HandleAdding();
+		
+		bool _isSetting;
+		
+		void _HandleStateChange();
 	};
 }

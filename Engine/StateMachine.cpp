@@ -3,93 +3,84 @@
 #include "StateMachine.h"
 #include "States/State.h"
 #include "Tools/Timer.h"
+#include "Objects/GameObjectHandler.h"
 
 namespace maoutch
 {
+	StateMachine* StateMachine::_instance = nullptr;
+	std::mutex StateMachine::_mutex;
+	
+	StateMachine* StateMachine::GetInstance()
+	{
+		std::lock_guard lock(_mutex);
+
+		if (!_instance) _instance = new StateMachine();
+		return _instance;
+	}
+
 	StateMachine::StateMachine() :
-		_isRemoving(false),
-		_isAdding(false),
-		_isReplacing(false)
+		_isSetting(false),
+		_state(nullptr)
 	{}
 	StateMachine::~StateMachine() = default;
 
-	void StateMachine::AddState(StateRef state, bool isReplacing)
+	void StateMachine::SetState(StateRef state)
 	{
-		_isAdding = true;
-		_isReplacing = isReplacing;
-
+		_isSetting = true;
 		_state = std::move(state);
-	}
-	void StateMachine::RemoveState()
-	{
-		_isRemoving = true;
 	}
 
 	void StateMachine::HandleStateUpdate()
 	{
-		_HandleRemoving();
-		_HandleAdding();
+		_HandleStateChange();
 	}
 
 	void StateMachine::ProcessObjectsAdding()
 	{
-		GetState()->objectHandler.ProcessObjectsAdding();
+		GameObjectHandler::GetInstance()->ProcessObjectsAdding();
 	}
 	void StateMachine::ProcessInputs()
 	{
 		GetState()->ProcessInputs();
-		GetState()->objectHandler.ProcessInputs();
+		GameObjectHandler::GetInstance()->ProcessInputs();
 	}
 	void StateMachine::EarlyUpdate(float dt)
 	{
 		TimerBase::timerEvent(dt);
 
 		GetState()->EarlyUpdate(dt);
-		GetState()->objectHandler.EarlyUpdate(dt);
+		GameObjectHandler::GetInstance()->EarlyUpdate(dt);
 	}
 	void StateMachine::Update(float dt)
 	{
 		GetState()->Update(dt);
-		GetState()->objectHandler.Update(dt);
+		GameObjectHandler::GetInstance()->Update(dt);
 	}
 	void StateMachine::FixedUpdate(float fixedDt)
 	{
 		GetState()->FixedUpdate(fixedDt);
-		GetState()->objectHandler.FixedUpdate(fixedDt);
+		GameObjectHandler::GetInstance()->FixedUpdate(fixedDt);
 	}
 	void StateMachine::Draw(sf::RenderWindow& window)
 	{
 		GetState()->Draw(window);
-		GetState()->objectHandler.Draw(window);
+		GameObjectHandler::GetInstance()->Draw(window);
 	}
 	void StateMachine::LateUpdate(float dt)
 	{
 		GetState()->LateUpdate(dt);
-		GetState()->objectHandler.LateUpdate(dt);
+		GameObjectHandler::GetInstance()->LateUpdate(dt);
 	}
 
 	StateRef& StateMachine::GetState() { return _states.top(); }
-
-	void StateMachine::_HandleRemoving()
+	
+	void StateMachine::_HandleStateChange()
 	{
-		if (!_isRemoving || _states.empty()) return;
+		if (!_isSetting) return;
 
-		_states.pop();
-		if (!_states.empty()) _states.top()->Resume();
-		_isRemoving = false;
-	}
-	void StateMachine::_HandleAdding()
-	{
-		if (!_isAdding) return;
-
-		if (!_states.empty())
-		{
-			if (_isReplacing) _states.pop();
-			else _states.top()->Pause();
-		}
-
+		GameObjectHandler::GetInstance()->Clear();
 		_states.push(std::move(_state));
 		_states.top()->Init();
-		_isAdding = false;
+		_isSetting = false;
 	}
 }
