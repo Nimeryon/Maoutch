@@ -3,7 +3,6 @@ namespace sf
 {
 	class RenderWindow;
 }
-#include "../Objects/GameObjectHandler.h"
 
 namespace maoutch
 {
@@ -25,10 +24,5 @@ namespace maoutch
 		virtual void ImGui(float dt) {}
 
 		virtual void Draw(sf::RenderWindow& window) {}
-
-		virtual void Pause() {}
-		virtual void Resume() {}
-
-		GameObjectHandler objectHandler;
 	};
 }
