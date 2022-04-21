@@ -32,6 +32,8 @@ namespace maoutch
 		void NeedUpdateSorting();
 		void Clear();
 
+		GameObject* GetObject(const std::string& name);
+
 	protected:
 		GameObjectHandler();
 		~GameObjectHandler();

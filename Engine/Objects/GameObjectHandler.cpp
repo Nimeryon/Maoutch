@@ -112,6 +112,14 @@ namespace maoutch
 		_objectsToDestroy.clear();
 	}
 
+	GameObject* GameObjectHandler::GetObject(const std::string& name)
+	{
+		for (auto& object : _objects)
+			if (object->GetName() == name) return object;
+
+		return nullptr;
+	}
+
 	void GameObjectHandler::_ClearObjectsToDestroy()
 	{
 		for (GameObject* object : _objectsToDestroy)
