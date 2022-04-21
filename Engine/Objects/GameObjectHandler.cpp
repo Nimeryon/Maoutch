@@ -5,20 +5,18 @@
 
 namespace maoutch
 {
-	GameObjectHandler* GameObjectHandler::instance = nullptr;
+	GameObjectHandler* GameObjectHandler::_instance = nullptr;
+	std::mutex GameObjectHandler::_mutex;
 
-	GameObjectHandler::GameObjectHandler() : _neeedObjectSorting(false), _needObjectDeleting(false), _needObjectAdding(false)
+	GameObjectHandler::GameObjectHandler() : _neeedObjectSorting(false), _needObjectDeleting(false), _needObjectAdding(false) {}
+	GameObjectHandler::~GameObjectHandler() { Clear(); }
+
+	GameObjectHandler* GameObjectHandler::GetInstance()
 	{
-		delete instance;
-		instance = this;
-	};
-	GameObjectHandler::~GameObjectHandler()
-	{
-		if (_needObjectDeleting)
-		{
-			_ClearObjectsToDestroy();
-			_needObjectDeleting = false;
-		}
+		std::lock_guard lock(_mutex);
+
+		if (!_instance) _instance = new GameObjectHandler();
+		return _instance;
 	}
 
 	void GameObjectHandler::AddObject(GameObject* object)
@@ -103,6 +101,16 @@ namespace maoutch
 	}
 
 	void GameObjectHandler::NeedUpdateSorting()	{ _neeedObjectSorting = true; }
+	void GameObjectHandler::Clear()
+	{
+		std::vector<GameObject*> objects = _objects;
+		for (GameObject* object : objects)
+			delete object;
+
+		_objects.clear();
+		_objectsToAdd.clear();
+		_objectsToDestroy.clear();
+	}
 
 	void GameObjectHandler::_ClearObjectsToDestroy()
 	{

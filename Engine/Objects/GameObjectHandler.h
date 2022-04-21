@@ -1,6 +1,7 @@
 #pragma once
 namespace sf { class RenderWindow; }
 #include "vector"
+#include <mutex>
 
 namespace maoutch
 {
@@ -9,8 +10,7 @@ namespace maoutch
 	class GameObjectHandler
 	{
 	public:
-		GameObjectHandler();
-		~GameObjectHandler();
+		static GameObjectHandler* GetInstance();
 
 		GameObjectHandler(GameObjectHandler const&) = delete;
 		void operator=(GameObjectHandler const&) = delete;
@@ -30,10 +30,16 @@ namespace maoutch
 		void Draw(sf::RenderWindow& window);
 
 		void NeedUpdateSorting();
+		void Clear();
 
-		static GameObjectHandler* instance;
+	protected:
+		GameObjectHandler();
+		~GameObjectHandler();
 
 	private:
+		static GameObjectHandler* _instance;
+		static std::mutex _mutex; // For allowing multithreaded use
+
 		bool _neeedObjectSorting;
 		bool _needObjectDeleting;
 		bool _needObjectAdding;
