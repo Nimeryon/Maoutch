@@ -186,7 +186,7 @@ namespace maoutch
 	{
 		if (!IsValidGridPosition(gridPos) || !_grid.GetGridElement(gridPos) ) return;
 
-		GameObjectHandler::instance->Destroy(_grid.GetGridElement(gridPos));
+		GameObjectHandler::GetInstance()->Destroy(_grid.GetGridElement(gridPos));
 		_grid.GetGridElement(gridPos) = nullptr;
 	}
 

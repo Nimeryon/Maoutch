@@ -15,7 +15,7 @@ namespace maoutch
 		_needUpdate(true),
 		_isActive(isActive)
 	{
-		GameObjectHandler::instance->AddObject(this);
+		GameObjectHandler::GetInstance()->AddObject(this);
 	}
 	GameObject::~GameObject() = default;
 
@@ -109,7 +109,7 @@ namespace maoutch
 	void GameObject::SetZIndex(const int& zIndex)
 	{
 		_zIndex = zIndex;
-		GameObjectHandler::instance->NeedUpdateSorting();
+		GameObjectHandler::GetInstance()->NeedUpdateSorting();
 	}
 	int GameObject::GetZIndex() const { return _zIndex; }
 

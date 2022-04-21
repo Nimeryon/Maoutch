@@ -71,7 +71,7 @@ namespace maoutch
 			if (_currentLifetime > _lifetime)
 			{
 				if (_destroyAfterPlaying)
-					GameObjectHandler::instance->Destroy(this);
+					GameObjectHandler::GetInstance()->Destroy(this);
 
 				if (_isLooping) _currentLifetime -= _lifetime;
 				else _isPlaying = false;

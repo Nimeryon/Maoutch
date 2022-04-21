@@ -8,7 +8,6 @@ namespace maoutch
 {
 	struct GameData
 	{
-		StateMachine stateMachine;
 		sf::RenderWindow window;
 		sf::View letterBoxView;
 		sf::Time logicDeltatime;
