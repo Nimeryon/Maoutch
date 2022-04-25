@@ -1,9 +1,9 @@
 {
   "Texture": "Demon",
-  "Element": "Fire",
+  "Element": "Light",
   "Size": 128,
   "Scale": 1.3,
-  "Boss": false,
+  "Boss": true,
   "Breathing": true,
   "BreathTime": 2,
   "BreathScale": "0.025|0.025",
