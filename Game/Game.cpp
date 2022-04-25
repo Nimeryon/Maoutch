@@ -14,7 +14,7 @@ namespace maoutch
 		_title(title)
 	{
 		// Try initing assets
-		if (!Assets::GetInstance()->Init())
+		if (!Assets::Instance()->Init())
 		{
 			std::cout << "Loading error!\n";
 			return;
@@ -31,7 +31,7 @@ namespace maoutch
 		_data->window.setView(_data->letterBoxView);
 
 		ImGui::SFML::Init(_data->window);
-		InputHandler::GetInstance()->SetWindow(&_data->window);
+		InputHandler::Instance()->SetWindow(&_data->window);
 
 		// Setup framerate
 		// _data->window.setFramerateLimit(240);
@@ -40,7 +40,7 @@ namespace maoutch
 		_data->logicDeltatime = sf::milliseconds(1000.f / 60.f);
 
 		// Add default state
-		StateMachine::GetInstance()->SetState(std::make_unique<GameState>());
+		StateMachine::Instance()->SetState(std::make_unique<GameState>());
 		_Run();
 	}
 
@@ -53,16 +53,16 @@ namespace maoutch
 			float renderDt = time.asSeconds();
 
 			// Handle state update
-			StateMachine::GetInstance()->HandleStateUpdate();
-			StateMachine::GetInstance()->ProcessObjectsAdding();
+			StateMachine::Instance()->HandleStateUpdate();
+			StateMachine::Instance()->ProcessObjectsAdding();
 
 			_ProcessInputs();
 
 			// Handle ImGui update
 			ImGui::SFML::Update(_data->window, time);
 			
-			StateMachine::GetInstance()->EarlyUpdate(renderDt);
-			StateMachine::GetInstance()->Update(renderDt);
+			StateMachine::Instance()->EarlyUpdate(renderDt);
+			StateMachine::Instance()->Update(renderDt);
 
 			// Handle fixed update
 			_logicUpdateTime += time;
@@ -70,27 +70,27 @@ namespace maoutch
 			while (_logicUpdateTime >= _data->logicDeltatime)
 			{
 				float logicDt = _logicUpdateTime.asSeconds();
-				StateMachine::GetInstance()->FixedUpdate(logicDt);
+				StateMachine::Instance()->FixedUpdate(logicDt);
 
 				_logicUpdateTime -= _data->logicDeltatime;
 			}
 
 			// Handle ImGui call
-			StateMachine::GetInstance()->GetState()->ImGui(renderDt);
+			StateMachine::Instance()->GetState()->ImGui(renderDt);
 
 			// Handle rendering
 			_data->window.clear();
-			StateMachine::GetInstance()->Draw(_data->window);
+			StateMachine::Instance()->Draw(_data->window);
 			ImGui::SFML::Render(_data->window);
 			_data->window.display();
 
 			// Handle late update
-			StateMachine::GetInstance()->LateUpdate(renderDt);
+			StateMachine::Instance()->LateUpdate(renderDt);
 		}
 	}
 	void Game::_ProcessInputs()
 	{
-		InputHandler::GetInstance()->ClearLastFrameEvents();
+		InputHandler::Instance()->ClearLastFrameEvents();
 
 		sf::Event event;
 		while (_data->window.pollEvent(event))
@@ -105,10 +105,10 @@ namespace maoutch
 			}
 
 			ImGui::SFML::ProcessEvent(_data->window, event);
-			InputHandler::GetInstance()->ProcessEvent(event);
+			InputHandler::Instance()->ProcessEvent(event);
 		}
 
-		StateMachine::GetInstance()->ProcessInputs();
+		StateMachine::Instance()->ProcessInputs();
 	}
 	void Game::_UpdateLetterBoxView(int width, int height)
 	{

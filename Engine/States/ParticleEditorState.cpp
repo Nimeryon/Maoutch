@@ -75,15 +75,15 @@ namespace maoutch
 	}
 	void ParticleEditorState::ProcessInputs()
 	{
-		if (InputHandler::GetInstance()->IsKeyDown(sf::Keyboard::Space)) _particle->Play();
+		if (InputHandler::Instance()->IsKeyDown(sf::Keyboard::Space)) _particle->Play();
 
-		if (InputHandler::GetInstance()->IsKeyUp(sf::Keyboard::F5))
-			StateMachine::GetInstance()->SetState(std::make_unique<GameState>());
+		if (InputHandler::Instance()->IsKeyUp(sf::Keyboard::F5))
+			StateMachine::Instance()->SetState(std::make_unique<GameState>());
 	}
 
 	void ParticleEditorState::Update(float dt)
 	{
-		_particle->SetPosition(InputHandler::GetInstance()->GetMousePosition());
+		_particle->SetPosition(InputHandler::Instance()->GetMousePosition());
 	}
 	
 	void ParticleEditorState::ImGui(float dt)
@@ -135,7 +135,7 @@ namespace maoutch
 			{
 				if (ImGui::BeginCombo("Textures", &_particle->GetTextureName()[0]))
 				{
-					for (const auto& textureValue : Assets::GetInstance()->GetTexturesMap())
+					for (const auto& textureValue : Assets::Instance()->GetTexturesMap())
 						if (ImGui::Selectable(&textureValue.first[0]))
 							_particle->SetTextureName(textureValue.first);
 					ImGui::EndCombo();

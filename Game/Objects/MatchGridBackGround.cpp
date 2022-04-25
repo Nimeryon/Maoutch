@@ -13,7 +13,7 @@ namespace maoutch
 		_vertexArray(new sf::VertexArray()),
 		_element(element)
 	{
-		_renderState.texture = &Assets::GetInstance()->GetTexture("Elements Background");
+		_renderState.texture = &Assets::Instance()->GetTexture("Elements Background");
 		_vertexArray->setPrimitiveType(sf::Quads);
 	}
 	MatchGridBackGround::~MatchGridBackGround()

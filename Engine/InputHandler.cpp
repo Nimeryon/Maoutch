@@ -10,7 +10,7 @@ namespace maoutch
 	InputHandler::InputHandler() : _windowHasFocus(true), _keyCtrl(false), _keyAlt(false), _keyShift(false) {}
 	InputHandler::~InputHandler() = default;
 
-	InputHandler* InputHandler::GetInstance()
+	InputHandler* InputHandler::Instance()
 	{
 		std::lock_guard lock(_mutex);
 

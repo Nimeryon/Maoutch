@@ -25,10 +25,10 @@ namespace maoutch
 		_moveTimer(random::Float(0, 2), &MatchElement::_OnMoveToPositionTimer, this),
 		_currentMoveTime(0),
 		_easeType(easing::EaseType::None),
-		_selectedAnimation(Assets::Config<float>("Element", "SelectedAnimationTime"), &Assets::GetInstance()->GetTexture("Selected Animation"), Vector2i::From({ Assets::Config<float>("Element", "Size") }), Vector2i::Zero(), true)
+		_selectedAnimation(Assets::Config<float>("Element", "SelectedAnimationTime"), &Assets::Instance()->GetTexture("Selected Animation"), Vector2i::From({ Assets::Config<float>("Element", "Size") }), Vector2i::Zero(), true)
 	{
 		const Vector2 elementSize = { Assets::Config<float>("Element", "Size") };
-		_sprite->setTexture(Assets::GetInstance()->GetTexture("Elements"));
+		_sprite->setTexture(Assets::Instance()->GetTexture("Elements"));
 		_sprite->setTextureRect(
 			sf::IntRect(Vector2i((int)_type.Value(), 0) * elementSize, elementSize)
 		);
@@ -48,14 +48,14 @@ namespace maoutch
 	{
 		if (_grid.GetState() != GridState::Inputs) return;
 
-		Vector2 mousePos = InputHandler::GetInstance()->GetMousePosition();
+		Vector2 mousePos = InputHandler::Instance()->GetMousePosition();
 		if (!_isSelectd && transform::Contains(*_sprite, _transform, mousePos))
-			if (InputHandler::GetInstance()->IsPointerDown(sf::Mouse::Left)) OnPointerDown();
+			if (InputHandler::Instance()->IsPointerDown(sf::Mouse::Left)) OnPointerDown();
 
 		if (_isSelectd)
 		{
-			if (InputHandler::GetInstance()->IsPointer(sf::Mouse::Left)) OnPointerUpdate();
-			if (InputHandler::GetInstance()->IsPointerUp(sf::Mouse::Left)) OnPointerUp();
+			if (InputHandler::Instance()->IsPointer(sf::Mouse::Left)) OnPointerUpdate();
+			if (InputHandler::Instance()->IsPointerUp(sf::Mouse::Left)) OnPointerUp();
 		}
 	}
 	void MatchElement::Update(float dt)
@@ -162,11 +162,11 @@ namespace maoutch
 	void MatchElement::OnPointerDown()
 	{
 		SetIsSelected(true);
-		_startClickPosition = InputHandler::GetInstance()->GetMousePosition();
+		_startClickPosition = InputHandler::Instance()->GetMousePosition();
 	}
 	void MatchElement::OnPointerUpdate()
 	{
-		_endClickPosition = InputHandler::GetInstance()->GetMousePosition();
+		_endClickPosition = InputHandler::Instance()->GetMousePosition();
 		if (_endClickPosition.Distance(_startClickPosition) > Assets::Config<float>("Element", "SwipeDistance"))
 		{
 			// Calculate swipe angle

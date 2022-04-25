@@ -9,28 +9,28 @@ namespace maoutch
 		GameObject("MatchHint", 2, true, false),
 		_hintAnimationNorth(
 			Assets::Config<float>("Hint", "AnimationTime"),
-			&Assets::GetInstance()->GetTexture("Hint Arrow Animation"),
+			&Assets::Instance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(Assets::Config<float>("Element", "Size"), Assets::Config<float>("Element", "Size") * 2),
 			Vector2i(3, 0),
 			false
 		),
 		_hintAnimationEast(
 			Assets::Config<float>("Hint", "AnimationTime"),
-			&Assets::GetInstance()->GetTexture("Hint Arrow Animation"),
+			&Assets::Instance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(Assets::Config<float>("Element", "Size") * 2, Assets::Config<float>("Element", "Size")),
 			Vector2i::Zero(),
 			false
 		),
 		_hintAnimationSouth(
 			Assets::Config<float>("Hint", "AnimationTime"),
-			&Assets::GetInstance()->GetTexture("Hint Arrow Animation"),
+			&Assets::Instance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(Assets::Config<float>("Element", "Size"), Assets::Config<float>("Element", "Size") * 2),
 			Vector2i(2, 0),
 			false
 		),
 		_hintAnimationWest(
 			Assets::Config<float>("Hint", "AnimationTime"),
-			&Assets::GetInstance()->GetTexture("Hint Arrow Animation"),
+			&Assets::Instance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(Assets::Config<float>("Element", "Size") * 2, Assets::Config<float>("Element", "Size")),
 			Vector2i(0, 1),
 			false

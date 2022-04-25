@@ -16,7 +16,7 @@ namespace maoutch
 	class InputHandler
 	{
 	public:
-		static InputHandler* GetInstance();
+		static InputHandler* Instance();
 
 		InputHandler(InputHandler const&) = delete;
 		void operator=(InputHandler const&) = delete;
