@@ -176,7 +176,7 @@ namespace maoutch
 				_endClickPosition.x - _startClickPosition.x
 			) * RAD2DEG + 180;
 
-			const Direction direction = Direction::GetDirection(angle, _transform.getRotation());
+			const Direction direction = Direction::GetDirection(angle, GetGlobalRotation());
 			_grid.Swap(_gridPos, direction);
 			OnPointerUp();
 		}
