@@ -7,6 +7,8 @@ namespace sf
 #include <stack>
 #include <mutex>
 
+#include "../../Tools/Event.h"
+
 namespace maoutch
 {
 	class State;
@@ -15,7 +17,7 @@ namespace maoutch
 	class StateMachine
 	{
 	public:
-		static StateMachine* GetInstance();
+		static StateMachine* Instance();
 
 		StateMachine(StateMachine const&) = delete;
 		void operator=(StateMachine const&) = delete;
@@ -33,6 +35,8 @@ namespace maoutch
 		void LateUpdate(float dt);
 
 		StateRef& GetState();
+
+		static Event<void> stateChange;
 
 	protected:
 		StateMachine();

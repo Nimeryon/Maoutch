@@ -9,8 +9,10 @@ namespace maoutch
 {
 	StateMachine* StateMachine::_instance = nullptr;
 	std::mutex StateMachine::_mutex;
+
+	Event<void> StateMachine::stateChange;
 	
-	StateMachine* StateMachine::GetInstance()
+	StateMachine* StateMachine::Instance()
 	{
 		std::lock_guard lock(_mutex);
 
@@ -37,39 +39,39 @@ namespace maoutch
 
 	void StateMachine::ProcessObjectsAdding()
 	{
-		GameObjectHandler::GetInstance()->ProcessObjectsAdding();
+		GameObjectHandler::Instance()->ProcessObjectsAdding();
 	}
 	void StateMachine::ProcessInputs()
 	{
 		GetState()->ProcessInputs();
-		GameObjectHandler::GetInstance()->ProcessInputs();
+		GameObjectHandler::Instance()->ProcessInputs();
 	}
 	void StateMachine::EarlyUpdate(float dt)
 	{
 		TimerBase::timerEvent(dt);
 
 		GetState()->EarlyUpdate(dt);
-		GameObjectHandler::GetInstance()->EarlyUpdate(dt);
+		GameObjectHandler::Instance()->EarlyUpdate(dt);
 	}
 	void StateMachine::Update(float dt)
 	{
 		GetState()->Update(dt);
-		GameObjectHandler::GetInstance()->Update(dt);
+		GameObjectHandler::Instance()->Update(dt);
 	}
 	void StateMachine::FixedUpdate(float fixedDt)
 	{
 		GetState()->FixedUpdate(fixedDt);
-		GameObjectHandler::GetInstance()->FixedUpdate(fixedDt);
+		GameObjectHandler::Instance()->FixedUpdate(fixedDt);
 	}
 	void StateMachine::Draw(sf::RenderWindow& window)
 	{
 		GetState()->Draw(window);
-		GameObjectHandler::GetInstance()->Draw(window);
+		GameObjectHandler::Instance()->Draw(window);
 	}
 	void StateMachine::LateUpdate(float dt)
 	{
 		GetState()->LateUpdate(dt);
-		GameObjectHandler::GetInstance()->LateUpdate(dt);
+		GameObjectHandler::Instance()->LateUpdate(dt);
 	}
 
 	StateRef& StateMachine::GetState() { return _states.top(); }
@@ -78,7 +80,8 @@ namespace maoutch
 	{
 		if (!_isSetting) return;
 
-		GameObjectHandler::GetInstance()->Clear();
+		stateChange();
+
 		_states.push(std::move(_state));
 		_states.top()->Init();
 		_isSetting = false;
