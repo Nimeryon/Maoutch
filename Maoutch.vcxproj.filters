@@ -34,9 +34,6 @@
     <Filter Include="Header Files\ImGui">
       <UniqueIdentifier>{ca21b02b-7e52-4152-845b-16c095975eee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ImGui">
-      <UniqueIdentifier>{1110a05a-a2b4-4c4a-872c-7ddd629efd11}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Engine\Graphics">
       <UniqueIdentifier>{d66c5e2b-25de-4fe9-a4f6-c9a21caec5aa}</UniqueIdentifier>
     </Filter>
@@ -106,6 +103,15 @@
     <Filter Include="Source Files\Game\Entities">
       <UniqueIdentifier>{ff49098e-9360-4f25-8b1a-e6e8e13f1674}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Monsters">
+      <UniqueIdentifier>{2aaca805-bbae-4487-88f1-b3d56a018fff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interfaces">
+      <UniqueIdentifier>{0eb826da-4da7-4491-bd94-6fa127a017af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interfaces">
+      <UniqueIdentifier>{155c7d53-d317-4f2b-a294-ac9dc6a5bb9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -125,21 +131,6 @@
     </ClCompile>
     <ClCompile Include="Tools\Math.cpp">
       <Filter>Source Files\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Includes\imgui\imgui.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Includes\imgui\imgui_draw.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Includes\imgui\imgui_tables.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Includes\imgui\imgui_widgets.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Includes\imgui\imgui-SFML.cpp">
-      <Filter>Source Files\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Graphics\Particle.cpp">
       <Filter>Source Files\Engine\Graphics</Filter>
@@ -198,7 +189,7 @@
     <ClCompile Include="Game\Objects\MatchHint.cpp">
       <Filter>Source Files\Game\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Effects\ObjectShaker.cpp">
+    <ClCompile Include="Game\Effects\Shaker.cpp">
       <Filter>Source Files\Game\Effects</Filter>
     </ClCompile>
     <ClCompile Include="Tools\Easing.cpp">
@@ -222,8 +213,26 @@
     <ClCompile Include="Game\Entities\HealthBarSkull.cpp">
       <Filter>Source Files\Game\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Entities\HealthBarEye.cpp">
+    <ClCompile Include="Game\Entities\Monster.cpp">
       <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Effects\Effect.cpp">
+      <Filter>Source Files\Game\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Effects\Breather.cpp">
+      <Filter>Source Files\Game\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Effects\Floater.cpp">
+      <Filter>Source Files\Game\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Interfaces\IStateDependant.cpp">
+      <Filter>Source Files\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Text.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Interfaces\ITransformable.cpp">
+      <Filter>Source Files\Interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -347,7 +356,7 @@
     <ClInclude Include="Game\Objects\MatchHint.h">
       <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Effects\ObjectShaker.h">
+    <ClInclude Include="Game\Effects\Shaker.h">
       <Filter>Header Files\Game\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Tools\Easing.h">
@@ -371,8 +380,29 @@
     <ClInclude Include="Game\Entities\HealthBarSkull.h">
       <Filter>Header Files\Game\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Entities\HealthBarEye.h">
+    <ClInclude Include="Game\Entities\Monster.h">
       <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effects\Breather.h">
+      <Filter>Header Files\Game\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effects\Floater.h">
+      <Filter>Header Files\Game\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effects\Effect.h">
+      <Filter>Header Files\Game\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Interfaces\IStateDependant.h">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Interfaces\ITransformable.h">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Interfaces\IDamageable.h">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Text.h">
+      <Filter>Header Files\Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -411,6 +441,9 @@
     </None>
     <None Include="Assets\config.json">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Monsters\demon_fire.json">
+      <Filter>Resource Files\Monsters</Filter>
     </None>
   </ItemGroup>
 </Project>
