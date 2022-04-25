@@ -9,7 +9,7 @@ namespace maoutch
 	Assets* Assets::_instance = nullptr;
 	std::mutex Assets::_mutex;
 
-	Assets::Assets() = default;
+	Assets::Assets() : _isSmoothFont(false) {}
 	Assets::~Assets() = default;
 
 	Assets* Assets::Instance()
