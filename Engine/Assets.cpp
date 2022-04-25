@@ -1,9 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <iostream>
 
 #include "Assets.h"
-
-#include <iostream>
 
 namespace maoutch
 {
@@ -13,7 +12,7 @@ namespace maoutch
 	Assets::Assets() = default;
 	Assets::~Assets() = default;
 
-	Assets* Assets::GetInstance()
+	Assets* Assets::Instance()
 	{
 		std::lock_guard lock(_mutex);
 
@@ -24,36 +23,61 @@ namespace maoutch
 	bool Assets::Init()
 	{
 		std::ifstream file("Assets\\config.json");
-		file >> GetInstance()->_jsonData;
+		file >> Instance()->_jsonData;
 
-		if (!GetInstance()->LoadTexture("Elements", "elements.png")) return false;
-		if (!GetInstance()->LoadTexture("Elements Background", "elements_background.png")) return false;
-		if (!GetInstance()->LoadTexture("Selected Animation", "selected_animation.png")) return false;
-		if (!GetInstance()->LoadTexture("Hint Arrow Animation", "hint_arrow_animation.png")) return false;
-		if (!GetInstance()->LoadTexture("HealthBar", "healthBar.png")) return false;
-		if (!GetInstance()->LoadTexture("HealthBar Eye", "healthBarEye.png")) return false;
-		if (!GetInstance()->LoadTexture("HealthBar Skull", "healthBarSkull.png")) return false;
-		if (!GetInstance()->LoadTexture("BackGround", "background_test.jpg")) return false;
-
+		if (!Instance()->_LoadTextures()) return false;
+		if (!Instance()->_LoadFonts()) return false;
+		
 		return true;
 	}
 
-	nlohmann::json& Assets::Config() { return GetInstance()->_jsonData; }
+	nlohmann::json& Assets::Config() { return Instance()->_jsonData; }
 
-	bool Assets::LoadTexture(const std::string& name, const std::string& fileName)
-	{
-		if (_textures[name].loadFromFile(Config<std::string>("Assets", "TexturePath") + fileName)) return true;
-		return false;
-	}
-	bool Assets::LoadFont(const std::string& name, const std::string& fileName)
-	{
-		if (_fonts[name].loadFromFile(Config<std::string>("Assets", "FontPath") + fileName)) return true;
-		return false;
-	}
-	
 	std::map<std::string, sf::Texture>& Assets::GetTexturesMap() { return _textures; }
 	sf::Texture& Assets::GetTexture(const std::string& name) { return _textures.at(name); }
-	
-	std::map<std::string, sf::Font>& Assets::GetFontsMap() { return _fonts; }
-	sf::Font& Assets::GetFont(const std::string& name) { return _fonts.at(name); }
+
+	void Assets::SetSmoothFont(const bool& isSmooth)
+	{
+		_isSmoothFont = isSmooth;
+		onFontChange(GetFont());
+	}
+
+	sf::Font& Assets::GetFont() { return _isSmoothFont ? _robotoFont : _minecraftiaFont; }
+
+	bool Assets::_LoadTexture(const std::string& name, const std::string& fileName)
+	{
+		const bool loaded = _textures[name].loadFromFile(Config<std::string>("Assets", "TexturePath") + fileName);
+		if (loaded) _textures[name].setSmooth(false);
+
+		return loaded;
+	}
+
+	bool Assets::_LoadTextures()
+	{
+		if (!_LoadTexture("Elements", "elements.png")) return false;
+		if (!_LoadTexture("Elements Background", "elements_background.png")) return false;
+		if (!_LoadTexture("Selected Animation", "selected_animation.png")) return false;
+		if (!_LoadTexture("Hint Arrow Animation", "hint_arrow_animation.png")) return false;
+		if (!_LoadTexture("HealthBar", "healthBar.png")) return false;
+		if (!_LoadTexture("HealthBar Eye", "healthBarEye.png")) return false;
+		if (!_LoadTexture("HealthBar Skull", "healthBarSkull.png")) return false;
+		if (!_LoadTexture("Skull Decorators", "skull_decorators.png")) return false;
+
+		if (!_LoadTexture("Shadow", "shadow.png")) return false;
+		if (!_LoadTexture("Demon", "demon.png")) return false;
+		if (!_LoadTexture("Cerbere", "cerbere.png")) return false;
+
+		if (!_LoadTexture("BackGround", "background_test.jpg")) return false;
+
+		return true;
+	}
+	bool Assets::_LoadFonts()
+	{
+		const auto fontPath = Config<std::string>("Assets", "FontPath");
+
+		if (!_minecraftiaFont.loadFromFile(fontPath + "minecraftia.ttf")) return false;
+		if (!_robotoFont.loadFromFile(fontPath + "roboto.ttf")) return false;
+
+		return true;
+	}
 }

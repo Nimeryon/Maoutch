@@ -3,19 +3,17 @@
 #include <mutex>
 #include <string>
 #include <json.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Font.hpp>
 
-namespace sf
-{
-	class Texture;
-	class Font;
-}
+#include "../Tools/Event.h"
 
 namespace maoutch
 {
 	class Assets
 	{
 	public:
-		static Assets* GetInstance();
+		static Assets* Instance();
 
 		Assets(Assets const&) = delete;
 		void operator=(Assets const&) = delete;
@@ -29,16 +27,13 @@ namespace maoutch
 			return Config()[category][value].get<T>();
 		}
 
-		// Only texture file name needed not the full path
-		bool LoadTexture(const std::string& name, const std::string& fileName);
-		// Only font file name needed not the full path
-		bool LoadFont(const std::string& name, const std::string& fileName);
-
 		std::map<std::string, sf::Texture>& GetTexturesMap();
 		sf::Texture& GetTexture(const std::string& name);
 
-		std::map<std::string, sf::Font>& GetFontsMap();
-		sf::Font& GetFont(const std::string& name);
+		void SetSmoothFont(const bool& isSmooth);
+
+		sf::Font& GetFont();
+		Event<sf::Font&> onFontChange;
 		
 	protected:
 		Assets();
@@ -49,8 +44,16 @@ namespace maoutch
 		static std::mutex _mutex; // For allowing multithreaded use
 
 		std::map<std::string, sf::Texture> _textures;
-		std::map<std::string, sf::Font> _fonts;
+
+		bool _isSmoothFont;
+		sf::Font _minecraftiaFont;
+		sf::Font _robotoFont;
 
 		nlohmann::json _jsonData;
+		
+		bool _LoadTexture(const std::string& name, const std::string& fileName);
+
+		bool _LoadTextures();
+		bool _LoadFonts();
 	};
 }
