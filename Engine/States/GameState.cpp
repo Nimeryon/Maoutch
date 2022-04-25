@@ -3,7 +3,7 @@
 #include "imgui.h"
 #include "GameState.h"
 #include "../../Game/Objects/MatchGrid.h"
-#include "../../Game/Entities/HealthBar.h"
+#include "../../Game/Entities/Monster.h"
 #include "../../Engine/StateMachine.h"
 #include "../../Engine/InputHandler.h"
 #include "../../Engine/States/ParticleEditorState.h"
@@ -11,11 +11,9 @@
 
 namespace maoutch
 {
-	GameState::GameState() :
-		_gridPosition{ Assets::Config<float>("Window", "Width") / 2.f, Assets::Config<float>("Window", "Height") / 2.f },
-		_rotation(0)
+	GameState::GameState()
 	{
-		_background.setTexture(Assets::GetInstance()->GetTexture("BackGround"));
+		_background.setTexture(Assets::Instance()->GetTexture("BackGround"));
 		_background.setTextureRect({ 0, 0, 1280, 720 });
 	}
 	GameState::~GameState()
@@ -25,19 +23,21 @@ namespace maoutch
 
 	void GameState::Init()
 	{
-		_grid = new MatchGrid("circle_grid", Vector2(_gridPosition[0], _gridPosition[1]), Element::ElementValue::Fire);
+		_grid = new MatchGrid("circle_grid", Element::ElementValue::Fire);
 
 		const float windowWidth = Assets::Config<float>("Window", "Width");
-		HealthBar* healthBarBoss = new HealthBar(100, true, 3);
-		healthBarBoss->SetPosition(Vector2(windowWidth / 2.f, 75));
+		const float windowHeight = Assets::Config<float>("Window", "Height");
+
+		Monster* monster = new Monster("demon_fire");
+		monster->SetPosition(Vector2(windowWidth / 2.f, 150));
 	}
 	void GameState::ProcessInputs()
 	{
-		if (InputHandler::GetInstance()->IsKeyUp(sf::Keyboard::F6))
-			StateMachine::GetInstance()->SetState(std::make_unique<ParticleEditorState>());
+		if (InputHandler::Instance()->IsKeyUp(sf::Keyboard::F6))
+			StateMachine::Instance()->SetState(std::make_unique<ParticleEditorState>());
 
-		if (InputHandler::GetInstance()->IsKeyUp(sf::Keyboard::F5))
-			StateMachine::GetInstance()->SetState(std::make_unique<GameState>());
+		if (InputHandler::Instance()->IsKeyUp(sf::Keyboard::F5))
+			StateMachine::Instance()->SetState(std::make_unique<GameState>());
 	}
 	void GameState::Draw(sf::RenderWindow& window)
 	{
@@ -57,15 +57,7 @@ namespace maoutch
 		ImGui::Text("FPS:");
 		ImGui::SameLine();
 		ImGui::Text(&std::to_string(1.f / dt)[0]);
-
-		if (ImGui::SliderFloat("Grid Position X", &_gridPosition[0], 0, windowWidth))
-			_grid->SetPosition(Vector2(_gridPosition[0], _gridPosition[1]));
-		if (ImGui::SliderFloat("Grid Position Y", &_gridPosition[1], 0, windowHeight))
-			_grid->SetPosition(Vector2(_gridPosition[0], _gridPosition[1]));
 		
-		if (ImGui::SliderFloat("Grids Rotation", &_rotation, -360, 360))
-			_grid->SetRotation(_rotation);
-
 		if (ImGui::Button("Reset Grid"))
 			_grid->StartReset();
 

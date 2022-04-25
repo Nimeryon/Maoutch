@@ -20,8 +20,6 @@ namespace maoutch
 
 	private:
 		MatchGrid* _grid = nullptr;
-		float _gridPosition[2];
-		float _rotation;
 		sf::Sprite _background;
 	};
 }
