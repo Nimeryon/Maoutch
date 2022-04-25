@@ -112,6 +112,12 @@
     <Filter Include="Source Files\Interfaces">
       <UniqueIdentifier>{155c7d53-d317-4f2b-a294-ac9dc6a5bb9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Includes">
+      <UniqueIdentifier>{53b03efd-591e-4d16-9046-07100d176e3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Includes\ImGui">
+      <UniqueIdentifier>{79b32c57-02d1-4b27-aafb-358bf93ba4d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -233,6 +239,21 @@
     </ClCompile>
     <ClCompile Include="Interfaces\ITransformable.cpp">
       <Filter>Source Files\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Includes\imgui\imgui.cpp">
+      <Filter>Source Files\Includes\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Includes\imgui\imgui_draw.cpp">
+      <Filter>Source Files\Includes\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Includes\imgui\imgui_tables.cpp">
+      <Filter>Source Files\Includes\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Includes\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\Includes\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Includes\imgui\imgui-SFML.cpp">
+      <Filter>Source Files\Includes\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
