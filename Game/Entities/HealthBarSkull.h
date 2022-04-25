@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Engine/Objects/GameObject.h"
 #include "../../Engine/Graphics/AnimatedSprite.h"
+#include "../../Engine/Graphics/Sprite.h"
 #include "../../Engine/Tools/Timer.h"
 
 namespace maoutch
@@ -11,13 +12,15 @@ namespace maoutch
 		HealthBarSkull();
 		~HealthBarSkull() override;
 
-		void SetActive(const bool& isActive) override;
+		void FixedUpdate(float dt) override;
 
 	private:
 		AnimatedSprite* _animatedSprite;
-		Timer<HealthBarSkull> _blinkTimer;
+		Sprite* _decorator;
+		Sprite* _leftEyeSprite;
+		Sprite* _rightEyeSprite;
 
-		int _objectDecorator;
+		Timer<HealthBarSkull> _blinkTimer;
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 
