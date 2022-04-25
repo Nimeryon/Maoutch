@@ -57,7 +57,7 @@ namespace maoutch
 		_particleRotationSpeed(particleRotationSpeed)
 	{
 		ReserveParticlesSpace();
-		_textureName = Assets::GetInstance()->GetTexturesMap().begin()->first;
+		_textureName = Assets::Instance()->GetTexturesMap().begin()->first;
 		_particleVertex.setPrimitiveType(sf::Quads);
 	}
 	ParticleEmitter::~ParticleEmitter() = default;
@@ -71,7 +71,7 @@ namespace maoutch
 			if (_currentLifetime > _lifetime)
 			{
 				if (_destroyAfterPlaying)
-					GameObjectHandler::GetInstance()->Destroy(this);
+					GameObjectHandler::Instance()->Destroy(this);
 
 				if (_isLooping) _currentLifetime -= _lifetime;
 				else _isPlaying = false;
@@ -126,7 +126,7 @@ namespace maoutch
 	void ParticleEmitter::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
 		_renderState.transform = transform;
-		_renderState.texture = _isTextured ? &Assets::GetInstance()->GetTexture(_textureName) : nullptr;
+		_renderState.texture = _isTextured ? &Assets::Instance()->GetTexture(_textureName) : nullptr;
 		
 		window.draw(_particleVertex, _renderState);
 	}
