@@ -9,15 +9,12 @@
 namespace maoutch
 {
 	AnimatedSprite::AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake, const bool& playOnce) :
+		Sprite(texture, frameSize, framePosition),
 		_playOnAwake(playOnAwake),
 		_playOnce(playOnce),
 		_currentFrame(0),
-		_frameSize(frameSize),
 		_frameTimer(animationSpeed, &AnimatedSprite::_OnFrameTimer, this, true)
 	{
-		_renderState.texture = texture;
-		_vertexArray.setPrimitiveType(sf::Quads);
-
 		_framePositions.emplace_back(framePosition);
 		_SetFrame();
 
@@ -38,12 +35,6 @@ namespace maoutch
 		_frameTimer.Start();
 	}
 	void AnimatedSprite::Stop() { _frameTimer.Stop(); }
-
-	void AnimatedSprite::Draw(sf::RenderWindow& window, const sf::Transform& transform)
-	{
-		_renderState.transform = transform;
-		window.draw(_vertexArray, _renderState);
-	}
 
 	void AnimatedSprite::_SetFrame()
 	{

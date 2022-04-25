@@ -30,7 +30,7 @@ namespace maoutch
 
 	void Sprite::Draw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		_renderState.transform = transform;
+		_renderState.transform = transform * _localTransform.getTransform();
 		window.draw(_vertexArray, _renderState);
 	}
 
