@@ -23,7 +23,7 @@ namespace maoutch
 	class MatchGrid : public GameObject
 	{
 	public:
-		MatchGrid(const std::string& fileName, const Vector2& position, const Element& element = Element::ElementValue::None);
+		MatchGrid(const std::string& fileName, const Element& element = Element::ElementValue::None);
 		
 		void Setup(const std::string& fileName);
 		void SetupGrid(const Vector2i& gridSize);

@@ -4,7 +4,8 @@
 
 #include "MatchGrid.h"
 #include "MatchGridBackGround.h"
-#include "../Effects/ObjectShaker.h"
+#include "../Entities/Monster.h"
+#include "../Effects/Shaker.h"
 #include "../../Engine/Objects/GameObjectHandler.h"
 #include "../../Engine/Assets.h"
 #include "../../Engine/Graphics/ParticleEmitter.h"
@@ -13,7 +14,7 @@
 
 namespace maoutch
 {
-	MatchGrid::MatchGrid(const std::string& fileName, const Vector2& position, const Element& element) :
+	MatchGrid::MatchGrid(const std::string& fileName, const Element& element) :
 		GameObject("Match Grid", 0),
 		_matchGridBackGround(new MatchGridBackGround(element)),
 		_emptyPositions({}),
@@ -32,7 +33,6 @@ namespace maoutch
 		_processMatchTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ProcessMatchTime"), &MatchGrid::_ProcessMatches, this),
 		_showHintTimer(Assets::Config<float>("Grid", "ShowHintTime"), &MatchGrid::_SetPossibleMatch, this)
 	{
-		SetPosition(position);
 		Setup(fileName);
 
 		_matchGridBackGround->Setup(_grid);
@@ -60,6 +60,9 @@ namespace maoutch
 		std::vector<std::string> respawnPoints = json["RespawnPoints"];
 		for (auto& respawnPoint : respawnPoints)
 			_respawnPoints.emplace_back(Vector2::FromString(respawnPoint));
+
+		// Position
+		SetPosition(Vector2::FromString(json["Position"].get<std::string>()));
 
 		// Scale
 		SetScale(Vector2(json["Scale"].get<float>()));
@@ -143,7 +146,7 @@ namespace maoutch
 					);
 			}
 
-		ObjectShaker::Shake(
+		Shaker::Instance()->Apply({
 			this,
 			random::Float(
 				_shakeMinTime,
@@ -152,7 +155,7 @@ namespace maoutch
 			_shakeMaxRadius,
 			_shakeMagnitude,
 			_shakeDecreaseFactor
-		);
+		});
 
 		_endResetTimer.Start();
 	}
@@ -186,7 +189,7 @@ namespace maoutch
 	{
 		if (!IsValidGridPosition(gridPos) || !_grid.GetGridElement(gridPos) ) return;
 
-		GameObjectHandler::GetInstance()->Destroy(_grid.GetGridElement(gridPos));
+		GameObjectHandler::Instance()->Destroy(_grid.GetGridElement(gridPos));
 		_grid.GetGridElement(gridPos) = nullptr;
 	}
 
@@ -260,12 +263,16 @@ namespace maoutch
 
 		if (matched)
 		{
-			ObjectShaker::Shake(this,
+			for (Match& match : _matchFinder.matches)
+				GameObjectHandler::Instance()->GetObject<Monster>("Monster")->Damage(-(int)match.positions.size());
+
+			Shaker::Instance()->Apply({
+				this,
 				Assets::Config<float>("Grid", "ShakeTime") * matchedCount,
 				Assets::Config<float>("Grid", "ShakeMaxRadius") * matchedCount,
 				Assets::Config<float>("Grid", "ShakeMagnitude") * matchedCount,
 				Assets::Config<float>("Grid", "ShakeDecreaseFactor")
-			);
+			});
 			_collapseTimer.Start();
 		}
 		else _swapBackTimer.Start();
@@ -322,7 +329,7 @@ namespace maoutch
 			if (lineRefilled) moveTimeDelay += Assets::Config<float>("Grid", "RefillDelayTime");
 		}
 
-		_afterRefillTimer.SetTime(moveTimeDelay);
+		_afterRefillTimer.SetTime(moveTimeDelay / 2.f);
 		_afterRefillTimer.Start();
 	}
 	void MatchGrid::_AfterRefill()
@@ -396,12 +403,12 @@ namespace maoutch
 	void MatchGrid::_DisableMatchHint()
 	{
 		_showHintTimer.Reset();
-		GetChildren("MatchHint")->SetActive(false);
+		GetChildren<MatchHint>("MatchHint")->SetActive(false);
 	}
 	void MatchGrid::_SetPossibleMatch()
 	{
 		// Set Possible Match Hint
-		auto matchHint = (MatchHint*)GetChildren("MatchHint");
+		MatchHint* matchHint = GetChildren<MatchHint>("MatchHint");
 		matchHint->SetActive(true);
 		matchHint->SetPossibleMatch(_matchFinder.possibleMatches[random::Int(0, _matchFinder.possibleMatches.size())]);
 
