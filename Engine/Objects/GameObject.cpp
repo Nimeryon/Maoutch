@@ -1,8 +1,4 @@
 #include "GameObject.h"
-
-#include <cassert>
-#include <iostream>
-
 #include "../../Tools/Transform.h"
 #include "GameObjectHandler.h"
 
@@ -15,7 +11,7 @@ namespace maoutch
 		_needUpdate(true),
 		_isActive(isActive)
 	{
-		GameObjectHandler::GetInstance()->AddObject(this);
+		GameObjectHandler::Instance()->AddObject(this);
 	}
 	GameObject::~GameObject() = default;
 
@@ -40,19 +36,7 @@ namespace maoutch
 		if (!IsVisible()) return;
 		_OnDraw(window, _transform.getTransform());
 	}
-
-	GameObject* GameObject::GetChildren(const int& index)
-	{
-		assert(index >= 0 && index < childrens.size());
-		return childrens[index];
-	}
-	GameObject* GameObject::GetChildren(const std::string& name)
-	{
-		for (GameObject* object : childrens)
-			if (object->GetName() == name) return object;
-
-		return nullptr;
-	}
+	
 	void GameObject::SetParent(GameObject* object)
 	{
 		if (parent == object) return;
@@ -109,7 +93,7 @@ namespace maoutch
 	void GameObject::SetZIndex(const int& zIndex)
 	{
 		_zIndex = zIndex;
-		GameObjectHandler::GetInstance()->NeedUpdateSorting();
+		GameObjectHandler::Instance()->NeedUpdateSorting();
 	}
 	int GameObject::GetZIndex() const { return _zIndex; }
 

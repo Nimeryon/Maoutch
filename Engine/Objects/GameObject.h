@@ -7,12 +7,14 @@ namespace sf
 #include <SFML/Graphics/Transformable.hpp>
 #include <vector>
 #include <string>
+#include <cassert>
 
 #include "../../Types/Vector2.h"
+#include "../../Interfaces/ITransformable.h"
 
 namespace maoutch
 {
-	class GameObject
+	class GameObject : public ITransformable
 	{
 	public:
 		explicit GameObject(const std::string& name, const int& zIndex = 0, const bool& isVisible = true, const bool& isActive = true);
@@ -36,8 +38,21 @@ namespace maoutch
 		void TransformUpdate();
 		void DrawCall(sf::RenderWindow& window);
 
-		GameObject* GetChildren(const int& index);
-		GameObject* GetChildren(const std::string& name);
+		template <typename T>
+		T* GetChildren(const int& index)
+		{
+			assert(index >= 0 && index < childrens.size());
+			return (T*)childrens[index];
+		}
+		template <typename T>
+		T* GetChildren(const std::string& name)
+		{
+			for (GameObject* object : childrens)
+				if (object->GetName() == name) return (T*)object;
+
+			return nullptr;
+		}
+
 		void SetParent(GameObject* object);
 		void AddChildren(GameObject* object);
 		void RemoveChildren(GameObject* object);
@@ -57,10 +72,10 @@ namespace maoutch
 
 		// LocalTransform
 
-		Vector2 GetPosition() const;
-		Vector2 GetScale() const;
-		Vector2 GetOrigin() const;
-		float GetRotation() const;
+		Vector2 GetPosition() const override;
+		Vector2 GetScale() const override;
+		Vector2 GetOrigin() const override;
+		float GetRotation() const override;
 
 		// Transform
 
@@ -68,19 +83,18 @@ namespace maoutch
 		Vector2 GetGlobalScale() const;
 		float GetGlobalRotation() const;
 
-		virtual void SetPosition(const Vector2& position);
-		virtual void SetRotation(float angle);
-		virtual void SetScale(const Vector2& factor);
-		virtual void SetOrigin(const Vector2& origin);
-		virtual void Move(const Vector2& offset);
-		virtual void Rotate(float angle);
-		virtual void Scale(const Vector2& factor);
+		void SetPosition(const Vector2& position) override;
+		void SetRotation(float angle) override;
+		void SetScale(const Vector2& factor) override;
+		void SetOrigin(const Vector2& origin) override;
+		void Move(const Vector2& offset) override;
+		void Rotate(float angle) override;
+		void Scale(const Vector2& factor) override;
 
 		GameObject* parent = nullptr;
 		std::vector<GameObject*> childrens = {};
 
 	protected:
-		sf::Transformable _localTransform;
 		sf::Transformable _transform;
 
 	private:
