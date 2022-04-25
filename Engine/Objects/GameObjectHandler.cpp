@@ -11,7 +11,7 @@ namespace maoutch
 	GameObjectHandler::GameObjectHandler() : _neeedObjectSorting(false), _needObjectDeleting(false), _needObjectAdding(false) {}
 	GameObjectHandler::~GameObjectHandler() { Clear(); }
 
-	GameObjectHandler* GameObjectHandler::GetInstance()
+	GameObjectHandler* GameObjectHandler::Instance()
 	{
 		std::lock_guard lock(_mutex);
 
@@ -112,12 +112,9 @@ namespace maoutch
 		_objectsToDestroy.clear();
 	}
 
-	GameObject* GameObjectHandler::GetObject(const std::string& name)
+	void GameObjectHandler::_OnStateChange()
 	{
-		for (auto& object : _objects)
-			if (object->GetName() == name) return object;
-
-		return nullptr;
+		Clear();
 	}
 
 	void GameObjectHandler::_ClearObjectsToDestroy()

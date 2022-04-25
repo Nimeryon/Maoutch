@@ -3,14 +3,16 @@ namespace sf { class RenderWindow; }
 #include "vector"
 #include <mutex>
 
+#include "../../Interfaces/IStateDependant.h"
+
 namespace maoutch
 {
 	class GameObject;
 
-	class GameObjectHandler
+	class GameObjectHandler : IStateDependant
 	{
 	public:
-		static GameObjectHandler* GetInstance();
+		static GameObjectHandler* Instance();
 
 		GameObjectHandler(GameObjectHandler const&) = delete;
 		void operator=(GameObjectHandler const&) = delete;
@@ -32,11 +34,20 @@ namespace maoutch
 		void NeedUpdateSorting();
 		void Clear();
 
-		GameObject* GetObject(const std::string& name);
+		template <typename T>
+		T* GetObject(const std::string& name)
+		{
+			for (auto& object : _objects)
+				if (object->GetName() == name) return (T*)object;
+
+			return nullptr;
+		}
 
 	protected:
 		GameObjectHandler();
-		~GameObjectHandler();
+		~GameObjectHandler() override;
+
+		void _OnStateChange() override;
 
 	private:
 		static GameObjectHandler* _instance;
