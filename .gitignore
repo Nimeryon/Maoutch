@@ -354,3 +354,6 @@ MigrationBackup/
 Includes/sfml/*.md
 Includes/sfml/doc/
 Includes/sfml/examples/
+
+# Unwanted folder
+Assets/Textures/Pipoya RPG Monster Pack/*
