@@ -1,6 +1,6 @@
 {
   "Texture": "Demon",
-  "Element": "Light",
+  "Element": "Fire",
   "Size": 128,
   "Scale": 1.3,
   "Boss": true,
@@ -12,7 +12,7 @@
   "FloatingHeight": 12,
   "HealthWidth": 5,
   "HealthHeight": -100,
-  "BaseHealth": 50,
+  "BaseHealth": 1000,
   "ShadowScale": "1.2|0.4",
   "ShadowHeight": 80
 }

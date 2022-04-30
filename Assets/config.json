@@ -24,9 +24,8 @@
     "RefillDelayTime": 0.2,
     "SwapBackTime": -0.33,
     "ProcessMatchTime": -0.33,
-    "ShowHintTime": 8,
     "SetupMinFallTime": 0,
-    "SetupMaxFallTime": 1.75,
+    "SetupMaxFallTime": 2,
     "ResetMinMoveTime": 0,
     "ResetMaxMoveTime": 0.5,
     "ShakeTime": 0.05,
@@ -35,42 +34,59 @@
     "ShakeDecreaseFactor": 300
   },
   "Hint": {
-    "AnimationTime": 0.1
+    "AnimationTime": 0.1,
+    "HintTimeDelay": 5
   },
   "HealthBar": {
-    "PartSize": 32,
+    "PartWidth": 32,
+    "PartHeight": 32,
     "DecoratorSize": 32,
-    "NormalBarScale": 1.4,
-    "BossBarScale": 1.6,
-    "BreathTime": 1.5,
-    "BreathScale": "0.05|0.05",
+    "Scale": 2,
     "SkullAnimationTime": 0.1,
     "SkullBlinkMinTime": 1,
     "SkullBlinkMaxTime": 8,
     "SkullSize": 24,
-    "SkullScale": 1.5,
-    "SkullOriginY": 8,
+    "SkullScale": 1.1,
+    "SkullPosition": "16|15",
     "EyeSize": 8,
-    "EyeOffsetX": 1.33,
-    "EyeOffsetY": 1.85,
+    "EyeOffsetX": 1.2,
+    "EyeOffsetY": 1.6,
     "LeftEyePosX": 8,
     "LeftEyePosY": 12,
     "RightEyePosX": 16,
     "RightEyePosY": 12,
     "AnimationTime": 0.2,
-    "IndicatorDelay": 0.25, 
-    "IndicatorTime": 0.33 
+    "IndicatorDelay": 0.25,
+    "IndicatorTime": 0.33
   },
   "Monster": {
     "Path": "Assets\\Monsters\\",
     "ShadowSize": 64
   },
+  "Bullet": {
+    "TravelTime": 1.5,
+    "GoalOffsetRange": 20,
+    "RandomTravelOffset": 0.75,
+    "MaxRotationSpeed": 600,
+    "CurvePointOffset": 128,
+    "CurvePointRectangle": "240|500"
+  },
   "SkullProbabilities": [
-    0.75,
     0.8,
     0.85,
     0.9,
     0.95,
     1
+  ],
+  "ComboColors": [
+    "63|191|63|255",
+    "0|255|0|255",
+    "125|255|115|255",
+    "255|255|0|255",
+    "255|165|60|255",
+    "255|127|0|255",
+    "255|0|0|255",
+    "165|20|10|255",
+    "98|24|0|255"
   ]
 }

@@ -14,8 +14,9 @@
     "4|3"
   ],
   "Scale": 1.5,
-  "ShakeMinTime": 0.8,
-  "ShakeMaxTime": 1,
+  "ParticleScale": 1,
+  "ShakeMinTime": 0.6,
+  "ShakeMaxTime": 0.8,
   "ShakeMaxRadius": 8,
   "ShakeMagnitude": 400,
   "ShakeDecreaseFactor": 500

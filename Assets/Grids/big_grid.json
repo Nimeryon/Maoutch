@@ -11,15 +11,16 @@
     "0,1,1,1,1,1,1,1,1,1,1,1,1,1,0",
     "0,0,1,1,1,1,1,1,1,1,1,1,1,0,0"
   ],
-  "Position": "640|420",
+  "Position": "640|460",
   "RespawnPoints": [
     "2|4",
     "7|4",
     "12|4"
   ],
-  "Scale": 1.4,
-  "ShakeMinTime": 0.8,
-  "ShakeMaxTime": 1,
+  "Scale": 1.2,
+  "ParticleScale": 0.7,
+  "ShakeMinTime": 0.6,
+  "ShakeMaxTime": 0.8,
   "ShakeMaxRadius": 8,
   "ShakeMagnitude": 400,
   "ShakeDecreaseFactor": 500
