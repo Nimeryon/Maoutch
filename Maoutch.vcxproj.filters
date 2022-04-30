@@ -55,12 +55,6 @@
     <Filter Include="Source Files\Engine\Objects">
       <UniqueIdentifier>{8efa3c2c-7d35-499a-8b2b-d0557f39b94c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Game\Objects">
-      <UniqueIdentifier>{ad61371e-685e-4d9d-a835-da3e3261567f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Game\Objects">
-      <UniqueIdentifier>{d91a726a-8a06-4b7a-bdb4-142ee815fe56}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Types">
       <UniqueIdentifier>{69773b09-5d65-4640-9316-1b7487989c5d}</UniqueIdentifier>
     </Filter>
@@ -118,6 +112,18 @@
     <Filter Include="Source Files\Includes\ImGui">
       <UniqueIdentifier>{79b32c57-02d1-4b27-aafb-358bf93ba4d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Particles\Trails">
+      <UniqueIdentifier>{bd9419ff-8d36-42a0-99b6-a565eaed12cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Particles\Explosions">
+      <UniqueIdentifier>{b4e1311c-cbc1-42bf-bbc9-f575935322df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Match\Objects">
+      <UniqueIdentifier>{d91a726a-8a06-4b7a-bdb4-142ee815fe56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game\Match\Objects">
+      <UniqueIdentifier>{ad61371e-685e-4d9d-a835-da3e3261567f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -171,14 +177,8 @@
     <ClCompile Include="Tools\Texture.cpp">
       <Filter>Source Files\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\MatchGrid.cpp">
-      <Filter>Source Files\Game\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Types\Direction.cpp">
       <Filter>Source Files\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\MatchElement.cpp">
-      <Filter>Source Files\Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Game\Match\MatchFinder.cpp">
       <Filter>Source Files\Game\Match</Filter>
@@ -186,14 +186,8 @@
     <ClCompile Include="Engine\Tools\Timer.cpp">
       <Filter>Source Files\Engine\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\MatchGridBackGround.cpp">
-      <Filter>Source Files\Game\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Graphics\AnimatedSprite.cpp">
       <Filter>Source Files\Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\MatchHint.cpp">
-      <Filter>Source Files\Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Game\Effects\Shaker.cpp">
       <Filter>Source Files\Game\Effects</Filter>
@@ -254,6 +248,24 @@
     </ClCompile>
     <ClCompile Include="Includes\imgui\imgui-SFML.cpp">
       <Filter>Source Files\Includes\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Entities\Bullet.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Match\Objects\MatchElement.cpp">
+      <Filter>Source Files\Game\Match\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Match\Objects\MatchGrid.cpp">
+      <Filter>Source Files\Game\Match\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Match\Objects\MatchGridBackGround.cpp">
+      <Filter>Source Files\Game\Match\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Match\Objects\MatchHint.cpp">
+      <Filter>Source Files\Game\Match\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\TextPopUp.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -344,14 +356,8 @@
     <ClInclude Include="Engine\States\GameState.h">
       <Filter>Header Files\Engine\States</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\MatchElement.h">
-      <Filter>Header Files\Game\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Tools\Texture.h">
       <Filter>Header Files\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\MatchGrid.h">
-      <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Types\Grid.h">
       <Filter>Header Files\Types</Filter>
@@ -368,14 +374,8 @@
     <ClInclude Include="Engine\Tools\Timer.h">
       <Filter>Header Files\Engine\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\MatchGridBackGround.h">
-      <Filter>Header Files\Game\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Graphics\AnimatedSprite.h">
       <Filter>Header Files\Engine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\MatchHint.h">
-      <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Game\Effects\Shaker.h">
       <Filter>Header Files\Game\Effects</Filter>
@@ -404,9 +404,6 @@
     <ClInclude Include="Game\Entities\Monster.h">
       <Filter>Header Files\Game\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Effects\Breather.h">
-      <Filter>Header Files\Game\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Effects\Floater.h">
       <Filter>Header Files\Game\Effects</Filter>
     </ClInclude>
@@ -425,6 +422,27 @@
     <ClInclude Include="Engine\Graphics\Text.h">
       <Filter>Header Files\Engine\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Entities\Bullet.h">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effects\Breather.h">
+      <Filter>Header Files\Game\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Match\Objects\MatchElement.h">
+      <Filter>Header Files\Game\Match\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Match\Objects\MatchGrid.h">
+      <Filter>Header Files\Game\Match\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Match\Objects\MatchGridBackGround.h">
+      <Filter>Header Files\Game\Match\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Match\Objects\MatchHint.h">
+      <Filter>Header Files\Game\Match\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\TextPopUp.h">
+      <Filter>Header Files\Engine\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Grids\circle_grid.json">
@@ -433,28 +451,28 @@
     <None Include="Assets\Grids\small_grid.json">
       <Filter>Resource Files\Grids</Filter>
     </None>
-    <None Include="Assets\Particles\Elements\Dark_particle">
+    <None Include="Assets\Particles\Elements\Dark_particle.json">
       <Filter>Resource Files\Particles\Elements</Filter>
     </None>
-    <None Include="Assets\Particles\Elements\Earth_particle">
+    <None Include="Assets\Particles\Elements\Earth_particle.json">
       <Filter>Resource Files\Particles\Elements</Filter>
     </None>
-    <None Include="Assets\Particles\Elements\Fire_particle">
+    <None Include="Assets\Particles\Elements\Fire_particle.json">
       <Filter>Resource Files\Particles\Elements</Filter>
     </None>
-    <None Include="Assets\Particles\Elements\Light_particle">
+    <None Include="Assets\Particles\Elements\Light_particle.json">
       <Filter>Resource Files\Particles\Elements</Filter>
     </None>
-    <None Include="Assets\Particles\Elements\Metal_particle">
+    <None Include="Assets\Particles\Elements\Metal_particle.json">
       <Filter>Resource Files\Particles\Elements</Filter>
     </None>
-    <None Include="Assets\Particles\Elements\Nature_particle">
+    <None Include="Assets\Particles\Elements\Nature_particle.json">
       <Filter>Resource Files\Particles\Elements</Filter>
     </None>
-    <None Include="Assets\Particles\Elements\Water_particle">
+    <None Include="Assets\Particles\Elements\Water_particle.json">
       <Filter>Resource Files\Particles\Elements</Filter>
     </None>
-    <None Include="Assets\Particles\Elements_particle">
+    <None Include="Assets\Particles\Elements_particle.json">
       <Filter>Resource Files\Particles</Filter>
     </None>
     <None Include="Assets\Grids\big_grid.json">
@@ -465,6 +483,48 @@
     </None>
     <None Include="Assets\Monsters\demon_fire.json">
       <Filter>Resource Files\Monsters</Filter>
+    </None>
+    <None Include="Assets\Particles\Trails\Dark_trail_particle.json">
+      <Filter>Resource Files\Particles\Trails</Filter>
+    </None>
+    <None Include="Assets\Particles\Trails\Earth_trail_particle.json">
+      <Filter>Resource Files\Particles\Trails</Filter>
+    </None>
+    <None Include="Assets\Particles\Trails\Fire_trail_particle.json">
+      <Filter>Resource Files\Particles\Trails</Filter>
+    </None>
+    <None Include="Assets\Particles\Trails\Light_trail_particle.json">
+      <Filter>Resource Files\Particles\Trails</Filter>
+    </None>
+    <None Include="Assets\Particles\Trails\Metal_trail_particle.json">
+      <Filter>Resource Files\Particles\Trails</Filter>
+    </None>
+    <None Include="Assets\Particles\Trails\Nature_trail_particle.json">
+      <Filter>Resource Files\Particles\Trails</Filter>
+    </None>
+    <None Include="Assets\Particles\Trails\Water_trail_particle.json">
+      <Filter>Resource Files\Particles\Trails</Filter>
+    </None>
+    <None Include="Assets\Particles\Explosions\Dark_explosion_particle.json">
+      <Filter>Resource Files\Particles\Explosions</Filter>
+    </None>
+    <None Include="Assets\Particles\Explosions\Earth_explosion_particle.json">
+      <Filter>Resource Files\Particles\Explosions</Filter>
+    </None>
+    <None Include="Assets\Particles\Explosions\Fire_explosion_particle.json">
+      <Filter>Resource Files\Particles\Explosions</Filter>
+    </None>
+    <None Include="Assets\Particles\Explosions\Light_explosion_particle.json">
+      <Filter>Resource Files\Particles\Explosions</Filter>
+    </None>
+    <None Include="Assets\Particles\Explosions\Metal_explosion_particle.json">
+      <Filter>Resource Files\Particles\Explosions</Filter>
+    </None>
+    <None Include="Assets\Particles\Explosions\Nature_explosion_particle.json">
+      <Filter>Resource Files\Particles\Explosions</Filter>
+    </None>
+    <None Include="Assets\Particles\Explosions\Water_explosion_particle.json">
+      <Filter>Resource Files\Particles\Explosions</Filter>
     </None>
   </ItemGroup>
 </Project>
