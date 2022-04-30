@@ -57,12 +57,16 @@ namespace maoutch
 		int _width;
 		int _height;
 
-		void _ReserveSpace() { array.reserve(_width * _height); }
+		void _ReserveSpace()
+		{
+			const int size = _width * _height;
+			array.reserve(size);
+		}
 	};
 
 	// Operators
 	template <typename T>
-	inline bool operator==(const Grid<T>& g1, const Grid<T>& g2)
+	bool operator==(const Grid<T>& g1, const Grid<T>& g2)
 	{
 		if (g1.GetSize() != g2.GetSize()) return false;
 
@@ -74,7 +78,7 @@ namespace maoutch
 		return true;
 	}
 	template <typename T>
-	inline bool operator!=(const Grid<T>& g1, const Grid<T>& g2)
+	bool operator!=(const Grid<T>& g1, const Grid<T>& g2)
 	{
 		return !(g1 == g2);
 	}
