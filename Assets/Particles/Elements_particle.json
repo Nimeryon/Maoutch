@@ -1,0 +1,77 @@
+{
+    "Colors": {
+        "EaseType": 16,
+        "EndColor": "255|255|255|0",
+        "StartColor": "255|255|255|255",
+        "Type": 2
+    },
+    "DestroyAfterPlaying": true,
+    "Direction": {
+        "EaseType": 0,
+        "Type": 1,
+        "XVector": "-1.000000|1.000000",
+        "YVector": "-1.000000|1.000000"
+    },
+    "EmissionSpeed": 0.014999999664723873,
+    "Friction": {
+        "EaseType": 0,
+        "MaxXValue": 0.0,
+        "MaxYValue": 0.0,
+        "MinXValue": 0.0,
+        "MinYValue": 0.0,
+        "Type": 0
+    },
+    "Gravity": {
+        "EaseType": 0,
+        "MaxXValue": 0.0,
+        "MaxYValue": 0.0,
+        "MinXValue": 0.0,
+        "MinYValue": 42.0,
+        "Type": 0
+    },
+    "IsLooping": false,
+    "IsTextured": true,
+    "Lifetime": 1.25,
+    "MaxParticleCount": 64,
+    "MaxParticleLifetime": 0.5,
+    "MaxStartRotation": 360.0,
+    "MinParticleLifetime": 0.25,
+    "MinStartRotation": -360.0,
+    "PlayOnAwake": true,
+    "RespawnDeadParticle": false,
+    "RotationSpeed": {
+        "EaseType": 0,
+        "MaxXValue": 0.0,
+        "MaxYValue": 0.0,
+        "MinXValue": -110.0,
+        "MinYValue": 128.0,
+        "Type": 1
+    },
+    "Size": {
+        "EaseType": 0,
+        "MaxXValue": 50.0,
+        "MaxYValue": 60.0,
+        "MinXValue": 15.0,
+        "MinYValue": 20.0,
+        "Type": 3
+    },
+    "Speed": {
+        "EaseType": 0,
+        "MaxXValue": 50.0,
+        "MaxYValue": 50.0,
+        "MinXValue": 200.0,
+        "MinYValue": 300.0,
+        "Type": 1
+    },
+    "Texture": "Elements",
+    "TexturePositions": [
+        "0|0",
+        "1|0",
+        "2|0",
+        "3|0",
+        "4|0",
+        "5|0",
+        "6|0"
+    ],
+    "TextureRect": "38|38"
+}
