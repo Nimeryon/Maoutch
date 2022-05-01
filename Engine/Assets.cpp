@@ -47,7 +47,6 @@ namespace maoutch
 	bool Assets::_LoadTexture(const std::string& name, const std::string& fileName)
 	{
 		const bool loaded = _textures[name].loadFromFile(Config<std::string>("Assets", "TexturePath") + fileName);
-		if (loaded) _textures[name].setSmooth(false);
 
 		return loaded;
 	}
@@ -62,7 +61,7 @@ namespace maoutch
 		if (!_LoadTexture("HealthBar Eye", "healthBarEye.png")) return false;
 		if (!_LoadTexture("HealthBar Skull", "healthBarSkull.png")) return false;
 		if (!_LoadTexture("Skull Decorators", "skull_decorators.png")) return false;
-
+		
 		if (!_LoadTexture("Shadow", "shadow.png")) return false;
 		if (!_LoadTexture("Demon", "demon.png")) return false;
 		if (!_LoadTexture("Cerbere", "cerbere.png")) return false;
