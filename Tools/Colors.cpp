@@ -33,11 +33,11 @@ namespace maoutch
 
 		std::string ToString(sf::Color color)
 		{
-			std::string res = "\"";
+			std::string res;
 			res += std::to_string(color.r) + "|";
 			res += std::to_string(color.g) + "|";
 			res += std::to_string(color.b) + "|";
-			res += std::to_string(color.a) + "\"";
+			res += std::to_string(color.a);
 
 			return res;
 		}
