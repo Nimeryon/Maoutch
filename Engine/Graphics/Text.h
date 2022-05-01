@@ -13,7 +13,7 @@ namespace maoutch
 	class Text : public ITransformable
 	{
 	public:
-		explicit Text(const std::string& text = "");
+		explicit Text(const std::string& text = "", const float& outlineThickness = 1);
 		virtual ~Text();
 
 		// Setters
@@ -35,6 +35,7 @@ namespace maoutch
 		sf::Color GetColor() const;
 		float GetOutlineThickness() const;
 		sf::Color GetOutlineColor() const;
+		sf::FloatRect GetBounds() const;
 
 		void Draw(sf::RenderWindow& window, const sf::Transform& transform);
 

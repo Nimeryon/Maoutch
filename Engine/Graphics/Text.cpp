@@ -5,11 +5,14 @@
 
 namespace maoutch
 {
-	Text::Text(const std::string& text) :
+	Text::Text(const std::string& text, const float& outlineThickness) :
 		_text(new sf::Text())
 	{
 		_text->setFont(Assets::Instance()->GetFont());
+
 		SetText(text);
+		SetOutlineThickness(outlineThickness);
+		SetOutlineColor(sf::Color::Black);
 
 		Assets::Instance()->onFontChange += EventHandler::Bind<sf::Font&>(&Text::_SetFont, this);
 	}
@@ -33,11 +36,11 @@ namespace maoutch
 	sf::Color Text::GetColor() const { return _text->getFillColor(); }
 	float Text::GetOutlineThickness() const { return _text->getOutlineThickness(); }
 	sf::Color Text::GetOutlineColor() const { return _text->getOutlineColor(); }
+	sf::FloatRect Text::GetBounds() const { return _text->getGlobalBounds(); }
 
 	void Text::Draw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		sf::Transform t = transform * _localTransform.getTransform();
-		window.draw(*_text, t);
+		window.draw(*_text, _localTransform.getTransform());
 	}
 
 	void Text::_SetFont(sf::Font& font) { _text->setFont(font); }
