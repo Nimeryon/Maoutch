@@ -25,8 +25,9 @@ namespace maoutch
 		void SetState(StateRef state);
 
 		void HandleStateUpdate();
-
 		void ProcessObjectsAdding();
+		void ProcessObjectsDestroy();
+
 		void ProcessInputs();
 		void EarlyUpdate(float dt);
 		void Update(float dt);

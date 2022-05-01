@@ -36,11 +36,15 @@ namespace maoutch
 	{
 		_HandleStateChange();
 	}
-
 	void StateMachine::ProcessObjectsAdding()
 	{
 		GameObjectHandler::Instance()->ProcessObjectsAdding();
 	}
+	void StateMachine::ProcessObjectsDestroy()
+	{
+		GameObjectHandler::Instance()->ProcessObjectsDestroy();
+	}
+
 	void StateMachine::ProcessInputs()
 	{
 		GetState()->ProcessInputs();
