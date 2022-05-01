@@ -3,6 +3,7 @@
 
 #include "Game.h"
 
+#include "../Engine/StateMachine.h"
 #include "../Engine/States/State.h"
 #include "../Engine/States/ParticleEditorState.h"
 #include "../Engine/States/GameState.h"
@@ -26,6 +27,7 @@ namespace maoutch
 			sf::VideoMode(windowWidth, windowHeight, 1),
 			_title
 		);
+
 		_data->letterBoxView.setSize(windowWidth, windowHeight);
 		_data->letterBoxView.setCenter(windowWidth / 2, windowHeight / 2);
 		_data->window.setView(_data->letterBoxView);
@@ -41,6 +43,7 @@ namespace maoutch
 
 		// Add default state
 		StateMachine::Instance()->SetState(std::make_unique<GameState>());
+		
 		_Run();
 	}
 
@@ -60,7 +63,7 @@ namespace maoutch
 
 			// Handle ImGui update
 			ImGui::SFML::Update(_data->window, time);
-			
+
 			StateMachine::Instance()->EarlyUpdate(renderDt);
 			StateMachine::Instance()->Update(renderDt);
 
@@ -71,6 +74,9 @@ namespace maoutch
 			{
 				float logicDt = _logicUpdateTime.asSeconds();
 				StateMachine::Instance()->FixedUpdate(logicDt);
+
+				StateMachine::Instance()->ProcessObjectsAdding();
+				StateMachine::Instance()->ProcessObjectsDestroy();
 
 				_logicUpdateTime -= _data->logicDeltatime;
 			}
@@ -86,6 +92,7 @@ namespace maoutch
 
 			// Handle late update
 			StateMachine::Instance()->LateUpdate(renderDt);
+			StateMachine::Instance()->ProcessObjectsDestroy();
 		}
 	}
 	void Game::_ProcessInputs()
@@ -107,7 +114,6 @@ namespace maoutch
 			ImGui::SFML::ProcessEvent(_data->window, event);
 			InputHandler::Instance()->ProcessEvent(event);
 		}
-
 		StateMachine::Instance()->ProcessInputs();
 	}
 	void Game::_UpdateLetterBoxView(int width, int height)
