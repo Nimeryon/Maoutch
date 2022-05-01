@@ -8,6 +8,8 @@ namespace maoutch
 	{
 		Match();
 
+		Vector2 GetAveragePosition();
+
 		std::vector<Vector2i> positions;
 		Element element;
 	};

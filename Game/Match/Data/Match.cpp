@@ -7,4 +7,13 @@ namespace maoutch
 		positions({}),
 		element(Element::ElementValue::None)
 	{}
+
+	Vector2 Match::GetAveragePosition()
+	{
+		Vector2 avgPos;
+		for (Vector2i& position : positions)
+			avgPos += position;
+
+		return avgPos / positions.size();
+	}
 }
