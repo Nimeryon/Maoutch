@@ -45,6 +45,14 @@ namespace maoutch
 			_AddObjectsToAdd();
 		}
 	}
+	void GameObjectHandler::ProcessObjectsDestroy()
+	{
+		if (_needObjectDeleting)
+		{
+			_needObjectDeleting = false;
+			_ClearObjectsToDestroy();
+		}
+	}
 
 	void GameObjectHandler::ProcessInputs()
 	{
@@ -83,12 +91,6 @@ namespace maoutch
 
 	void GameObjectHandler::Draw(sf::RenderWindow& window)
 	{
-		if (_needObjectDeleting) 
-		{
-			_ClearObjectsToDestroy();
-			_needObjectDeleting = false;
-		}
-
 		if (_neeedObjectSorting)
 		{
 			std::sort(_objects.begin(), _objects.end(), [](GameObject* object1, GameObject* object2) { return object1->GetZIndex() < object2->GetZIndex(); });

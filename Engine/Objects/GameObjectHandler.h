@@ -1,8 +1,8 @@
 #pragma once
 namespace sf { class RenderWindow; }
-#include "vector"
 #include <mutex>
 
+#include <vector>
 #include "../../Interfaces/IStateDependant.h"
 
 namespace maoutch
@@ -21,6 +21,7 @@ namespace maoutch
 		void Destroy(GameObject* object);
 
 		void ProcessObjectsAdding();
+		void ProcessObjectsDestroy();
 
 		void ProcessInputs();
 
