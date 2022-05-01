@@ -4,7 +4,7 @@
 #include "../../Types/Grid.h"
 #include "../../Engine/Objects/GameObject.h"
 #include "../../Engine/Tools/Timer.h"
-#include "../Match/MatchFinder.h"
+#include "../MatchFinder.h"
 #include "../../Types/Direction.h"
 #include "../../Tools/Easing.h"
 
@@ -40,6 +40,7 @@ namespace maoutch
 		void UpdateElementsPosition(const float& minStartMoveTime, const float& maxStartMoveTime, const easing::EaseType& easeType = easing::EaseType::None);
 		void UpdateElementsPosition(const float& moveTime = 0, const easing::EaseType& easeType = easing::EaseType::None);
 
+		Vector2 GetGlobalCenterGridPosition(const Vector2& gridPos) const;
 		Vector2 GetCenterGridPosition(const Vector2& gridPos) const;
 		GridState GetState() const;
 		void SetState(const GridState& state);
@@ -55,9 +56,14 @@ namespace maoutch
 		GridState _state;
 		MatchFinder _matchFinder;
 
+		int _combo;
+		std::vector<sf::Color> _comboColors;
+
 		bool _moveChecked;
 		Vector2i _lastSwapGoalPos;
 		Direction _lastSwapDir;
+
+		Vector2 _particleScale;
 
 		float _shakeMinTime;
 		float _shakeMaxTime;
@@ -76,6 +82,9 @@ namespace maoutch
 		Timer<MatchGrid> _processMatchTimer;
 		Timer<MatchGrid> _showHintTimer;
 
+		void _ResetCombo();
+		void _AddCombo();
+
 		void _DestroyMatched();
 		void _CollapseColumns();
 		void _RefillBoard();
@@ -90,7 +99,9 @@ namespace maoutch
 		void _SetPossibleMatch();
 		void _SwapBack();
 		void _FillGrid(bool createAtCenter = false);
+
 		void _SpawnParticle(const Element& element, const Vector2i& gridPos);
 		void _SpawnParticle(const std::string& fileName, const Vector2& position);
+		void _SpawnComboPopUp(Match& match, const int& comboOffset);
 	};
 }

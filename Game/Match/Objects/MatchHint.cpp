@@ -1,5 +1,5 @@
 #include "MatchHint.h"
-#include "../Match/MatchFinder.h"
+#include "../MatchFinder.h"
 #include "../Objects/MatchGrid.h"
 #include "../../Engine/Assets.h"
 

@@ -7,7 +7,7 @@
 #include "../../Tools/Random.h"
 #include "../../Types/Direction.h"
 #include "MatchGrid.h"
-#include "../Match/Data/Element.h"
+#include "../Data/Element.h"
 
 namespace maoutch
 {

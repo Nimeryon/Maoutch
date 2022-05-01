@@ -4,12 +4,13 @@
 
 #include "MatchGrid.h"
 #include "MatchGridBackGround.h"
-#include "../Entities/Monster.h"
-#include "../Effects/Shaker.h"
+#include "../../Effects/Shaker.h"
 #include "../../Engine/Objects/GameObjectHandler.h"
 #include "../../Engine/Assets.h"
 #include "../../Engine/Graphics/ParticleEmitter.h"
+#include "../../Engine/Graphics/TextPopUp.h"
 #include "../../Types/Direction.h"
+#include "../../Entities/Bullet.h"
 #include "MatchHint.h"
 
 namespace maoutch
@@ -31,7 +32,7 @@ namespace maoutch
 		_endResetTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ResetMaxMoveTime"), &MatchGrid::_Reset, this),
 		_swapBackTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "SwapBackTime"), &MatchGrid::_SwapBack, this),
 		_processMatchTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "ProcessMatchTime"), &MatchGrid::_ProcessMatches, this),
-		_showHintTimer(Assets::Config<float>("Grid", "ShowHintTime"), &MatchGrid::_SetPossibleMatch, this)
+		_showHintTimer(Assets::Config<float>("Hint", "HintTimeDelay"), &MatchGrid::_SetPossibleMatch, this)
 	{
 		Setup(fileName);
 
@@ -39,6 +40,10 @@ namespace maoutch
 		AddChildren(_matchGridBackGround);
 
 		AddChildren(new MatchHint());
+
+		std::vector<std::string> _comboColorValues = Assets::Config()["ComboColors"].get<std::vector<std::string>>();
+		for (std::string comboColorValue : _comboColorValues)
+			_comboColors.emplace_back(colors::FromString(comboColorValue));
 	}
 
 	void MatchGrid::Setup(const std::string& fileName)
@@ -66,6 +71,9 @@ namespace maoutch
 
 		// Scale
 		SetScale(Vector2(json["Scale"].get<float>()));
+
+		// Particle Scale
+		_particleScale = Vector2(json["ParticleScale"].get<float>());
 
 		// Shake Parameters
 		_shakeMinTime = json["ShakeMinTime"].get<float>();
@@ -129,7 +137,7 @@ namespace maoutch
 		_DisableMatchHint();
 
 		for (Vector2 respawnPoint : _respawnPoints)
-			_SpawnParticle(Assets::Config<std::string>("Particle", "Path") + "Elements_particle", GetCenterGridPosition(respawnPoint));
+			_SpawnParticle("Elements_particle.json", GetCenterGridPosition(respawnPoint));
 
 		Vector2i gridPos;
 		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
@@ -210,6 +218,10 @@ namespace maoutch
 		UpdateElementsPosition(moveTime, moveTime, easeType);
 	}
 
+	Vector2 MatchGrid::GetGlobalCenterGridPosition(const Vector2& gridPos) const
+	{
+		return GetGlobalPosition() + GetCenterGridPosition(gridPos) * GetGlobalScale();
+	}
 	Vector2 MatchGrid::GetCenterGridPosition(const Vector2& gridPos) const
 	{
 		const float halfWidth = (_grid.GetWidth() / 2.f) - .5f;
@@ -219,6 +231,7 @@ namespace maoutch
 		const float elementSize = Assets::Config<float>("Element", "Size");
 		return offsetPos * elementSize;
 	}
+
 	GridState MatchGrid::GetState() const { return _state; }
 	void MatchGrid::SetState(const GridState& state) { _state = state; }
 
@@ -239,6 +252,15 @@ namespace maoutch
 		std::cout << value << std::endl;
 	}
 
+	void MatchGrid::_ResetCombo()
+	{
+		_combo = 0;
+	}
+	void MatchGrid::_AddCombo()
+	{
+		_combo++;
+	}
+
 	void MatchGrid::_DestroyMatched()
 	{
 		bool matched = false;
@@ -250,6 +272,7 @@ namespace maoutch
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
 			{
 				if (IsValidGridPosition(gridPos))
+				{
 					if (_grid.GetGridElement(gridPos) && _grid.GetGridElement(gridPos)->IsMatched())
 					{
 						matched = true;
@@ -257,14 +280,21 @@ namespace maoutch
 						_SpawnParticle(_grid.GetGridElement(gridPos)->GetElement(), gridPos);
 						DestroyGridPos(gridPos);
 					}
+				}
 			}
 		}
 		_moveChecked = true;
 
 		if (matched)
 		{
-			for (Match& match : _matchFinder.matches)
-				GameObjectHandler::Instance()->GetObject<Monster>("Monster")->Damage(-(int)match.positions.size());
+			for (int i = 0; i < _matchFinder.matches.size(); ++i)
+			{
+				Match& match = _matchFinder.matches[i];
+				_SpawnComboPopUp(match, (_matchFinder.matches.size() - 1 - i) * -1);
+				for (Vector2i& gridPos : match.positions)
+					for (int i = 0; i < _combo; ++i)
+						new Bullet(GetGlobalCenterGridPosition(gridPos), match.element, _particleScale);
+			}
 
 			Shaker::Instance()->Apply({
 				this,
@@ -339,10 +369,9 @@ namespace maoutch
 			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
 				if (IsValidGridPosition(gridPos) && _grid.GetGridElement(gridPos))
 					if (_matchFinder.MatchAt(gridPos, _grid.GetGridElement(gridPos)->GetElement()))
-					{
-						_processMatchTimer.Start();
-						return;
-					}
+						return _processMatchTimer.Start();
+
+		_ResetCombo();
 		_ProcessPossibleMatches();
 	}
 	void MatchGrid::_Reset()
@@ -370,9 +399,12 @@ namespace maoutch
 	{
 		_matchFinder.FindMatches();
 		for (Match& match : _matchFinder.matches)
+		{
+			_AddCombo();
 			for (Vector2i gridPos : match.positions)
 				if (_grid.GetGridElement(gridPos))
 					_grid.GetGridElement(gridPos)->SetIsMatched();
+		}
 
 		_destroyTimer.Start();
 	}
@@ -452,14 +484,14 @@ namespace maoutch
 						SetupGridPos(gridPos);
 					}
 	}
+
 	void MatchGrid::_SpawnParticle(const Element& element, const Vector2i& gridPos)
 	{
-		const std::string particleFileName = Assets::Config<std::string>("Particle", "Path") + "Elements\\" + element.ToString() + "_particle";
-		
 		ParticleEmitter* emitter = new ParticleEmitter();
 		emitter->SetZIndex(3);
+		emitter->SetScale(_particleScale);
 		emitter->SetPosition(GetCenterGridPosition(gridPos));
-		emitter->SetupFromFile(particleFileName);
+		emitter->SetupFromFile("Elements\\" + element.ToString() + "_particle.json");
 
 		AddChildren(emitter);
 	}
@@ -467,9 +499,23 @@ namespace maoutch
 	{
 		ParticleEmitter* emitter = new ParticleEmitter();
 		emitter->SetZIndex(3);
+		emitter->SetScale(_particleScale);
 		emitter->SetPosition(position);
 		emitter->SetupFromFile(fileName);
 
 		AddChildren(emitter);
+	}
+	void MatchGrid::_SpawnComboPopUp(Match& match, const int& comboOffset)
+	{
+		const int offCombo = _combo + comboOffset;
+		const int clampedCombo = math::Clamp(offCombo, 0, _comboColors.size() - 1);
+		const sf::Color comboColor = _comboColors[clampedCombo];
+		new TextPopUp(
+			std::to_string(offCombo) + "x",
+			GetGlobalCenterGridPosition(match.GetAveragePosition()),
+			1.5f,
+			16 + clampedCombo,
+			comboColor
+		);
 	}
 }

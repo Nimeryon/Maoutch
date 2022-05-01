@@ -1,8 +1,7 @@
 #pragma once
 #include "../../Engine/Graphics/AnimatedSprite.h"
 #include "../../Engine/Objects/GameObject.h"
-#include "../Match/MatchFinder.h"
-#include "../Match/Data/PossibleMatch.h"
+#include "../Data/PossibleMatch.h"
 
 namespace maoutch
 {
