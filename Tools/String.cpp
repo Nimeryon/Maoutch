@@ -2,6 +2,8 @@
 #include <string>
 #include <stdexcept>
 #include <algorithm>
+#include <cmath>
+#include <sstream>
 
 #include "String.h"
 
@@ -56,13 +58,19 @@ namespace maoutch
 
 			return res;
 		}
-
 		std::string ToUpper(const std::string& string)
 		{
 			std::string res = string;
 			std::transform(res.begin(), res.end(), res.begin(), std::toupper);
 
 			return res;
+		}
+
+		std::string ToString(const float& value, const int& precision)
+		{
+			std::stringstream sstream;
+			sstream << value;
+			return sstream.str();
 		}
 	}
 }
