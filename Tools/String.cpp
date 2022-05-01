@@ -66,7 +66,7 @@ namespace maoutch
 			return res;
 		}
 
-		std::string ToString(const float& value, const int& precision)
+		std::string ToString(const float& value)
 		{
 			std::stringstream sstream;
 			sstream << value;

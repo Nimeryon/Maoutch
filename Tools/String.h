@@ -16,6 +16,6 @@ namespace maoutch
 		std::string ToLower(const std::string& string);
 		std::string ToUpper(const std::string& string);
 
-		std::string ToString(const float& value, const int& precision = 2);
+		std::string ToString(const float& value);
 	}
 }
