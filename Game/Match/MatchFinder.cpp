@@ -1,6 +1,6 @@
 #include "MatchFinder.h"
-#include "../Objects/MatchGrid.h"
-#include "../Objects/MatchElement.h"
+#include "../Match/Objects/MatchGrid.h"
+#include "../Match/Objects/MatchElement.h"
 #include "Data/Element.h"
 
 namespace maoutch

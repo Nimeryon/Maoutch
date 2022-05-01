@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-#include "../Engine/StateMachine.h"
 #include "../Engine/Assets.h"
 
 namespace maoutch
