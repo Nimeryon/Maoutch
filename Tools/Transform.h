@@ -1,11 +1,12 @@
 #pragma once
 namespace sf
 {
+	class Vertex;
 	class Shape;
 	class Sprite;
 	class Transformable;
 }
-
+#include <array>
 
 #include "../Types/Vector2.h"
 
@@ -22,5 +23,7 @@ namespace maoutch
 
 		bool Intersects(const sf::Shape& shape1, const sf::Transformable& transform1, const sf::Shape& shape2, const sf::Transformable& transform2);
 		bool Intersects(const sf::Sprite& sprite1, const sf::Transformable& transform1, const sf::Sprite& sprite2, const sf::Transformable& transform2);
+
+		std::array<sf::Vertex, 4> GetVertices(const sf::FloatRect& rect);
 	}
 }

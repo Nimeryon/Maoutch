@@ -44,5 +44,18 @@ namespace maoutch
 		{
 			return GetRect(sprite1.getGlobalBounds(), transform1).intersects(GetRect(sprite2.getGlobalBounds(), transform2));
 		}
+
+		std::array<sf::Vertex, 4> GetVertices(const sf::FloatRect& rect)
+		{
+			std::array<sf::Vertex, 4> vertices;
+
+			// Position
+			vertices[0].position = { rect.left, rect.top };
+			vertices[1].position = { rect.left + rect.width, rect.top };
+			vertices[2].position = { rect.left + rect.width, rect.top + rect.height };
+			vertices[3].position = { rect.left, rect.top + rect.height };
+
+			return vertices;
+		}
 	}
 }
