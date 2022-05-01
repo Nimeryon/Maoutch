@@ -3,11 +3,14 @@
 
 #include "Particle.h"
 #include "../../Tools/Texture.h"
+#include "../../Tools/Transform.h"
 #include "../../Types/Vector2i.h"
 
 namespace maoutch
 {
 	Particle::Particle(
+		Vector2 position,
+		Vector2 scale,
 		float lifetime,
 		float startRotation,
 		LerpableValue<Vector2> direction,
@@ -24,6 +27,8 @@ namespace maoutch
 		_isTextured(isTextured),
 		_texturePosition(texturePosition),
 		_textureRectSize(textureRectSize),
+		_position(position),
+		_scale(scale),
 		_currentLifetime(0),
 		_lifetime(lifetime),
 		_currentRotation(startRotation),
@@ -56,33 +61,22 @@ namespace maoutch
 	float Particle::GetLifePercent() const { return (1.f / _lifetime) * _currentLifetime; }
 	void Particle::WriteVertices(sf::VertexArray& vertexArray)
 	{
-		std::array<sf::Vertex, 4> vertices;
-
-		float t = GetLifePercent();
-		float half_size = _size.GetValue(t) / 2.f;
-
-		// Position
-		vertices[0].position = { _position.x - half_size, _position.y - half_size };
-		vertices[1].position = { _position.x + half_size, _position.y - half_size };
-		vertices[2].position = { _position.x + half_size, _position.y + half_size };
-		vertices[3].position = { _position.x - half_size, _position.y + half_size };
-
-		if (_rotationSpeed.GetValue() != 0)
+		const float t = GetLifePercent();
+		const Vector2 size = _size.GetValue(t) * _scale;
+		
+		std::array<sf::Vertex, 4> vertices = transform::GetVertices({ _position - size / 2.f, size });
+		if (_currentRotation != 0)
 		{
 			sf::Transform transform;
 			transform.rotate(_currentRotation, _position);
-			vertices[0].position = transform.transformPoint(vertices[0].position);
-			vertices[1].position = transform.transformPoint(vertices[1].position);
-			vertices[2].position = transform.transformPoint(vertices[2].position);
-			vertices[3].position = transform.transformPoint(vertices[3].position);
+			for (int i = 0; i < 4; ++i)			
+				vertices[i].position = transform.transformPoint(vertices[i].position);
 		}
 
 		// Color
-		sf::Color c = _color.GetValue(t);
-		vertices[0].color = c;
-		vertices[1].color = c;
-		vertices[2].color = c;
-		vertices[3].color = c;
+		const sf::Color c = _color.GetValue(t);
+		for (int i = 0; i < 4; ++i)
+			vertices[i].color = c;
 
 		if (_isTextured) texture::SetTextureCoord(vertices, _texturePosition, _textureRectSize);
 

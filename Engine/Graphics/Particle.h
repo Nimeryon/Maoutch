@@ -12,6 +12,8 @@ namespace maoutch
 	struct Particle
 	{
 		explicit Particle(
+			Vector2 position,
+			Vector2 scale,
 			float lifetime,
 			float startRotation,
 			LerpableValue<Vector2> direction,
@@ -38,6 +40,7 @@ namespace maoutch
 		Vector2i _texturePosition;
 		Vector2i _textureRectSize;
 		Vector2 _position;
+		Vector2 _scale;
 
 		float _currentLifetime;
 		float _lifetime;

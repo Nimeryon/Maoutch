@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <vector>
 
+#include "json.hpp"
 #include "ParticleEmitter.h"
 #include "Particle.h"
 #include "../Objects/GameObjectHandler.h"
@@ -40,6 +42,8 @@ namespace maoutch
 		_isPlaying(playOnAwake),
 		_isLooping(isLooping),
 		_isTextured(isTextured),
+		_finishedPlaying(false),
+		_hasPlayed(false),
 		_currentLifetime(0),
 		_lifetime(emitterLifetime),
 		_emissionSpeed(emitterEmissionSpeed),
@@ -59,22 +63,28 @@ namespace maoutch
 		ReserveParticlesSpace();
 		_textureName = Assets::Instance()->GetTexturesMap().begin()->first;
 		_particleVertex.setPrimitiveType(sf::Quads);
+
+		if (_playOnAwake) Play();
 	}
 	ParticleEmitter::~ParticleEmitter() = default;
 
 	void ParticleEmitter::Update(float dt)
 	{
 		// Handle playing
-		if (_isPlaying)
+		if (!_finishedPlaying && _isPlaying)
 		{
 			_currentLifetime += dt;
 			if (_currentLifetime > _lifetime)
 			{
 				if (_destroyAfterPlaying)
-					GameObjectHandler::Instance()->Destroy(this);
+					_finishedPlaying = true;
 
 				if (_isLooping) _currentLifetime -= _lifetime;
-				else _isPlaying = false;
+				else
+				{
+					_isPlaying = false;
+					_finishedPlaying = true;
+				}
 
 				_currentMaxParticleCount = _maxParticleCount;
 			}
@@ -108,7 +118,11 @@ namespace maoutch
 	}
 	void ParticleEmitter::FixedUpdate(float dt)
 	{
-		if (GetCurrentParticleCount() == 0 && !_isPlaying) return;
+		if (GetCurrentParticleCount() == 0 && _finishedPlaying)
+		{
+			if (_hasPlayed && _destroyAfterPlaying) GameObjectHandler::Instance()->Destroy(this);
+			return;
+		}
 
 		// Delete deactivated particles
 		auto particlesToRemove = std::remove_if(_particles.begin(), _particles.end(), [](const Particle& particle) { return !particle.IsAlive(); });
@@ -125,7 +139,7 @@ namespace maoutch
 
 	void ParticleEmitter::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		_renderState.transform = transform;
+		//_renderState.transform = transform;
 		_renderState.texture = _isTextured ? &Assets::Instance()->GetTexture(_textureName) : nullptr;
 		
 		window.draw(_particleVertex, _renderState);
@@ -136,6 +150,7 @@ namespace maoutch
 		ReserveParticlesSpace();
 		_currentMaxParticleCount = _maxParticleCount;
 		_isPlaying = _playOnAwake;
+		_finishedPlaying = false;
 		_currentLifetime = 0;
 		_emissionAccumulator = 0;
 		_particleVertex.clear();
@@ -143,15 +158,23 @@ namespace maoutch
 	void ParticleEmitter::Play()
 	{
 		if (!_isPlaying && _currentLifetime >= _lifetime) Reset();
+		_hasPlayed = true;
 		_isPlaying = true;
+		_finishedPlaying = false;
 	}
-	void ParticleEmitter::Stop() { _isPlaying = false; }
+	void ParticleEmitter::Stop()
+	{
+		_isPlaying = false;
+		_finishedPlaying = true;
+	}
 
 	bool ParticleEmitter::IsPlaying() const { return _isPlaying; }
 
 	void ParticleEmitter::SpawnParticle()
 	{
 		_particles.emplace_back(Particle(
+			GetGlobalPosition(),
+			GetScale(),
 			random::Float(_minParticleLifetime, _maxParticleLifetime),
 			random::Float(_minParticleStartRotation, _maxParticleStartRotation),
 			_particleDirection.GetValue(),
@@ -167,95 +190,78 @@ namespace maoutch
 		));
 	}
 
-	void ParticleEmitter::SaveToFile(const std::string& fileName)
+	void ParticleEmitter::SaveToFile(const std::string& fileName, bool destroyAfterPlaying)
 	{
-		std::ofstream file(Assets::Config<std::string>("Particle", "Path") + fileName);
+		nlohmann::json json;
+		std::ofstream file(Assets::Config<std::string>("Particle", "Path") + fileName + ".json");
 		if (file.is_open())
 		{
-			file << _maxParticleCount << std::endl;
-			file << _playOnAwake << "," << _destroyAfterPlaying << "," << _respawnDeadParticle << "," << _isLooping << "," << _isTextured << std::endl;
-			file << _textureName << std::endl;
-			file << _texturePositions.size() << std::endl;
+			std::vector<std::string> positions;
 			for (Vector2i& position : _texturePositions)
-				file << position << std::endl;
-			file << _textureRectSize << std::endl;
-			file << _lifetime << std::endl;
-			file << _emissionSpeed << std::endl;
-			file << _minParticleLifetime << "," << _maxParticleLifetime << std::endl;
-			file << _minParticleStartRotation << "," << _maxParticleStartRotation << std::endl;
-			file << _particleDirection << std::endl;
-			file << _particleColors << std::endl;
-			file << _particleSize << std::endl;
-			file << _particleSpeed << std::endl;
-			file << _particleFriction << std::endl;
-			file << _particleGravity << std::endl;
-			file << _particleRotationSpeed;
+				positions.emplace_back(position);
+
+			json["MaxParticleCount"] = _maxParticleCount;
+			json["PlayOnAwake"] = _playOnAwake;
+			json["DestroyAfterPlaying"] = destroyAfterPlaying;
+			json["RespawnDeadParticle"] = _respawnDeadParticle;
+			json["IsLooping"] = _isLooping;
+			json["IsTextured"] = _isTextured;
+			json["Texture"] = _textureName;
+			json["TexturePositions"] = positions;
+			json["TextureRect"] = (std::string)_textureRectSize;
+			json["Lifetime"] = _lifetime;
+			json["EmissionSpeed"] = _emissionSpeed;
+			json["MinParticleLifetime"] = _minParticleLifetime;
+			json["MaxParticleLifetime"] = _maxParticleLifetime;
+			json["Direction"] = _particleDirection.ToJson();
+			json["Colors"] = _particleColors.ToJson();
+			json["Size"] = _particleSize.ToJson();
+			json["Speed"] = _particleSpeed.ToJson();
+			json["Friction"] = _particleFriction.ToJson();
+			json["Gravity"] = _particleGravity.ToJson();
+			json["MinStartRotation"] = _minParticleStartRotation;
+			json["MaxStartRotation"] = _maxParticleStartRotation;
+			json["RotationSpeed"] = _particleRotationSpeed.ToJson();
+
+			file << std::setw(4) << json << std::endl;
 			file.close();
 		}
 	}
-	void ParticleEmitter::SetupFromFile(const std::string& fileName, bool canDestroy)
+	void ParticleEmitter::SetupFromFile(const std::string& fileName)
 	{
-		std::ifstream file(fileName);
-		std::string line;
+		std::string parsedFileName = string::Replace(fileName, Assets::Config<std::string>("Particle", "Path"), "");
+		std::ifstream file(Assets::Config<std::string>("Particle", "Path") + parsedFileName);
+		nlohmann::json json = nlohmann::json::parse(file);
 
-		// Particle count
-		getline(file, line);
-		_maxParticleCount = std::atoi(&line[0]);
-		_currentMaxParticleCount = _maxParticleCount;
+		std::vector<std::string> positions = json["TexturePositions"].get<std::vector<std::string>>();
+		std::vector<Vector2i> vectorPositions;
+		for (std::string& position : positions)
+			vectorPositions.emplace_back(Vector2i::FromString(position));
 
-		getline(file, line);
-		std::vector<std::string> values = string::Split(line, ',');
-		_playOnAwake = values[0] == "1"; // Play On Awake
-		_destroyAfterPlaying = canDestroy ? values[1] == "1" : false; // Destroy After Playing
-		_respawnDeadParticle = values[2] == "1"; // Respawn Dead Particle
-		_isLooping = values[3] == "1"; // Is Looping
-		_isTextured = values[4] == "1"; // Is Textured
-		if (_playOnAwake) _isPlaying = true;
-
-		getline(file, line);
-		_textureName = line; // Texture name
-
-		getline(file, line);
-		int positionCount = std::atoi(&line[0]);
-		_texturePositions.clear();
-		_texturePositions.reserve(positionCount); // Texture Positions
-		for (int i = 0; i < positionCount; ++i)
-		{
-			getline(file, line);
-			_texturePositions.emplace_back(Vector2i::FromString(line)); // Add Texture Position
-		}
-
-		getline(file, line);
-		_textureRectSize = Vector2i(Vector2i::FromString(line)); // Texture Rect Size
-
-		getline(file, line);
-		_lifetime = std::atof(&line[0]); // Lifetime
-		getline(file, line);
-		_emissionSpeed = std::atof(&line[0]); // Emission Speed
-
-		getline(file, line);
-		values = string::Split(line, ',');
-		_minParticleLifetime = std::atof(&values[0][0]); // Min Particle Lifetime
-		_maxParticleLifetime = std::atof(&values[1][0]); // Max Particle Lifetime
-		getline(file, line);
-		values = string::Split(line, ',');
-		_minParticleStartRotation = std::atof(&values[0][0]); // Min Particle Start Rotation
-		_maxParticleStartRotation = std::atof(&values[1][0]); // Max Particle Start Rotation
-
-		getline(file, line);
-		_particleDirection.FromString(line); // Particle Direction
-		getline(file, line);
-		_particleColors.FromString(line); // Particle Color
-		getline(file, line);
-		_particleSize.FromString(line); // Particle Size
-		getline(file, line);
-		_particleSpeed.FromString(line); // Particle Speed
-		getline(file, line);
-		_particleFriction.FromString(line); // Particle Friction
-		getline(file, line);
-		_particleGravity.FromString(line); // Particle Gravity
-		getline(file, line);
-		_particleRotationSpeed.FromString(line); // Particle Rotation Speed
+		_maxParticleCount = json["MaxParticleCount"].get<int>();
+		_playOnAwake = json["PlayOnAwake"].get<bool>();
+		_destroyAfterPlaying = json["DestroyAfterPlaying"].get<bool>();
+		_respawnDeadParticle = json["RespawnDeadParticle"].get<bool>();
+		_isLooping = json["IsLooping"].get<bool>();
+		_isTextured = json["IsTextured"].get<bool>();
+		_textureName = json["Texture"].get<std::string>();
+		_texturePositions = vectorPositions;
+		_textureRectSize = Vector2i::FromString(json["TextureRect"].get<std::string>());
+		_lifetime = json["Lifetime"].get<float>();
+		_emissionSpeed = json["EmissionSpeed"].get<float>();
+		_minParticleLifetime = json["MinParticleLifetime"].get<float>();
+		_maxParticleLifetime = json["MaxParticleLifetime"].get<float>();
+		_particleDirection.FromJson(json["Direction"].get<nlohmann::json>());
+		_particleColors.FromJson(json["Colors"].get<nlohmann::json>());
+		_particleSize.FromJson(json["Size"].get<nlohmann::json>());
+		_particleSpeed.FromJson(json["Speed"].get<nlohmann::json>());
+		_particleFriction.FromJson(json["Friction"].get<nlohmann::json>());
+		_particleGravity.FromJson(json["Gravity"].get<nlohmann::json>());
+		_minParticleStartRotation = json["MinStartRotation"].get<float>();
+		_maxParticleStartRotation = json["MaxStartRotation"].get<float>();
+		_particleRotationSpeed.FromJson(json["RotationSpeed"].get<nlohmann::json>());
+		
+		if (_playOnAwake) Play();
 	}
 
 	// Emitter Getter/Setter
@@ -283,6 +289,7 @@ namespace maoutch
 
 	void ParticleEmitter::SetTextureName(const std::string& textureName) { _textureName = textureName; }
 	void ParticleEmitter::SetTextureRectSize(const Vector2i& rectSize) { _textureRectSize = rectSize; }
+	void ParticleEmitter::SetDestroyAfterPlaying(const bool& destroyAfterPlaying) { _destroyAfterPlaying = destroyAfterPlaying; }
 	void ParticleEmitter::ReserveParticlesSpace()
 	{
 		_particles.clear();

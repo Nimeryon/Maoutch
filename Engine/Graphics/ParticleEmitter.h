@@ -2,11 +2,11 @@
 #pragma once
 namespace sf
 {
-	class VertexArray;
 	class Color;
 }
-
 #include <vector>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
 #include "../Objects/GameObject.h"
 #include "../../Types/Vector2i.h"
@@ -32,7 +32,7 @@ namespace  maoutch
 			float maxParticleLifetime = 2.f,
 			float minParticleStartRotation = 0.f,
 			float maxParticleStartRotation = 0.f,
-			EmitterValue<Vector2> particleDirection = EmitterValue<Vector2>(Vector2(-1, 1), Vector2(-1, 1), 1),
+			EmitterValue<Vector2> particleDirection = EmitterValue(Vector2(-1, 1), Vector2(-1, 1), 1),
 			EmitterValue<sf::Color> particleColor = {},
 			EmitterValue<float> particleSize = { 5 },
 			EmitterValue<float> particleSpeed = { 50 },
@@ -56,8 +56,8 @@ namespace  maoutch
 		bool IsPlaying() const;
 		void SpawnParticle();
 
-		void SaveToFile(const std::string& fileName);
-		void SetupFromFile(const std::string& fileName, bool canDestroy = true);
+		void SaveToFile(const std::string& fileName, bool destroyAfterPlaying);
+		void SetupFromFile(const std::string& fileName);
 
 		// Emitter Getter/Setter
 		bool* PlayOnAwake();
@@ -80,6 +80,7 @@ namespace  maoutch
 
 		void SetTextureName(const std::string& textureName);
 		void SetTextureRectSize(const Vector2i& rectSize);
+		void SetDestroyAfterPlaying(const bool& destroyAfterPlaying);
 		void ReserveParticlesSpace();
 
 		// Particles Getter/Setter
@@ -113,6 +114,8 @@ namespace  maoutch
 		bool _isPlaying;
 		bool _isLooping;
 		bool _isTextured;
+		bool _hasPlayed;
+		bool _finishedPlaying;
 		std::string _textureName;
 		std::vector<Vector2i> _texturePositions;
 		Vector2i _textureRectSize;
