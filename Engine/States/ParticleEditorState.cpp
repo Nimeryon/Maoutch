@@ -314,7 +314,7 @@ namespace maoutch
 				for (std::string filePath : filePaths)
 					if (ImGui::Selectable(filePath.c_str()))
 					{
-						_particle->SetupFromFile(filePath, false);
+						_particle->SetupFromFile(filePath);
 						colors::ToFloat4(_startColor, _particle->GetParticleColors()->startColor);
 						colors::ToFloat4(_endColor, _particle->GetParticleColors()->endColor);
 
@@ -324,6 +324,7 @@ namespace maoutch
 
 						// Update file list
 						std::string newName = string::Replace(filePath, Assets::Config<std::string>("Particle", "Path"), "");
+						newName = string::Replace(newName, ".json", "");
 						for (int i = 0; i < newName.size(); ++i)
 							fileName[i] = newName[i];
 
@@ -345,20 +346,23 @@ namespace maoutch
 						for (int i = 0; i < _particle->GetTexturePositions().size(); ++i)
 							_terturePositions.emplace_back(new int[2]{ _particle->GetTexturePositions()[i].x, _particle->GetTexturePositions()[i].y });
 
+						_destroyAfterPlaying = _particle->DestroyAfterPlaying();
+						_particle->SetDestroyAfterPlaying(false);
+
 						_particle->Reset();
 					}
 				ImGui::EndCombo();
 			}
 
 			ImGui::InputText("Particle Name", fileName, 255);
-			ImGui::Checkbox("Destroy After Playing", _particle->DestroyAfterPlaying());
+			ImGui::Checkbox("Destroy After Playing", &_destroyAfterPlaying);
 			ImGui::SameLine();
 			if (ImGui::Button("Save"))
 			{
 				std::string name = std::string(fileName);
 				if (name != "")
 				{
-					_particle->SaveToFile(name);
+					_particle->SaveToFile(name, _destroyAfterPlaying);
 
 					filePaths.clear();
 					for (const auto& filePath : std::filesystem::directory_iterator(Assets::Config<std::string>("Particle", "Path")))

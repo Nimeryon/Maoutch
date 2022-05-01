@@ -38,6 +38,7 @@ namespace maoutch
 		int _directionEaseType;
 		float _xDirection[2];
 		float _yDirection[2];
+		bool _destroyAfterPlaying;
 		std::vector<int*> _terturePositions = {};
 		ParticleEmitter* _particle = nullptr;
 	};
