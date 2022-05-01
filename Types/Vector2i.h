@@ -53,7 +53,7 @@ namespace maoutch
 		operator sf::Vector2f() const { return { (float)x, (float)y }; }
 		operator sf::Vector2i() const { return { x, y }; }
 		operator Vector2() const { return { (float)x, (float)y }; }
-		operator std::string() const { return std::to_string(x) + "," + std::to_string(y); }
+		operator std::string() const { return std::to_string(x) + "|" + std::to_string(y); }
 
 		// Operators
 		Vector2i& operator=(const Vector2i& v2) = default;

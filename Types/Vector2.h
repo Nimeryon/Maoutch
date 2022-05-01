@@ -113,7 +113,7 @@ namespace  maoutch
 		static Vector2 From(sf::Vector2i vector) { return Vector2(vector.x, vector.y); }
 		operator sf::Vector2f() const { return { x, y }; }
 		operator sf::Vector2i() const { return { (int)x, (int)y }; }
-		operator std::string() const { return std::to_string(x) + "," + std::to_string(y); }
+		operator std::string() const { return std::to_string(x) + "|" + std::to_string(y); }
 
 		// Operators
 		Vector2& operator=(const Vector2& v2) = default;
