@@ -29,7 +29,7 @@ namespace maoutch
 			true
 		)
 	{
-		SetOrigin(Vector2(Assets::Config<float>("HealthBar", "SkullSize") / 2.f, Assets::Config<float>("HealthBar", "SkullOriginY")));
+		SetOrigin(Vector2(Assets::Config<float>("HealthBar", "SkullSize") / 2.f));
 
 		const float diff = (Assets::Config<float>("HealthBar", "DecoratorSize") - Assets::Config<float>("HealthBar", "SkullSize")) / 2.f;
 		_decorator->SetOrigin(diff);
