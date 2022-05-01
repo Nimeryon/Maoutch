@@ -2,6 +2,7 @@
 #include <SFML/Graphics/Color.hpp>
 
 #include "LerpableValue.h"
+#include "json.hpp"
 #include "Vector2.h"
 #include "../../Tools/Random.h"
 #include "../../Tools/Colors.h"
@@ -58,15 +59,28 @@ namespace maoutch
 					return LerpableValue<T>(random::Float(minXValue, maxXValue), random::Float(minYValue, maxYValue), easeType);
 			}
 		}
-		void FromString(std::string value)
+
+		nlohmann::json ToJson()
 		{
-			const auto values = string::Split(value, ',');
-			type = std::atoi(&values[0][0]);
-			minXValue = std::atof(&values[1][0]);
-			maxXValue = std::atof(&values[2][0]);
-			maxYValue = std::atof(&values[3][0]);
-			maxYValue = std::atof(&values[4][0]);
-			easeType = (easing::EaseType)std::atoi(&values[5][0]);
+			nlohmann::json json;
+
+			json["Type"] = type;
+			json["MinXValue"] = minXValue;
+			json["MaxXValue"] = minYValue;
+			json["MinYValue"] = maxXValue;
+			json["MaxYValue"] = maxYValue;
+			json["EaseType"] = (int)easeType;
+
+			return json;
+		}
+		void FromJson(const nlohmann::json& json)
+		{
+			type = json.at("Type").get<int>();
+			minXValue = json.at("MinXValue").get<T>();
+			minYValue = json.at("MaxXValue").get<T>();
+			maxXValue = json.at("MinYValue").get<T>();
+			maxYValue = json.at("MaxYValue").get<T>();
+			easeType = easing::EaseType(json.at("EaseType").get<int>());
 		}
 
 		int type;
@@ -123,13 +137,24 @@ namespace maoutch
 					return LerpableValue<sf::Color>(startColor, endColor, easeType);
 			}
 		}
-		void FromString(std::string value)
+
+		nlohmann::json ToJson()
 		{
-			const auto values = string::Split(value, ',');
-			type = std::atoi(&values[0][0]);
-			startColor = colors::FromString(values[1]);
-			endColor = colors::FromString(values[2]);
-			easeType = (easing::EaseType)std::atoi(&values[3][0]);
+			nlohmann::json json;
+
+			json["Type"] = type;
+			json["StartColor"] = colors::ToString(startColor);
+			json["EndColor"] = colors::ToString(endColor);
+			json["EaseType"] = (int)easeType;
+
+			return json;
+		}
+		void FromJson(const nlohmann::json& json)
+		{
+			type = json.at("Type").get<int>();
+			startColor = colors::FromString(json.at("StartColor").get<std::string>());
+			endColor = colors::FromString(json.at("EndColor").get<std::string>());
+			easeType = easing::EaseType(json.at("EaseType").get<int>());
 		}
 
 		int type;
@@ -160,22 +185,33 @@ namespace maoutch
 			switch (type)
 			{
 				case 0:
-					return LerpableValue<Vector2>(xVector, easeType);
+					return LerpableValue(xVector, easeType);
 
 				case 1:
-					return LerpableValue<Vector2>(Vector2(random::Float(xVector.x, xVector.y), random::Float(yVector.x, yVector.y)).Normalized(), easeType);
+					return LerpableValue(Vector2(random::Float(xVector.x, xVector.y), random::Float(yVector.x, yVector.y)).Normalized(), easeType);
 
 				default:
-					return LerpableValue<Vector2>(xVector, yVector, easeType);
+					return LerpableValue(xVector, yVector, easeType);
 			}
 		}
-		void FromString(std::string value)
+
+		nlohmann::json ToJson()
 		{
-			const auto values = string::Split(value, ',');
-			type = std::atoi(&values[0][0]);
-			xVector = Vector2::FromString(string::Replace(values[1], "\"", ""));
-			yVector = Vector2::FromString(string::Replace(values[2], "\"", ""));
-			easeType = (easing::EaseType)std::atoi(&values[3][0]);
+			nlohmann::json json; 
+
+			json["Type"] = type;
+			json["XVector"] = (std::string)xVector;
+			json["YVector"] = (std::string)yVector;
+			json["EaseType"] = (int)easeType;
+
+			return json;
+		}
+		void FromJson(const nlohmann::json& json)
+		{
+			type = json.at("Type").get<int>();
+			xVector = Vector2::FromString(json.at("XVector").get<std::string>());
+			yVector = Vector2::FromString(json.at("YVector").get<std::string>());
+			easeType = easing::EaseType(json.at("EaseType").get<int>());
 		}
 
 		int type;
@@ -183,23 +219,4 @@ namespace maoutch
 		Vector2 yVector;
 		easing::EaseType easeType;
 	};
-
-	template<typename T>
-	inline std::ostream& operator<<(std::ostream& os, const EmitterValue<T>& e)
-	{
-		os << e.type << "," << e.minXValue << "," << e.maxXValue << "," << e.minYValue << "," << e.maxYValue << "," << (int)e.easeType;
-		return os;
-	}
-	template<>
-	inline std::ostream& operator<<(std::ostream& os, const EmitterValue<sf::Color>& e)
-	{
-		os << e.type << "," << colors::ToString(e.startColor) << "," << colors::ToString(e.endColor) << "," << (int)e.easeType;
-		return os;
-	}
-	template<>
-	inline std::ostream& operator<<(std::ostream& os, const EmitterValue<Vector2>& e)
-	{
-		os << e.type << ",\"" << e.xVector << "\",\"" << e.yVector << "\"" << "," << (int)e.easeType;
-		return os;
-	}
 }
