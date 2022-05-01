@@ -88,6 +88,12 @@ namespace maoutch
 		GetChildren<HealthBar>("HealthBar")->Damage(damage);
 	}
 
+	Element Monster::GetElement() const { return _element; }
+	Vector2 Monster::GetMonsterPosition() const
+	{
+		return GetGlobalPosition() + _sprite->GetPosition();
+	}
+
 	void Monster::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
 		_shadowSprite->Draw(window, transform);

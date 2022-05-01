@@ -14,6 +14,9 @@ namespace maoutch
 
 		void Damage(const float& damage) override;
 
+		Element GetElement() const;
+		Vector2 GetMonsterPosition() const;
+
 	private:
 		Element _element;
 		Sprite* _sprite;
