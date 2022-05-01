@@ -37,7 +37,6 @@ namespace maoutch
 		Text* _healthText;
 
 		Vector2 _size;
-		float _scale;
 		float _currentHealth;
 		float _health;
 		bool _isBossBar;
