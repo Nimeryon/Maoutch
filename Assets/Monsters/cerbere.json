@@ -1,0 +1,11 @@
+{
+  "Texture": "Cerbere",
+  "Size": 128,
+  "Scale": 1.3,
+  "Boss": false,
+  "Breathing": true,
+  "BreathTime": 2,
+  "BreathScale": "0.025|0.025",
+  "Floating": false,
+  "BaseHealth": 1000
+}

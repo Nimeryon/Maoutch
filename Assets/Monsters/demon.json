@@ -1,18 +1,13 @@
 {
   "Texture": "Demon",
-  "Element": "Fire",
   "Size": 128,
   "Scale": 1.3,
-  "Boss": true,
+  "Boss": false,
   "Breathing": true,
   "BreathTime": 2,
   "BreathScale": "0.025|0.025",
   "Floating": true,
   "FloatingTime": 1.5,
   "FloatingHeight": 12,
-  "HealthWidth": 5,
-  "HealthHeight": -100,
-  "BaseHealth": 1000,
-  "ShadowScale": "1.2|0.4",
-  "ShadowHeight": 80
+  "BaseHealth": 1000
 }
