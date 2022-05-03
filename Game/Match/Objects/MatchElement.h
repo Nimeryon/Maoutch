@@ -19,7 +19,7 @@ namespace maoutch
 	class MatchElement : public GameObject
 	{
 	public:
-		MatchElement(MatchGrid& grid, const Vector2& startPos, const Vector2i& gridPos, const Element& element);
+		MatchElement(const Vector2& startPos, const Vector2i& gridPos, const Element& element);
 		~MatchElement() override;
 		
 		void ProcessInputs() override;
@@ -49,11 +49,11 @@ namespace maoutch
 		void OnPointerUp();
 
 	private:
-		Element _type;
-
-		MatchGrid& _grid;
+		Element _element;
 		Vector2i _gridPos;
-		sf::Sprite* _sprite;
+
+		Sprite* _sprite;
+		AnimatedSprite* _selectedAnimation;
 
 		bool _isMatched;
 		bool _isSelectd;
@@ -67,8 +67,6 @@ namespace maoutch
 		Vector2 _goalPosition;
 		float _currentMoveTime;
 		easing::EaseType _easeType;
-
-		AnimatedSprite _selectedAnimation;
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 
