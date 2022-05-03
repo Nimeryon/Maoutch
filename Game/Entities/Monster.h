@@ -9,8 +9,10 @@ namespace maoutch
 	class Monster : public GameObject, public IDamageable
 	{
 	public:
-		Monster(const std::string& fileName);
+		Monster(const std::string& fileName, const Element& element);
 		~Monster();
+
+		void Init() override;
 
 		void Damage(const float& damage) override;
 
@@ -20,7 +22,6 @@ namespace maoutch
 	private:
 		Element _element;
 		Sprite* _sprite;
-		Sprite* _shadowSprite;
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 	};
