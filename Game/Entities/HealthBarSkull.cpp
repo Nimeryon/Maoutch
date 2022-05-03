@@ -1,7 +1,9 @@
 #include "HealthBarSkull.h"
 #include "../../Engine/Assets.h"
 #include "../../Tools/Random.h"
+#include "../../Tools/Transform.h"
 #include "../../Engine/InputHandler.h"
+#include "../Effects/Squisher.h"
 
 namespace maoutch
 {
@@ -78,6 +80,13 @@ namespace maoutch
 		delete _rightEyeSprite;
 	}
 
+	void HealthBarSkull::ProcessInputs()
+	{
+		Vector2 mousePos = InputHandler::Instance()->GetMousePosition();
+		if (transform::Contains(*_animatedSprite, _transform, mousePos))
+			if (InputHandler::Instance()->IsPointerDown(sf::Mouse::Left))
+				Squisher::Instance()->Apply({ this, 0.1f, 0.05f, -0.1f });
+	}
 	void HealthBarSkull::FixedUpdate(float dt)
 	{
 		_leftEyeSprite->SetPosition(Vector2(

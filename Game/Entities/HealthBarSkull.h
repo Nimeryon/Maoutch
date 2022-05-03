@@ -12,6 +12,7 @@ namespace maoutch
 		HealthBarSkull();
 		~HealthBarSkull() override;
 
+		void ProcessInputs() override;
 		void FixedUpdate(float dt) override;
 
 	private:
