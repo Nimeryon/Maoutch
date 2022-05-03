@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics.hpp>
 #include "../../Types/Vector2.h"
 
 namespace maoutch
@@ -7,6 +7,8 @@ namespace maoutch
 	class ITransformable
 	{
 	public:
+		virtual sf::FloatRect GetBounds() const;
+
 		[[nodiscard]] virtual Vector2 GetPosition() const;
 		[[nodiscard]] virtual Vector2 GetScale() const;
 		[[nodiscard]] virtual Vector2 GetOrigin() const;

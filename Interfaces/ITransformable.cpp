@@ -2,6 +2,8 @@
 
 namespace maoutch
 {
+	sf::FloatRect ITransformable::GetBounds() const { return sf::FloatRect(); }
+
 	Vector2 ITransformable::GetPosition() const { return Vector2::From(_localTransform.getPosition()); }
 	Vector2 ITransformable::GetScale() const { return Vector2::From(_localTransform.getScale()); }
 	Vector2 ITransformable::GetOrigin() const { return Vector2::From(_localTransform.getOrigin()); }
