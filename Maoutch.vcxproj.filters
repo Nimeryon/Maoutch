@@ -267,6 +267,9 @@
     <ClCompile Include="Engine\Graphics\TextPopUp.cpp">
       <Filter>Source Files\Engine\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Effects\Squisher.cpp">
+      <Filter>Source Files\Game\Effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tools\Random.h">
@@ -443,6 +446,9 @@
     <ClInclude Include="Engine\Graphics\TextPopUp.h">
       <Filter>Header Files\Engine\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Effects\Squisher.h">
+      <Filter>Header Files\Game\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Grids\circle_grid.json">
@@ -481,7 +487,7 @@
     <None Include="Assets\config.json">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Assets\Monsters\demon_fire.json">
+    <None Include="Assets\Monsters\demon.json">
       <Filter>Resource Files\Monsters</Filter>
     </None>
     <None Include="Assets\Particles\Trails\Dark_trail_particle.json">
@@ -525,6 +531,9 @@
     </None>
     <None Include="Assets\Particles\Explosions\Water_explosion_particle.json">
       <Filter>Resource Files\Particles\Explosions</Filter>
+    </None>
+    <None Include="Assets\Monsters\cerbere.json">
+      <Filter>Resource Files\Monsters</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -165,6 +165,7 @@
     <ClCompile Include="Game\Effects\Effect.cpp" />
     <ClCompile Include="Game\Effects\Floater.cpp" />
     <ClCompile Include="Game\Effects\Shaker.cpp" />
+    <ClCompile Include="Game\Effects\Squisher.cpp" />
     <ClCompile Include="Game\Entities\Bullet.cpp" />
     <ClCompile Include="Game\Entities\HealthBar.cpp" />
     <ClCompile Include="Game\Entities\HealthBarSkull.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Game\Effects\Effect.h" />
     <ClInclude Include="Game\Effects\Floater.h" />
     <ClInclude Include="Game\Effects\Shaker.h" />
+    <ClInclude Include="Game\Effects\Squisher.h" />
     <ClInclude Include="Game\Entities\Bullet.h" />
     <ClInclude Include="Game\Entities\HealthBar.h" />
     <ClInclude Include="Game\Entities\HealthBarSkull.h" />
@@ -260,7 +262,8 @@
     <None Include="Assets\Grids\big_grid.json" />
     <None Include="Assets\Grids\circle_grid.json" />
     <None Include="Assets\Grids\small_grid.json" />
-    <None Include="Assets\Monsters\demon_fire.json" />
+    <None Include="Assets\Monsters\cerbere.json" />
+    <None Include="Assets\Monsters\demon.json" />
     <None Include="Assets\Particles\Elements\Dark_particle.json" />
     <None Include="Assets\Particles\Elements\Earth_particle.json" />
     <None Include="Assets\Particles\Elements\Fire_particle.json" />
