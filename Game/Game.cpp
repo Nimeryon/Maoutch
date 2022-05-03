@@ -27,6 +27,7 @@ namespace maoutch
 			sf::VideoMode(windowWidth, windowHeight, 1),
 			_title
 		);
+		_data->window.setActive(false);
 
 		_data->letterBoxView.setSize(windowWidth, windowHeight);
 		_data->letterBoxView.setCenter(windowWidth / 2, windowHeight / 2);
@@ -36,7 +37,7 @@ namespace maoutch
 		InputHandler::Instance()->SetWindow(&_data->window);
 
 		// Setup framerate
-		// _data->window.setFramerateLimit(240);
+		_data->window.setFramerateLimit(240);
 
 		// Setup logic time
 		_data->logicDeltatime = sf::milliseconds(1000.f / 60.f);
