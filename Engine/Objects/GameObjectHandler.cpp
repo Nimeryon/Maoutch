@@ -114,6 +114,16 @@ namespace maoutch
 		_objectsToDestroy.clear();
 	}
 
+	std::vector<GameObject*> GameObjectHandler::GetObjects(const std::string& name)
+	{
+		std::vector<GameObject*> objects = {};
+		for (auto& object : _objects)
+			if (object->GetName() == name)
+				objects.emplace_back(object);
+
+		return objects;
+	}
+
 	void GameObjectHandler::_OnStateChange()
 	{
 		Clear();
@@ -134,6 +144,9 @@ namespace maoutch
 	{
 		for (GameObject* object : _objectsToAdd)
 			_objects.push_back(object);
+
+		for (GameObject* object : _objectsToAdd)
+			object->Init();
 
 		_objectsToAdd.clear();
 		NeedUpdateSorting();

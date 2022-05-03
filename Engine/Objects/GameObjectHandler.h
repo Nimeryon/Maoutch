@@ -36,13 +36,16 @@ namespace maoutch
 		void Clear();
 
 		template <typename T>
-		T* GetObject(const std::string& name)
+		std::vector<T*> GetObjects()
 		{
+			std::vector<T*> objects = {};
 			for (auto& object : _objects)
-				if (object->GetName() == name) return (T*)object;
+				if (dynamic_cast<T*>(object))
+					objects.emplace_back((T*)object);
 
-			return nullptr;
+			return objects;
 		}
+		std::vector<GameObject*> GetObjects(const std::string& name);
 
 	protected:
 		GameObjectHandler();

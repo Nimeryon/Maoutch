@@ -26,6 +26,9 @@ namespace maoutch
 		// Function called for processing events
 		virtual void ProcessInputs() {}
 
+		// Function called at the first frame the object is loaded
+		virtual void Init() {}
+
 		// Function called at the beginning of a frame
 		virtual void EarlyUpdate(float dt) {}
 		// Function called each frame
