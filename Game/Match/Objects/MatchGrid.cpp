@@ -15,9 +15,9 @@
 
 namespace maoutch
 {
-	MatchGrid::MatchGrid(const std::string& fileName, const Element& element) :
+	MatchGrid::MatchGrid(const std::string& fileName) :
 		GameObject("Match Grid", 0),
-		_matchGridBackGround(new MatchGridBackGround(element)),
+		_matchGridBackGround(new MatchGridBackGround()),
 		_emptyPositions({}),
 		_state(GridState::Starting),
 		_matchFinder(&_grid),
@@ -36,8 +36,8 @@ namespace maoutch
 	{
 		Setup(fileName);
 
-		_matchGridBackGround->Setup(_grid);
 		AddChildren(_matchGridBackGround);
+		_matchGridBackGround->Setup();
 
 		AddChildren(new MatchHint());
 
@@ -235,6 +235,8 @@ namespace maoutch
 	GridState MatchGrid::GetState() const { return _state; }
 	void MatchGrid::SetState(const GridState& state) { _state = state; }
 
+	Grid<MatchElement*> MatchGrid::GetGrid() const { return _grid; }
+
 	void MatchGrid::PrintGrid()
 	{
 		std::string value = "";
@@ -347,7 +349,11 @@ namespace maoutch
 				if (IsValidGridPosition(gridPos) && !_grid.GetGridElement(gridPos))
 				{
 					Vector2 position = GetCenterGridPosition(gridPos);
-					_grid.GetGridElement(gridPos) = new MatchElement(*this, Vector2(position.x, -Assets::Config<float>("Window", "Height") - position.y), gridPos, Element::Random());
+					_grid.GetGridElement(gridPos) = new MatchElement(
+						Vector2(position.x, -Assets::Config<float>("Window", "Height") - position.y),
+						gridPos,
+						Element::Random()
+					);
 					_grid.GetGridElement(gridPos)->SetName((std::string)gridPos + " Element");
 					AddChildren(_grid.GetGridElement(gridPos));
 
@@ -463,7 +469,6 @@ namespace maoutch
 					Vector2 position = GetCenterGridPosition(gridPos);
 					Vector2 randomRespawnPoint = _respawnPoints[random::Int(0, _respawnPoints.size())];
 					_grid.GetGridElement(gridPos) = new MatchElement(
-						*this,
 						createAtCenter ? GetCenterGridPosition(randomRespawnPoint) : Vector2(position.x, -Assets::Config<float>("Window", "Height") - position.y),
 						gridPos,
 						Element::Random()
