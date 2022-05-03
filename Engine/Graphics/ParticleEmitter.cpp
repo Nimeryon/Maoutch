@@ -311,4 +311,6 @@ namespace maoutch
 	EmitterValue<float>* ParticleEmitter::GetParticleFriction() { return &_particleFriction; }
 	EmitterValue<float>* ParticleEmitter::GetParticleGravity() { return &_particleGravity; }
 	EmitterValue<float>* ParticleEmitter::GetParticleRotationSpeed() { return &_particleRotationSpeed; }
+
+	sf::FloatRect ParticleEmitter::GetBounds() const { return _particleVertex.getBounds(); }
 }

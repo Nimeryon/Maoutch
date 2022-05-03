@@ -99,6 +99,8 @@ namespace  maoutch
 		EmitterValue<float>* GetParticleGravity();
 		EmitterValue<float>* GetParticleRotationSpeed();
 
+		sf::FloatRect GetBounds() const override;
+
 	private:
 		sf::RenderStates _renderState;
 
