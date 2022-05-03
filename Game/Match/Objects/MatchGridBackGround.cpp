@@ -3,6 +3,7 @@
 
 #include "MatchGridBackGround.h"
 #include "MatchElement.h"
+#include "MatchGrid.h"
 #include "../../Engine/Assets.h"
 #include "../../Tools/Texture.h"
 
@@ -21,9 +22,10 @@ namespace maoutch
 		delete _vertexArray;
 	}
 
-	void MatchGridBackGround::Setup(Grid<MatchElement*>& grid)
+	void MatchGridBackGround::Setup()
 	{
 		_vertexArray->clear();
+		Grid<MatchElement*> grid = ((MatchGrid*)parent)->GetGrid();
 
 		const float elementSize = Assets::Config<float>("Element", "Size");
 		Vector2 halfElementSize = elementSize / 2.f;
@@ -67,6 +69,12 @@ namespace maoutch
 					_vertexArray->append(vertex);
 			}
 		}
+	}
+
+	void MatchGridBackGround::SetElement(const Element& element)
+	{
+		_element = element;
+		Setup();
 	}
 
 	bool MatchGridBackGround::_IsTileValid(Grid<MatchElement*>& grid, const Vector2i& gridPos)

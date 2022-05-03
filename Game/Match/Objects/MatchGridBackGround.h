@@ -56,7 +56,9 @@ namespace maoutch
 		explicit MatchGridBackGround(const Element& element = Element::ElementValue::None);
 		~MatchGridBackGround() override;
 
-		void Setup(Grid<MatchElement*>& grid);
+		void Setup();
+
+		void SetElement(const Element& element);
 
 	private:
 		sf::RenderStates _renderState;
