@@ -62,11 +62,10 @@ namespace maoutch
 		if (!_LoadTexture("HealthBar Skull", "healthBarSkull.png")) return false;
 		if (!_LoadTexture("Skull Decorators", "skull_decorators.png")) return false;
 		
-		if (!_LoadTexture("Shadow", "shadow.png")) return false;
 		if (!_LoadTexture("Demon", "demon.png")) return false;
 		if (!_LoadTexture("Cerbere", "cerbere.png")) return false;
 
-		if (!_LoadTexture("BackGround", "background_test.jpg")) return false;
+		if (!_LoadTexture("BackGround", "test_background.png")) return false;
 
 		return true;
 	}
