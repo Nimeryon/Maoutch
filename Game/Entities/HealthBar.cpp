@@ -10,7 +10,7 @@
 
 namespace maoutch
 {
-	HealthBar::HealthBar(const float& health, const bool& isBossBar, int width) :
+	HealthBar::HealthBar(const float& health, const bool& isBossBar) :
 		GameObject("HealthBar", 100),
 		_backgroundRectangle(new sf::RectangleShape()),
 		_damageIndicatorRectangle(new sf::RectangleShape()),
@@ -30,17 +30,16 @@ namespace maoutch
 			Assets::Config<float>("HealthBar", "PartWidth"),
 			Assets::Config<float>("HealthBar", "PartHeight")
 		);
-		_size = Vector2(partSize.x * width, partSize.y);
+		_size = Vector2(partSize.x * 6, partSize.y);
 
 		SetScale(Assets::Config<float>("HealthBar", "Scale"));
 		SetOrigin(_size / 2.f);
-
-		if (width < 3) width = 3;
-		for (int x = 0; x < width; ++x)
+		
+		for (int x = 0; x < 6; ++x)
 		{
 			int side = 1;
 			if (x == 0) side = 0;
-			else if (x == width - 1) side = 2;
+			else if (x == 6 - 1) side = 2;
 
 			_decorators.emplace_back(new Sprite(
 				&Assets::Instance()->GetTexture("HealthBar"),

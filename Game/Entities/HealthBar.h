@@ -17,7 +17,7 @@ namespace maoutch
 	class HealthBar : public GameObject, public IDamageable
 	{
 	public:
-		HealthBar(const float& health, const bool& isBossBar = false, int width = 3);
+		HealthBar(const float& health, const bool& isBossBar = false);
 		~HealthBar() override;
 
 		void FixedUpdate(float dt) override;
