@@ -23,12 +23,12 @@ namespace maoutch
 
 	void GameState::Init()
 	{
-		_grid = new MatchGrid("circle_grid", Element::ElementValue::Fire);
+		_grid = new MatchGrid("circle_grid");
 
 		const float windowWidth = Assets::Config<float>("Window", "Width");
 		const float windowHeight = Assets::Config<float>("Window", "Height");
 
-		Monster* monster = new Monster("demon_fire");
+		Monster* monster = new Monster(random::Bool() ? "cerbere" : "demon", Element::Random());
 		monster->SetPosition(Vector2(windowWidth / 2.f, 150));
 	}
 	void GameState::ProcessInputs()
