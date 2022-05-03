@@ -13,7 +13,7 @@ namespace maoutch
 		_particleScale(particleSize),
 		_startPosition(position),
 		_element(element),
-		_monster(GameObjectHandler::Instance()->GetObject<Monster>("Monster")),
+		_monster(GameObjectHandler::Instance()->GetObjects<Monster>()[0]),
 		_rotationSpeed(random::Float(
 			-Assets::Config<float>("Bullet", "MaxRotationSpeed"),
 			Assets::Config<float>("Bullet", "MaxRotationSpeed")
@@ -81,13 +81,13 @@ namespace maoutch
 		if (monsterElement.GetStrength() == _element)
 		{
 			popUpColor = sf::Color::Red;
-			damage = -0.75;
+			damage = -0.5;
 			popUpText = string::ToString(damage);
 		}
 		else if (monsterElement.GetWeakness() == _element)
 		{
 			popUpColor = sf::Color::Green;
-			damage = -1.75;
+			damage = -2;
 			popUpText = string::ToString(damage) + "!";
 		}
 		_monster->Damage(damage);
