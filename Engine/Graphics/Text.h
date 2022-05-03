@@ -35,9 +35,10 @@ namespace maoutch
 		sf::Color GetColor() const;
 		float GetOutlineThickness() const;
 		sf::Color GetOutlineColor() const;
-		sf::FloatRect GetBounds() const;
 
 		void Draw(sf::RenderWindow& window, const sf::Transform& transform);
+
+		sf::FloatRect GetBounds() const override;
 
 	private:
 		sf::Text* _text;
