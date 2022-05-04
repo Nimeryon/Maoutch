@@ -1,7 +1,6 @@
 #include <array>
 
 #include "AnimatedSprite.h"
-
 #include "../../Tools/Texture.h"
 
 namespace maoutch
