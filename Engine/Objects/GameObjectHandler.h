@@ -1,13 +1,14 @@
 #pragma once
 namespace sf { class RenderWindow; }
 #include <mutex>
-
 #include <vector>
+
 #include "../../Interfaces/IStateDependant.h"
 
 namespace maoutch
 {
 	class GameObject;
+	class ITransformable;
 
 	class GameObjectHandler : IStateDependant
 	{
