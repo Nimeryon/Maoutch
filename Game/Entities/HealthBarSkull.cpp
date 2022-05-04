@@ -10,17 +10,17 @@ namespace maoutch
 	HealthBarSkull::HealthBarSkull() :
 		GameObject("HealthBar Skull", 102),
 		_decorator(new Sprite(
-			&Assets::Instance()->GetTexture("Skull Decorators"),
+			Assets::Instance()->GetTexture("Skull Decorators"),
 			Vector2i(Assets::Config<int>("HealthBar", "DecoratorSize")),
 			Vector2i::Zero()
 		)),
 		_leftEyeSprite(new Sprite(
-				&Assets::Instance()->GetTexture("HealthBar Eye"),
-				Vector2i(Assets::Config<int>("HealthBar", "EyeSize")),
-				Vector2i::Zero()
+			Assets::Instance()->GetTexture("HealthBar Eye"),
+			Vector2i(Assets::Config<int>("HealthBar", "EyeSize")),
+			Vector2i::Zero()
 		)),
 		_rightEyeSprite(new Sprite(
-			&Assets::Instance()->GetTexture("HealthBar Eye"),
+			Assets::Instance()->GetTexture("HealthBar Eye"),
 			Vector2i(Assets::Config<int>("HealthBar", "EyeSize")),
 			Vector2i::Zero()
 		)),
@@ -46,7 +46,7 @@ namespace maoutch
 
 		_animatedSprite = new AnimatedSprite(
 			Assets::Config<float>("HealthBar", "SkullAnimationTime"),
-			&Assets::Instance()->GetTexture("HealthBar Skull"),
+			Assets::Instance()->GetTexture("HealthBar Skull"),
 			Vector2i(Assets::Config<int>("HealthBar", "SkullSize")),
 			Vector2i(0, 0),
 			false,
