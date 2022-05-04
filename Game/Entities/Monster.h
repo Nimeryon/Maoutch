@@ -23,6 +23,10 @@ namespace maoutch
 		Element _element;
 		Sprite* _sprite;
 
+		float _scale;
+		bool _isBoss;
+
+		void _OnDeath();
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 	};
 }
