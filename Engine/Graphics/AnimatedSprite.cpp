@@ -2,13 +2,11 @@
 
 #include "AnimatedSprite.h"
 
-#include <SFML/Graphics/RenderWindow.hpp>
-
 #include "../../Tools/Texture.h"
 
 namespace maoutch
 {
-	AnimatedSprite::AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake, const bool& playOnce) :
+	AnimatedSprite::AnimatedSprite(const float& animationSpeed, const sf::Texture& texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake, const bool& playOnce) :
 		Sprite(texture, frameSize, framePosition),
 		_playOnAwake(playOnAwake),
 		_playOnce(playOnce),

@@ -16,7 +16,7 @@ namespace maoutch
 	class AnimatedSprite : public Sprite
 	{
 	public:
-		AnimatedSprite(const float& animationSpeed, const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake = true, const bool& playOnce = false);
+		AnimatedSprite(const float& animationSpeed, const sf::Texture& texture, const Vector2i& frameSize, const Vector2i& framePosition, const bool& playOnAwake = true, const bool& playOnce = false);
 		~AnimatedSprite() override;
 
 		float GetAnimationSpeed() const;

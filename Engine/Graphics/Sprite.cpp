@@ -7,12 +7,12 @@
 
 namespace maoutch
 {
-	Sprite::Sprite(const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition) :
+	Sprite::Sprite(const sf::Texture& texture, const Vector2i& frameSize, const Vector2i& framePosition) :
 		_frameSize(frameSize),
 		_framePosition(framePosition),
 		_color(sf::Color::White)
 	{
-		_renderState.texture = texture;
+		_renderState.texture = &texture;
 		_vertexArray.setPrimitiveType(sf::Quads);
 
 		_SetFrame();

@@ -15,7 +15,7 @@ namespace maoutch
 	class Sprite : public ITransformable
 	{
 	public:
-		Sprite(const sf::Texture* texture, const Vector2i& frameSize, const Vector2i& framePosition);
+		Sprite(const sf::Texture& texture, const Vector2i& frameSize, const Vector2i& framePosition);
 		virtual ~Sprite();
 
 		// Setters
