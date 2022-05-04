@@ -11,20 +11,16 @@ namespace maoutch
 {
 	MatchGridBackGround::MatchGridBackGround(const Element& element) :
 		GameObject("MatchGrid BackGround", -1),
-		_vertexArray(new sf::VertexArray()),
 		_element(element)
 	{
 		_renderState.texture = &Assets::Instance()->GetTexture("Elements Background");
-		_vertexArray->setPrimitiveType(sf::Quads);
+		_vertexArray.setPrimitiveType(sf::Quads);
 	}
-	MatchGridBackGround::~MatchGridBackGround()
-	{
-		delete _vertexArray;
-	}
+	MatchGridBackGround::~MatchGridBackGround() = default;
 
 	void MatchGridBackGround::Setup()
 	{
-		_vertexArray->clear();
+		_vertexArray.clear();
 		Grid<MatchElement*> grid = ((MatchGrid*)parent)->GetGrid();
 
 		const float elementSize = Assets::Config<float>("Element", "Size");
@@ -66,7 +62,7 @@ namespace maoutch
 				};
 
 				for (sf::Vertex& vertex : vertices)
-					_vertexArray->append(vertex);
+					_vertexArray.append(vertex);
 			}
 		}
 	}
@@ -103,6 +99,6 @@ namespace maoutch
 	void MatchGridBackGround::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
 		_renderState.transform = transform;
-		window.draw(*_vertexArray, _renderState);
+		window.draw(_vertexArray, _renderState);
 	}
 }

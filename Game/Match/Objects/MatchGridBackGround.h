@@ -62,7 +62,7 @@ namespace maoutch
 
 	private:
 		sf::RenderStates _renderState;
-		sf::VertexArray* _vertexArray;
+		sf::VertexArray _vertexArray;
 
 		Element _element;
 
