@@ -16,13 +16,13 @@ namespace maoutch
 		_element(element),
 		_gridPos(gridPos),
 		_sprite(new Sprite(
-			&Assets::Instance()->GetTexture("Elements"),
+			Assets::Instance()->GetTexture("Elements"),
 			Assets::Config<int>("Element", "Size"),
 			Vector2i::Zero()
 		)),
 		_selectedAnimation(new AnimatedSprite(
 			Assets::Config<float>("Element", "SelectedAnimationTime"),
-			&Assets::Instance()->GetTexture("Selected Animation"), 
+			Assets::Instance()->GetTexture("Selected Animation"), 
 			Vector2i::From({ Assets::Config<float>("Element", "Size") }),
 			Vector2i::Zero(), true
 		)),
