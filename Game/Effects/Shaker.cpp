@@ -22,7 +22,10 @@ namespace maoutch
 		decreaseFactor = data.decreaseFactor;
 		time = data.time;
 	}
-	
+
+	Shaker::Shaker() = default;
+	Shaker::~Shaker() = default;
+
 	Shaker* Shaker::Instance()
 	{
 		std::lock_guard lock(_mutex);
@@ -31,9 +34,6 @@ namespace maoutch
 		return _instance;
 	}
 
-	Shaker::Shaker() = default;
-	Shaker::~Shaker() = default;
-
 	bool Shaker::_UpdateEffects(const float& dt)
 	{
 		bool shaked = false;
@@ -41,12 +41,6 @@ namespace maoutch
 		for (int i = 0; i < _effectDatas.size(); ++i)
 		{
 			ShakeData& data = _effectDatas[i];
-			if (!data.object)
-			{
-				_effectDatas.erase(_effectDatas.begin() + i);
-				continue;
-			}
-
 			if (data.currentTime < data.time)
 			{
 				shaked = true;
@@ -63,7 +57,7 @@ namespace maoutch
 			else
 			{
 				data.object->SetPosition(data.initialPosition);
-				_effectDatas.erase(_effectDatas.begin() + i);
+				Remove(data.object);
 			}
 		}
 

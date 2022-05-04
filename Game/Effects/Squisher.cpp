@@ -8,6 +8,7 @@ namespace maoutch
 
 	SquishData::SquishData(ITransformable* object, const float& time, const float& timeOut, const Vector2& scale, const easing::EaseType& inEaseType, const easing::EaseType& outEaseType, const bool& isLooping) :
 		EffectData(object, time, isLooping),
+		in(false),
 		currentOutTime(0),
 		timeOut(timeOut),
 		initialScale(object->GetScale()),
@@ -46,12 +47,6 @@ namespace maoutch
 		for (int i = 0; i < _effectDatas.size(); ++i)
 		{
 			SquishData& data = _effectDatas[i];
-			if (!data.object)
-			{
-				_effectDatas.erase(_effectDatas.begin() + i);
-				continue;
-			}
-
 			squished = true;
 			if (data.in)
 			{
@@ -66,7 +61,7 @@ namespace maoutch
 					else
 					{
 						data.object->SetScale(data.initialScale);
-						_effectDatas.erase(_effectDatas.begin() + i);
+						Remove(data.object);
 
 						return false;
 					}
@@ -88,7 +83,7 @@ namespace maoutch
 					else
 					{
 						data.object->SetScale(data.initialScale);
-						_effectDatas.erase(_effectDatas.begin() + i);
+						Remove(data.object);
 
 						return false;
 					}

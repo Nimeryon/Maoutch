@@ -37,37 +37,30 @@ namespace maoutch
 	bool Breather::_UpdateEffects(const float& dt)
 	{
 		bool breathed = false;
-
-		for (int i = 0; i < _effectDatas.size(); ++i)
-		{
-			BreathData& data = _effectDatas[i];
-			if (!data.object)
+			for (int i = 0; i < _effectDatas.size(); ++i)
 			{
-				_effectDatas.erase(_effectDatas.begin() + i);
-				continue;
-			}
-
-			data.currentTime += dt;
-			if (data.currentTime >= data.time)
-			{
-				if (data.isLooping)
+				BreathData& data = _effectDatas[i];
+				data.currentTime += dt;
+				if (data.currentTime >= data.time)
 				{
-					data.in = !data.in;
-					data.currentTime -= data.time;
-				}
-				else
-				{
-					data.object->SetScale(data.initialScale);
-					_effectDatas.erase(_effectDatas.begin() + i);
+					if (data.isLooping)
+					{
+						data.in = !data.in;
+						data.currentTime -= data.time;
+					}
+					else
+					{
+						data.object->SetScale(data.initialScale);
+						Remove(data.object);
 
-					return false;
+						return false;
+					}
 				}
-			}
 
-			breathed = true;
-			const float t = data.currentTime / data.time;
-			if (data.in) data.object->SetScale(data.initialScale + data.scale * Ease(data.inEaseType, t));
-			else data.object->SetScale(data.initialScale + data.scale * Ease(data.outEaseType, 1 - t));
+				breathed = true;
+				const float t = data.currentTime / data.time;
+				if (data.in) data.object->SetScale(data.initialScale + data.scale * Ease(data.inEaseType, t));
+				else data.object->SetScale(data.initialScale + data.scale * Ease(data.outEaseType, 1 - t));
 		}
 
 		return breathed;

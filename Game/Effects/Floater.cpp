@@ -41,12 +41,6 @@ namespace maoutch
 		for (int i = 0; i < _effectDatas.size(); ++i)
 		{
 			FloaterData& data = _effectDatas[i];
-			if (!data.object)
-			{
-				_effectDatas.erase(_effectDatas.begin() + i);
-				continue;
-			}
-
 			data.currentTime += dt;
 			if (data.currentTime >= data.time)
 			{
@@ -58,7 +52,7 @@ namespace maoutch
 				else
 				{
 					data.object->SetPosition(Vector2(data.object->GetPosition().x, data.initialHeight));
-					_effectDatas.erase(_effectDatas.begin() + i);
+					Remove(data.object);
 
 					return false;
 				}

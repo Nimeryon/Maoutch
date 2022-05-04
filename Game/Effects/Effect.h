@@ -3,11 +3,10 @@
 #include "../../Tools/Event.h"
 #include "../../Engine/Tools/Timer.h"
 #include "../../Interfaces/IStateDependant.h"
+#include "../../Interfaces/ITransformable.h"
 
 namespace maoutch
 {
-	class ITransformable;
-
 	struct EffectData
 	{
 		EffectData(ITransformable* object, const float& time, const bool& isLooping = false);
@@ -24,13 +23,13 @@ namespace maoutch
 	class Effect : IStateDependant
 	{
 	public:
-		void Apply(const T& data)
+		void Apply(T data)
 		{
 			if (!data.object) return;
 			if (!_isActive)
 			{
 				_isActive = true;
-				TimerBase::timerEvent += EventHandler::Bind<const float&, Effect<T>>(&Effect<T>::_Update, this);
+				TimerBase::timerEvent += EventHandler::Bind<const float&, Effect>(&Effect::_Update, this);
 			}
 
 			bool objectFound = false;
@@ -45,6 +44,18 @@ namespace maoutch
 
 			if (!objectFound) _effectDatas.push_back(data);
 		}
+		void Remove(ITransformable* object)
+		{
+			for (int i = 0; i < _effectDatas.size(); ++i)
+			{
+				EffectData& data = _effectDatas[i];
+				if (data.object == object)
+				{
+					_effectDatas.erase(_effectDatas.begin() + i);
+					break;
+				}
+			}
+		}
 
 	protected:
 		std::vector<T> _effectDatas;
@@ -52,7 +63,7 @@ namespace maoutch
 		void _Clear()
 		{
 			_effectDatas.clear();
-			TimerBase::timerEvent -= EventHandler::Bind<const float&, Effect<T>>(&Effect<T>::_Update, this);
+			TimerBase::timerEvent -= EventHandler::Bind<const float&, Effect>(&Effect::_Update, this);
 			_isActive = false;
 		}
 
