@@ -7,6 +7,7 @@
 
 namespace maoutch
 {
+	Sprite::Sprite() = default;
 	Sprite::Sprite(const sf::Texture& texture, const Vector2i& frameSize, const Vector2i& framePosition) :
 		_frameSize(frameSize),
 		_framePosition(framePosition),
