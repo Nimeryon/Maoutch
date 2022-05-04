@@ -6,5 +6,5 @@
   "BreathTime": 2,
   "BreathScale": "0.025|0.025",
   "Floating": false,
-  "BaseHealth": 10
+  "BaseHealth": 500
 }
