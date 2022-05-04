@@ -1,6 +1,5 @@
 #include "Direction.h"
 #include "../Tools/String.h"
-#include "../Tools/Math.h"
 
 namespace maoutch
 {

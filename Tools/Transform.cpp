@@ -1,4 +1,5 @@
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics/Vertex.hpp>
 
 #include "Transform.h"
 #include "../Interfaces/ITransformable.h"

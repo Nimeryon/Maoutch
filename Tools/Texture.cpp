@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Vertex.hpp>
 #include <array>
 
 #include "Texture.h"

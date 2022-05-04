@@ -1,4 +1,3 @@
-#include <imgui.h>
 #include <imgui-SFML.h>
 
 #include "Game.h"

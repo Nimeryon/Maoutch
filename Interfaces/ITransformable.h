@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+
 #include "../../Types/Vector2.h"
 
 namespace maoutch

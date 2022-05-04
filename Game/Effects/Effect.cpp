@@ -1,5 +1,4 @@
 #include "Effect.h"
-#include "../../Engine/Objects/GameObject.h"
 
 namespace maoutch
 {

@@ -1,7 +1,5 @@
 #include "Bullet.h"
 
-#include <SFML/Graphics/RenderWindow.hpp>
-
 #include "../../Engine/Assets.h"
 #include "../../Engine/Objects/GameObjectHandler.h"
 #include "../../Engine/Graphics/TextPopUp.h"
