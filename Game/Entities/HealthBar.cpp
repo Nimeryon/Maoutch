@@ -12,9 +12,6 @@ namespace maoutch
 {
 	HealthBar::HealthBar(const float& health, const bool& isBossBar) :
 		GameObject("HealthBar", 100),
-		_backgroundRectangle(new sf::RectangleShape()),
-		_damageIndicatorRectangle(new sf::RectangleShape()),
-		_healthRectangle(new sf::RectangleShape()),
 		_healthText(new Text(string::ToString(health))),
 		_currentHealth(health),
 		_health(health),
@@ -42,7 +39,7 @@ namespace maoutch
 			else if (x == 6 - 1) side = 2;
 
 			_decorators.emplace_back(new Sprite(
-				&Assets::Instance()->GetTexture("HealthBar"),
+				Assets::Instance()->GetTexture("HealthBar"),
 				Vector2i::From(partSize),
 				Vector2i(side, 0)
 			));
@@ -52,17 +49,17 @@ namespace maoutch
 		// Health rectangles
 		const Vector2 size = Vector2(_size.x - 6, _size.y - 6);
 		const Vector2 origin = Vector2(-3, -3 - size.y / 4.f);
-		_backgroundRectangle->setSize(Vector2(size.x , size.y / 2.f));
-		_backgroundRectangle->setOrigin(origin);
-		_backgroundRectangle->setFillColor(sf::Color(66, 66, 66));
+		_backgroundRectangle.setSize(Vector2(size.x , size.y / 2.f));
+		_backgroundRectangle.setOrigin(origin);
+		_backgroundRectangle.setFillColor(sf::Color(66, 66, 66));
 
-		_damageIndicatorRectangle->setSize(Vector2(size.x, size.y / 2.f));
-		_damageIndicatorRectangle->setOrigin(origin);
-		_damageIndicatorRectangle->setFillColor(sf::Color::Red);
+		_damageIndicatorRectangle.setSize(Vector2(size.x, size.y / 2.f));
+		_damageIndicatorRectangle.setOrigin(origin);
+		_damageIndicatorRectangle.setFillColor(sf::Color::Red);
 
-		_healthRectangle->setSize(Vector2(size.x, size.y / 2.f));
-		_healthRectangle->setOrigin(origin);
-		_healthRectangle->setFillColor(sf::Color::Green);
+		_healthRectangle.setSize(Vector2(size.x, size.y / 2.f));
+		_healthRectangle.setOrigin(origin);
+		_healthRectangle.setFillColor(sf::Color::Green);
 
 		// Health skull
 		HealthBarSkull* skull = new HealthBarSkull();
@@ -79,7 +76,6 @@ namespace maoutch
 	}
 	HealthBar::~HealthBar()
 	{
-		delete _healthRectangle;
 		for (auto& decorator : _decorators)
 			delete decorator;
 	}
@@ -105,7 +101,7 @@ namespace maoutch
 			const float timerT = _currentIndicatorTime / _indicatorTime;
 			_indicatorHealth = math::Lerp(_indicatorHealth, _currentHealth, Ease(easing::EaseType::EaseInExpo, timerT));
 			const float t = _indicatorHealth / _health;
-			_damageIndicatorRectangle->setSize(Vector2(math::Clamp(_size.x * t - 6, 0.f, _size.x), _damageIndicatorRectangle->getSize().y));
+			_damageIndicatorRectangle.setSize(Vector2(math::Clamp(_size.x * t - 6, 0.f, _size.x), _damageIndicatorRectangle.getSize().y));
 		}
 	}
 
@@ -118,8 +114,8 @@ namespace maoutch
 		_currentHealth = math::Clamp(_currentHealth += damage, 0.f, _health);
 
 		const float t = _currentHealth / _health;
-		_healthRectangle->setSize(Vector2(math::Clamp(_size.x * t - 6, 0.f, _size.x), _healthRectangle->getSize().y));
-		_healthRectangle->setFillColor(colors::LerpRGB(sf::Color::Red, sf::Color::Green, t, easing::EaseType::EaseInOutQuad));
+		_healthRectangle.setSize(Vector2(math::Clamp(_size.x * t - 6, 0.f, _size.x), _healthRectangle.getSize().y));
+		_healthRectangle.setFillColor(colors::LerpRGB(sf::Color::Red, sf::Color::Green, t, easing::EaseType::EaseInOutQuad));
 
 		_healthText->SetText(string::ToString(_currentHealth));
 		_healthText->SetOrigin(Vector2(_healthText->GetBounds().width, 0) / 2.f);
@@ -155,9 +151,9 @@ namespace maoutch
 
 	void HealthBar::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		window.draw(*_backgroundRectangle, transform);
-		if (_startedIndicating) window.draw(*_damageIndicatorRectangle, transform);
-		window.draw(*_healthRectangle, transform);
+		window.draw(_backgroundRectangle, transform);
+		if (_startedIndicating) window.draw(_damageIndicatorRectangle, transform);
+		window.draw(_healthRectangle, transform);
 		
 		for (auto& decorator : _decorators)
 			decorator->Draw(window, transform);

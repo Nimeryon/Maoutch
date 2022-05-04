@@ -30,9 +30,9 @@ namespace maoutch
 		Event<const float> onHeal;
 
 	private:
-		sf::RectangleShape* _backgroundRectangle;
-		sf::RectangleShape* _damageIndicatorRectangle;
-		sf::RectangleShape* _healthRectangle;
+		sf::RectangleShape _backgroundRectangle;
+		sf::RectangleShape _damageIndicatorRectangle;
+		sf::RectangleShape _healthRectangle;
 		std::vector<Sprite*> _decorators;
 		Text* _healthText;
 
