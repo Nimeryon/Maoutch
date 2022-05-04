@@ -41,7 +41,7 @@ namespace maoutch
 		sf::FloatRect GetBounds() const override;
 
 	private:
-		sf::Text* _text;
+		sf::Text _text;
 
 		void _SetFont(sf::Font& font);
 	};
