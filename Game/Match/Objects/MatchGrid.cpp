@@ -23,7 +23,7 @@ namespace maoutch
 		_matchFinder(&_grid),
 		_moveChecked(false),
 		_lastSwapDir(Direction::DirectionValue::None),
-		_startTimer(Assets::Config<float>("Element", "MoveTime"), &MatchGrid::_Start, this),
+		_startTimer(Assets::Config<float>("Element", "MoveTime"), &MatchGrid::_EnableInputs, this),
 		_destroyTimer(Assets::Config<float>("Grid", "DestroyTime"), &MatchGrid::_DestroyMatched, this),
 		_collapseTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "CollapseTime"), &MatchGrid::_CollapseColumns, this),
 		_refillTimer(Assets::Config<float>("Element", "MoveTime") + Assets::Config<float>("Grid", "RefillTime"), &MatchGrid::_RefillBoard, this),
@@ -175,7 +175,7 @@ namespace maoutch
 		Vector2i goalPos = gridPos + dir;
 		if (!IsValidGridPosition(goalPos))
 		{
-			SetState(GridState::Inputs);
+			_EnableInputs();
 			return;
 		}
 		if (!_grid.GetGridElement(gridPos) || !_grid.GetGridElement(goalPos)) return;
@@ -430,13 +430,16 @@ namespace maoutch
 		{
 			_showHintTimer.Restart();
 			_moveChecked = false;
-			SetState(GridState::Inputs);
+			_EnableInputs();
 		}
 	}
 
-	void MatchGrid::_Start()
+	void MatchGrid::_EnableInputs()
 	{
 		SetState(GridState::Inputs);
+
+		PossibleMatch& possibleMatch = _matchFinder.possibleMatches[random::Int(0, _matchFinder.possibleMatches.size())];
+		Swap(possibleMatch.gridPos, possibleMatch.direction);
 	}
 	void MatchGrid::_DisableMatchHint()
 	{

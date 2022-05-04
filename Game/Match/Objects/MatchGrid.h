@@ -96,7 +96,7 @@ namespace maoutch
 		void _ProcessMatches();
 		void _ProcessPossibleMatches();
 
-		void _Start();
+		void _EnableInputs();
 		void _DisableMatchHint();
 		void _SetPossibleMatch();
 		void _SwapBack();
