@@ -24,12 +24,7 @@ namespace maoutch
 	void GameState::Init()
 	{
 		_grid = new MatchGrid("circle_grid");
-
-		const float windowWidth = Assets::Config<float>("Window", "Width");
-		const float windowHeight = Assets::Config<float>("Window", "Height");
-
-		Monster* monster = new Monster(random::Bool() ? "cerbere" : "demon", Element::Random());
-		monster->SetPosition(Vector2(windowWidth / 2.f, 150));
+		new Monster(random::Bool() ? "cerbere" : "demon", Element::Random());
 	}
 	void GameState::ProcessInputs()
 	{
@@ -45,9 +40,6 @@ namespace maoutch
 	}
 	void GameState::ImGui(float dt)
 	{
-		const float windowWidth = Assets::Config<float>("Window", "Width");
-		const float windowHeight = Assets::Config<float>("Window", "Height");
-
 		if (!ImGui::Begin("Game Infos"))
 		{
 			ImGui::End();
