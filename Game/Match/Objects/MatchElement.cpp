@@ -15,12 +15,12 @@ namespace maoutch
 		GameObject("MatchBox", 0, false),
 		_element(element),
 		_gridPos(gridPos),
-		_sprite(new Sprite(
+		_sprite(Sprite(
 			Assets::Instance()->GetTexture("Elements"),
 			Assets::Config<int>("Element", "Size"),
 			Vector2i::Zero()
 		)),
-		_selectedAnimation(new AnimatedSprite(
+		_selectedAnimation(AnimatedSprite(
 			Assets::Config<float>("Element", "SelectedAnimationTime"),
 			Assets::Instance()->GetTexture("Selected Animation"), 
 			Vector2i::From({ Assets::Config<float>("Element", "Size") }),
@@ -36,7 +36,7 @@ namespace maoutch
 		_easeType(easing::EaseType::None)
 	{
 		for (int i = 0; i < 12; ++i)
-			_selectedAnimation->AddFrame({ i, 0 });
+			_selectedAnimation.AddFrame({ i, 0 });
 
 		const Vector2 elementSize = { Assets::Config<float>("Element", "Size") };
 		SetOrigin(elementSize / 2.f);
@@ -44,11 +44,7 @@ namespace maoutch
 
 		SetElement(_element);
 	}
-	MatchElement::~MatchElement()
-	{
-		delete _sprite;
-		delete _selectedAnimation;
-	}
+	MatchElement::~MatchElement() = default;
 
 	void MatchElement::ProcessInputs()
 	{
@@ -56,7 +52,7 @@ namespace maoutch
 		if (grid->GetState() != GridState::Inputs) return;
 
 		Vector2 mousePos = InputHandler::Instance()->GetMousePosition();
-		if (!_isSelectd && transform::Contains(*_sprite, _transform, mousePos))
+		if (!_isSelectd && transform::Contains(_sprite, _transform, mousePos))
 			if (InputHandler::Instance()->IsPointerDown(sf::Mouse::Left)) OnPointerDown();
 
 		if (_isSelectd)
@@ -88,10 +84,9 @@ namespace maoutch
 	}
 	void MatchElement::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		_sprite->Draw(window, transform);
+		_sprite.Draw(window, transform);
 
-		if (IsSelected())
-			_selectedAnimation->Draw(window, transform);
+		if (IsSelected()) _selectedAnimation.Draw(window, transform);
 	}
 
 	Element MatchElement::GetElement() const { return _element; }
@@ -103,19 +98,19 @@ namespace maoutch
 	void MatchElement::SetElement(const Element& element)
 	{
 		_element = element;
-		_sprite->SetFramePosition(Vector2i((int)_element.Value(), 0));
+		_sprite.SetFramePosition(Vector2i((int)_element.Value(), 0));
 	}
 	void MatchElement::SetIsMatched()
 	{
 		_isMatched = true;
-		_sprite->SetColor(_isMatched ? sf::Color(255, 255, 255, 128) : sf::Color::White);
+		_sprite.SetColor(_isMatched ? sf::Color(255, 255, 255, 128) : sf::Color::White);
 	}
 	void MatchElement::SetIsSelected(const bool& isSelected)
 	{
 		_isSelectd = isSelected;
 
-		if (_isSelectd) _selectedAnimation->Play();
-		else _selectedAnimation->Stop();
+		if (_isSelectd) _selectedAnimation.Play();
+		else _selectedAnimation.Stop();
 	}
 
 	void MatchElement::SetGridPos(const Vector2i& gridPos)

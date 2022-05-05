@@ -21,7 +21,8 @@ namespace maoutch
 
 	private:
 		Element _element;
-		Sprite* _sprite;
+		
+		Sprite _sprite;
 
 		float _scale;
 		bool _isBoss;

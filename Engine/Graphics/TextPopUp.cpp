@@ -13,18 +13,15 @@ namespace maoutch
 		_lifetime(lifetime),
 		_color(color)
 	{
-		_text = new Text(text);
-		_text->SetPosition(position);
-		_text->SetColor(_color);
-		_text->SetSize(textSize);
+		_text = Text(text);
+		_text.SetPosition(position);
+		_text.SetColor(_color);
+		_text.SetSize(textSize);
 
-		sf::FloatRect rect = _text->GetBounds();
-		_text->SetOrigin(Vector2(rect.width, rect.height) / 2.f);
+		sf::FloatRect rect = _text.GetBounds();
+		_text.SetOrigin(Vector2(rect.width, rect.height) / 2.f);
 	}
-	TextPopUp::~TextPopUp()
-	{
-		delete _text;
-	}
+	TextPopUp::~TextPopUp() = default;
 
 	void TextPopUp::Update(float dt)
 	{
@@ -36,17 +33,17 @@ namespace maoutch
 
 		// Colors
 		const float alphaT = 1 - Ease(easing::EaseType::EaseInExpo, t);
-		sf::Color outlineColor = _text->GetOutlineColor();
+		sf::Color outlineColor = _text.GetOutlineColor();
 		_color.a = outlineColor.a = 255.f * alphaT;
-		_text->SetColor(_color);
-		_text->SetOutlineColor(outlineColor);
+		_text.SetColor(_color);
+		_text.SetOutlineColor(outlineColor);
 
 		// Position
-		_text->SetPosition(Vector2(_initialPosition.x, math::Lerp(_initialPosition.y, _finalHeight, Ease(easing::EaseType::EaseInQuad, t))));
+		_text.SetPosition(Vector2(_initialPosition.x, math::Lerp(_initialPosition.y, _finalHeight, Ease(easing::EaseType::EaseInQuad, t))));
 	}
 
 	void TextPopUp::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		_text->Draw(window, transform);
+		_text.Draw(window, transform);
 	}
 }

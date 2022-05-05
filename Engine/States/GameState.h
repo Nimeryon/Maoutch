@@ -1,6 +1,5 @@
 #pragma once
-#include <SFML/Graphics/Sprite.hpp>
-
+#include "../Graphics/Sprite.h"
 #include "State.h"
 
 namespace maoutch
@@ -20,6 +19,7 @@ namespace maoutch
 
 	private:
 		MatchGrid* _grid = nullptr;
-		sf::Sprite _background;
+
+		Sprite _background;
 	};
 }

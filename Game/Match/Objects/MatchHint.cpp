@@ -7,34 +7,34 @@ namespace maoutch
 {
 	MatchHint::MatchHint() :
 		GameObject("MatchHint", 2, true, false),
-		_hintAnimationNorth(
+		_hintAnimationNorth(AnimatedSprite(
 			Assets::Config<float>("Hint", "AnimationTime"),
-			&Assets::Instance()->GetTexture("Hint Arrow Animation"),
-			Vector2i(Assets::Config<float>("Element", "Size"), Assets::Config<float>("Element", "Size") * 2),
+			Assets::Instance()->GetTexture("Hint Arrow Animation"),
+			Vector2i(Assets::Config<int>("Element", "Size"), Assets::Config<int>("Element", "Size") * 2),
 			Vector2i(3, 0),
 			false
-		),
-		_hintAnimationEast(
+		)),
+		_hintAnimationEast(AnimatedSprite(
 			Assets::Config<float>("Hint", "AnimationTime"),
-			&Assets::Instance()->GetTexture("Hint Arrow Animation"),
-			Vector2i(Assets::Config<float>("Element", "Size") * 2, Assets::Config<float>("Element", "Size")),
+			Assets::Instance()->GetTexture("Hint Arrow Animation"),
+			Vector2i(Assets::Config<int>("Element", "Size") * 2, Assets::Config<int>("Element", "Size")),
 			Vector2i::Zero(),
 			false
-		),
-		_hintAnimationSouth(
+		)),
+		_hintAnimationSouth(AnimatedSprite(
 			Assets::Config<float>("Hint", "AnimationTime"),
-			&Assets::Instance()->GetTexture("Hint Arrow Animation"),
-			Vector2i(Assets::Config<float>("Element", "Size"), Assets::Config<float>("Element", "Size") * 2),
+			Assets::Instance()->GetTexture("Hint Arrow Animation"),
+			Vector2i(Assets::Config<int>("Element", "Size"), Assets::Config<int>("Element", "Size") * 2),
 			Vector2i(2, 0),
 			false
-		),
-		_hintAnimationWest(
+		)),
+		_hintAnimationWest(AnimatedSprite(
 			Assets::Config<float>("Hint", "AnimationTime"),
-			&Assets::Instance()->GetTexture("Hint Arrow Animation"),
-			Vector2i(Assets::Config<float>("Element", "Size") * 2, Assets::Config<float>("Element", "Size")),
+			Assets::Instance()->GetTexture("Hint Arrow Animation"),
+			Vector2i(Assets::Config<int>("Element", "Size") * 2, Assets::Config<int>("Element", "Size")),
 			Vector2i(0, 1),
 			false
-		)
+		))
 	{
 		// Setup Animation North Frames
 		for (int i = 7; i < 32; i += 4)

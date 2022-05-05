@@ -33,8 +33,8 @@ namespace maoutch
 		sf::RectangleShape _backgroundRectangle;
 		sf::RectangleShape _damageIndicatorRectangle;
 		sf::RectangleShape _healthRectangle;
-		std::vector<Sprite*> _decorators;
-		Text* _healthText;
+		std::vector<Sprite> _decorators;
+		Text _healthText;
 
 		Vector2 _size;
 		float _currentHealth;

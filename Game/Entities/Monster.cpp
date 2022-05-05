@@ -32,13 +32,13 @@ namespace maoutch
 		if (_isBoss) screenSize = json["BossSize"].get<float>();
 		_scale = screenSize / size.x;
 
-		_sprite = new Sprite(
+		_sprite = Sprite(
 			Assets::Instance()->GetTexture(json["Texture"].get<std::string>()),
 			size,
 			Vector2i((int)_element.Value(), 0)
 		);
-		_sprite->SetOrigin((Vector2)size / 2.f);
-		_sprite->SetScale(_scale);
+		_sprite.SetOrigin((Vector2)size / 2.f);
+		_sprite.SetScale(_scale);
 
 		// HealthBar
 		HealthBar* healthBar = new HealthBar(json["BaseHealth"].get<int>(), _isBoss);
@@ -50,7 +50,7 @@ namespace maoutch
 		if (json["Breathing"].get<bool>())
 		{
 			Breather::Instance()->Apply({
-				_sprite,
+				&_sprite,
 				json["BreathTime"].get<float>(),
 				Vector2::FromString(json["BreathScale"].get<std::string>()) * _scale,
 				easing::EaseType::EaseInSine,
@@ -61,7 +61,7 @@ namespace maoutch
 		if (json["Floating"].get<bool>())
 		{
 			Floater::Instance()->Apply({
-				_sprite,
+				&_sprite,
 				json["FloatingTime"].get<float>(),
 				json["FloatingHeight"].get<float>() * _scale,
 				easing::EaseType::EaseInOutSine,
@@ -69,10 +69,7 @@ namespace maoutch
 			});
 		}
 	}
-	Monster::~Monster()
-	{
-		delete _sprite;
-	}
+	Monster::~Monster() = default;
 
 	void Monster::Init()
 	{
@@ -89,14 +86,14 @@ namespace maoutch
 		if (damage < 0)
 		{
 			Vector2 squishScale = Vector2(math::Clamp(-0.05f, -0.5f, damage * -0.1f));
-			Squisher::Instance()->Apply({ _sprite, 0.1f, 0.05f, squishScale * _scale });
+			Squisher::Instance()->Apply({ &_sprite, 0.1f, 0.05f, squishScale * _scale });
 		}
 	}
 
 	Element Monster::GetElement() const { return _element; }
 	Vector2 Monster::GetMonsterPosition() const
 	{
-		return GetGlobalPosition() + _sprite->GetPosition();
+		return GetGlobalPosition() + _sprite.GetPosition();
 	}
 
 	void Monster::_OnDeath()
@@ -107,6 +104,6 @@ namespace maoutch
 
 	void Monster::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
-		_sprite->Draw(window, transform);
+		_sprite.Draw(window, transform);
 	}
 }

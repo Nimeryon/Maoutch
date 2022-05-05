@@ -16,10 +16,10 @@ namespace maoutch
 		void FixedUpdate(float dt) override;
 
 	private:
-		AnimatedSprite* _animatedSprite;
-		Sprite* _decorator;
-		Sprite* _leftEyeSprite;
-		Sprite* _rightEyeSprite;
+		AnimatedSprite _animatedSprite;
+		Sprite _decorator;
+		Sprite _leftEyeSprite;
+		Sprite _rightEyeSprite;
 
 		Timer<HealthBarSkull> _blinkTimer;
 

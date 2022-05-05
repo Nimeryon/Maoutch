@@ -17,13 +17,13 @@ namespace maoutch
 
 	private:
 		ParticleEmitter* _particleEmitter;
+		Monster* _monster;
 
 		Vector2 _particleScale;
 		Vector2 _goalOffset;
 		Vector2 _startPosition;
 		Vector2 _curvePoint;
 		Element _element;
-		Monster* _monster;
 
 		float _rotationSpeed;
 		float _currentTravelTime;

@@ -11,11 +11,12 @@
 
 namespace maoutch
 {
-	GameState::GameState()
-	{
-		_background.setTexture(Assets::Instance()->GetTexture("BackGround"));
-		_background.setTextureRect({ 0, 0, 1280, 720 });
-	}
+	GameState::GameState() : _background(
+		Assets::Instance()->GetTexture("BackGround"),
+		Vector2i(1280, 720),
+		Vector2i::Zero()
+	)
+	{}
 	GameState::~GameState()
 	{
 		delete _grid;
@@ -36,7 +37,7 @@ namespace maoutch
 	}
 	void GameState::Draw(sf::RenderWindow& window)
 	{
-		window.draw(_background);
+		_background.Draw(window, sf::Transform::Identity);
 	}
 	void GameState::ImGui(float dt)
 	{

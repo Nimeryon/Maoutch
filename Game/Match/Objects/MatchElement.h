@@ -1,9 +1,4 @@
 #pragma once
-namespace sf
-{
-	class Sprite;
-}
-
 #include "../../Engine/Objects/GameObject.h"
 #include "../../Engine/Tools/Timer.h"
 #include "../../Tools/Easing.h"
@@ -52,8 +47,8 @@ namespace maoutch
 		Element _element;
 		Vector2i _gridPos;
 
-		Sprite* _sprite;
-		AnimatedSprite* _selectedAnimation;
+		Sprite _sprite;
+		AnimatedSprite _selectedAnimation;
 
 		bool _isMatched;
 		bool _isSelectd;

@@ -12,7 +12,7 @@ namespace maoutch
 {
 	HealthBar::HealthBar(const float& health, const bool& isBossBar) :
 		GameObject("HealthBar", 100),
-		_healthText(new Text(string::ToString(health))),
+		_healthText(Text(string::ToString(health))),
 		_currentHealth(health),
 		_health(health),
 		_isBossBar(isBossBar),
@@ -38,12 +38,12 @@ namespace maoutch
 			if (x == 0) side = 0;
 			else if (x == 6 - 1) side = 2;
 
-			_decorators.emplace_back(new Sprite(
+			_decorators.emplace_back(Sprite(
 				Assets::Instance()->GetTexture("HealthBar"),
 				Vector2i::From(partSize),
 				Vector2i(side, 0)
 			));
-			_decorators[x]->Move(Vector2i(partSize.x * x, 0));
+			_decorators[x].Move(Vector2i(partSize.x * x, 0));
 		}
 
 		// Health rectangles
@@ -67,23 +67,19 @@ namespace maoutch
 		AddChildren(skull);
 
 		// Health Text
-		_healthText->SetColor(sf::Color::White);
-		_healthText->SetSize(16);
-		_healthText->SetOrigin(Vector2(_healthText->GetBounds().width, 0) / 2.f);
+		_healthText.SetColor(sf::Color::White);
+		_healthText.SetSize(16);
+		_healthText.SetOrigin(Vector2(_healthText.GetBounds().width, 0) / 2.f);
 
 		// Boss
 		SetIsBossBar(_isBossBar);
 	}
-	HealthBar::~HealthBar()
-	{
-		for (auto& decorator : _decorators)
-			delete decorator;
-	}
+	HealthBar::~HealthBar() = default;
 
 	void HealthBar::FixedUpdate(float dt)
 	{
 		// Move HealthText to position
-		_healthText->SetPosition(GetGlobalPosition());
+		_healthText.SetPosition(GetGlobalPosition());
 
 		if (_isIndicating)
 		{
@@ -117,8 +113,8 @@ namespace maoutch
 		_healthRectangle.setSize(Vector2(math::Clamp(_size.x * t - 6, 0.f, _size.x), _healthRectangle.getSize().y));
 		_healthRectangle.setFillColor(colors::LerpRGB(sf::Color::Red, sf::Color::Green, t, easing::EaseType::EaseInOutQuad));
 
-		_healthText->SetText(string::ToString(_currentHealth));
-		_healthText->SetOrigin(Vector2(_healthText->GetBounds().width, 0) / 2.f);
+		_healthText.SetText(string::ToString(_currentHealth));
+		_healthText.SetOrigin(Vector2(_healthText.GetBounds().width, 0) / 2.f);
 
 		// Events
 		if (damage > 0) onHeal(damage);
@@ -156,8 +152,8 @@ namespace maoutch
 		window.draw(_healthRectangle, transform);
 		
 		for (auto& decorator : _decorators)
-			decorator->Draw(window, transform);
+			decorator.Draw(window, transform);
 
-		_healthText->Draw(window, transform);
+		_healthText.Draw(window, transform);
 	}
 }

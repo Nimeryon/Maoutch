@@ -40,6 +40,7 @@ namespace maoutch
 		float _yDirection[2];
 		bool _destroyAfterPlaying;
 		std::vector<int*> _terturePositions = {};
+
 		ParticleEmitter* _particle = nullptr;
 	};
 }
