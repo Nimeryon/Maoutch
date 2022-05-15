@@ -6,6 +6,10 @@ RPG Match Game made with SFML in C++
 
 In Maoutch, you have to go to Hell to recover your dog's soul. Thanks to the power of the elements you will be able to move heaven and earth (literally) in order to achieve your goal.
 
+## Launching the game
+
+Open the Visual Studio 2022 Solution and start the game.
+
 ## Documentation
 
 - [Why did we make this game ?](./Documentation/Explanation.md)
