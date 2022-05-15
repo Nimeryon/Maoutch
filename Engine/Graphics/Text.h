@@ -1,8 +1,4 @@
 #pragma once
-namespace sf
-{
-	class Font;
-}
 #include <SFML/Graphics/Text.hpp>
 
 #include "../../Interfaces/ITransformable.h"
@@ -37,12 +33,11 @@ namespace maoutch
 		sf::Color GetOutlineColor() const;
 
 		void Draw(sf::RenderWindow& window, const sf::Transform& transform);
+		void Draw(sf::RenderWindow& window);
 
 		sf::FloatRect GetBounds() const override;
 
 	private:
 		sf::Text _text;
-
-		void _SetFont(sf::Font& font);
 	};
 }

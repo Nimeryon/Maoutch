@@ -1,7 +1,6 @@
 {
   "Texture": "Demon",
   "Size": "128|128",
-  "Boss": true,
   "BossSize": 420,
   "Breathing": true,
   "BreathTime": 2,
@@ -9,5 +8,5 @@
   "Floating": true,
   "FloatingTime": 1.5,
   "FloatingHeight": 12,
-  "BaseHealth": 500
+  "BaseHealth": 10
 }

@@ -2,33 +2,34 @@
 #include "../MatchFinder.h"
 #include "../Objects/MatchGrid.h"
 #include "../../Engine/Assets.h"
+#include "../../Engine/Objects/GameObjectHandler.h"
 
 namespace maoutch
 {
 	MatchHint::MatchHint() :
 		GameObject("MatchHint", 2, true, false),
-		_hintAnimationNorth(AnimatedSprite(
+		_hintAnimationNorth(new AnimatedSprite(
 			Assets::Config<float>("Hint", "AnimationTime"),
 			Assets::Instance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(Assets::Config<int>("Element", "Size"), Assets::Config<int>("Element", "Size") * 2),
 			Vector2i(3, 0),
 			false
 		)),
-		_hintAnimationEast(AnimatedSprite(
+		_hintAnimationEast(new AnimatedSprite(
 			Assets::Config<float>("Hint", "AnimationTime"),
 			Assets::Instance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(Assets::Config<int>("Element", "Size") * 2, Assets::Config<int>("Element", "Size")),
 			Vector2i::Zero(),
 			false
 		)),
-		_hintAnimationSouth(AnimatedSprite(
+		_hintAnimationSouth(new AnimatedSprite(
 			Assets::Config<float>("Hint", "AnimationTime"),
 			Assets::Instance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(Assets::Config<int>("Element", "Size"), Assets::Config<int>("Element", "Size") * 2),
 			Vector2i(2, 0),
 			false
 		)),
-		_hintAnimationWest(AnimatedSprite(
+		_hintAnimationWest(new AnimatedSprite(
 			Assets::Config<float>("Hint", "AnimationTime"),
 			Assets::Instance()->GetTexture("Hint Arrow Animation"),
 			Vector2i(Assets::Config<int>("Element", "Size") * 2, Assets::Config<int>("Element", "Size")),
@@ -38,21 +39,27 @@ namespace maoutch
 	{
 		// Setup Animation North Frames
 		for (int i = 7; i < 32; i += 4)
-			_hintAnimationNorth.AddFrame(Vector2i(i, 0));
+			_hintAnimationNorth->AddFrame(Vector2i(i, 0));
 
 		// Setup Animation East Frames
 		for (int i = 2; i < 16; i += 2)
-			_hintAnimationEast.AddFrame(Vector2i(i, 0));
+			_hintAnimationEast->AddFrame(Vector2i(i, 0));
 
 		// Setup Animation South Frames
 		for (int i = 6; i < 32; i += 4)
-			_hintAnimationSouth.AddFrame(Vector2i(i, 0));
+			_hintAnimationSouth->AddFrame(Vector2i(i, 0));
 
 		// Setup Animation West Frames
 		for (int i = 2; i < 16; i += 2)
-			_hintAnimationWest.AddFrame(Vector2i(i, 1));
+			_hintAnimationWest->AddFrame(Vector2i(i, 1));
 	}
-	MatchHint::~MatchHint() = default;
+	MatchHint::~MatchHint()
+	{
+		GameObjectHandler::Instance()->NotifyDestroy(_hintAnimationNorth);
+		GameObjectHandler::Instance()->NotifyDestroy(_hintAnimationEast);
+		GameObjectHandler::Instance()->NotifyDestroy(_hintAnimationSouth);
+		GameObjectHandler::Instance()->NotifyDestroy(_hintAnimationWest);
+	}
 
 	void MatchHint::SetActive(const bool& isActive)
 	{
@@ -74,22 +81,22 @@ namespace maoutch
 		{
 			case Direction::DirectionValue::North:
 				SetOrigin(Vector2(elementSize / 2.f, elementSize + elementSize / 2.f));
-				_hintAnimationNorth.Play();
+				_hintAnimationNorth->Play();
 				break;
 
 			case Direction::DirectionValue::East:
 				SetOrigin(Vector2(elementSize / 2.f, elementSize / 2.f));
-				_hintAnimationEast.Play();
+				_hintAnimationEast->Play();
 				break;
 
 			case Direction::DirectionValue::South:
 				SetOrigin(Vector2(elementSize / 2.f, elementSize / 2.f));
-				_hintAnimationSouth.Play();
+				_hintAnimationSouth->Play();
 				break;
 
 			case Direction::DirectionValue::West:
 				SetOrigin(Vector2(elementSize + elementSize / 2.f, elementSize / 2.f));
-				_hintAnimationWest.Play();
+				_hintAnimationWest->Play();
 				break;
 
 			default: break;
@@ -98,29 +105,29 @@ namespace maoutch
 
 	void MatchHint::_StopAnimations()
 	{
-		_hintAnimationNorth.Stop();
-		_hintAnimationEast.Stop();
-		_hintAnimationSouth.Stop();
-		_hintAnimationWest.Stop();
+		_hintAnimationNorth->Stop();
+		_hintAnimationEast->Stop();
+		_hintAnimationSouth->Stop();
+		_hintAnimationWest->Stop();
 	}
 	void MatchHint::_OnDraw(sf::RenderWindow& window, const sf::Transform& transform)
 	{
 		switch (_possibleMatch.direction)
 		{
 		case Direction::DirectionValue::North:
-			_hintAnimationNorth.Draw(window, transform);
+			_hintAnimationNorth->Draw(window, transform);
 			break;
 
 		case Direction::DirectionValue::East:
-			_hintAnimationEast.Draw(window, transform);
+			_hintAnimationEast->Draw(window, transform);
 			break;
 
 		case Direction::DirectionValue::South:
-			_hintAnimationSouth.Draw(window, transform);
+			_hintAnimationSouth->Draw(window, transform);
 			break;
 
 		case Direction::DirectionValue::West:
-			_hintAnimationWest.Draw(window, transform);
+			_hintAnimationWest->Draw(window, transform);
 			break;
 
 		default: break;

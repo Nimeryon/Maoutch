@@ -39,61 +39,49 @@ namespace maoutch
 		if (!_instance) _instance = new Squisher();
 		return _instance;
 	}
-
-	bool Squisher::_UpdateEffects(const float& dt)
+	
+	bool Squisher::_UpdateEffect(const float& dt, SquishData& data, ITransformable* transformable)
 	{
-		bool squished = false;
-
-		for (int i = 0; i < _effectDatas.size(); ++i)
+		bool isFinished = false;
+		if (data.in)
 		{
-			SquishData& data = _effectDatas[i];
-			squished = true;
-			if (data.in)
+			data.currentTime += dt;
+			if (data.currentTime >= data.time)
 			{
-				data.currentTime += dt;
-				if (data.currentTime >= data.time)
+				if (data.isLooping)
 				{
-					if (data.isLooping)
-					{
-						data.in = !data.in;
-						data.currentTime -= data.time;
-					}
-					else
-					{
-						data.object->SetScale(data.initialScale);
-						Remove(data.object);
-
-						return false;
-					}
+					data.in = !data.in;
+					data.currentTime -= data.time;
 				}
-
-				const float t = data.currentTime / data.time;
-				data.object->SetScale(data.initialScale + data.scale * Ease(data.inEaseType, t));
+				else isFinished = true;
 			}
-			else
+
+			const float t = data.currentTime / data.time;
+			transformable->SetScale(data.initialScale + data.scale * Ease(data.inEaseType, t));
+		}
+		else
+		{
+			data.currentOutTime += dt;
+			if (data.currentOutTime >= data.timeOut)
 			{
-				data.currentOutTime += dt;
-				if (data.currentOutTime >= data.timeOut)
+				if (data.isLooping)
 				{
-					if (data.isLooping)
-					{
-						data.in = !data.in;
-						data.currentOutTime -= data.timeOut;
-					}
-					else
-					{
-						data.object->SetScale(data.initialScale);
-						Remove(data.object);
-
-						return false;
-					}
+					data.in = !data.in;
+					data.currentOutTime -= data.timeOut;
 				}
-
-				const float t = data.currentOutTime / data.timeOut;
-				data.object->SetScale(data.initialScale + data.scale * Ease(data.outEaseType, 1 - t));
+				else isFinished = true;
 			}
+
+			const float t = data.currentOutTime / data.timeOut;
+			transformable->SetScale(data.initialScale + data.scale * Ease(data.outEaseType, 1 - t));
 		}
 
-		return squished;
+		if (isFinished)
+		{
+			transformable->SetScale(data.initialScale);
+			return false;
+		}
+
+		return true;
 	}
 }

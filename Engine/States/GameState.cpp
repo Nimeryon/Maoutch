@@ -7,25 +7,33 @@
 #include "../../Engine/StateMachine.h"
 #include "../../Engine/InputHandler.h"
 #include "../../Engine/States/ParticleEditorState.h"
+#include "../../Game/Entities/HealthBar.h"
 #include "../Assets.h"
 
 namespace maoutch
 {
-	GameState::GameState() : _background(
-		Assets::Instance()->GetTexture("BackGround"),
-		Vector2i(1280, 720),
-		Vector2i::Zero()
-	)
-	{}
-	GameState::~GameState()
-	{
-		delete _grid;
-	}
+	GameState::GameState() : _background(nullptr) {}
+	GameState::~GameState() = default;
 
 	void GameState::Init()
 	{
-		_grid = new MatchGrid("circle_grid");
-		new Monster(random::Bool() ? "cerbere" : "demon", Element::Random());
+		// Background
+		_background = new Sprite(
+			Assets::Instance()->GetTexture("BackGround"),	
+			Vector2i(1280, 720),
+			Vector2i::Zero()
+		);
+
+		// Grid
+		new MatchGrid("circle_grid");
+
+		// HealthBar
+		const float windowWidth = Assets::Config<float>("Window", "Width");
+		HealthBar* healthBar = new HealthBar();
+		healthBar->SetPosition(Vector2(windowWidth / 2.f, 64));
+
+		// Monster
+		Monster::CreateRandomMonster();
 	}
 	void GameState::ProcessInputs()
 	{
@@ -37,7 +45,7 @@ namespace maoutch
 	}
 	void GameState::Draw(sf::RenderWindow& window)
 	{
-		_background.Draw(window, sf::Transform::Identity);
+		_background->Draw(window);
 	}
 	void GameState::ImGui(float dt)
 	{
@@ -50,10 +58,12 @@ namespace maoutch
 		ImGui::Text("FPS:");
 		ImGui::SameLine();
 		ImGui::Text(&std::to_string(1.f / dt)[0]);
-		
-		if (ImGui::Button("Reset Grid"))
-			_grid->StartReset();
 
 		ImGui::End();
+	}
+
+	void GameState::_OnStateChange()
+	{
+		Monster::level = 0;
 	}
 }

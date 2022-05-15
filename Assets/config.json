@@ -5,7 +5,8 @@
   },
   "Assets": {
     "TexturePath": "Assets\\Textures\\",
-    "FontPath": "Assets\\Fonts\\"
+    "FontPath": "Assets\\Fonts\\",
+    "SoundPath": "Assets\\Sounds\\" 
   },
   "Particle": {
     "Path": "Assets\\Particles\\"

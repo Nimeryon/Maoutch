@@ -8,10 +8,11 @@ namespace maoutch
 {
 	Bullet::Bullet(const Vector2& position, const Element& element, const Vector2& particleSize) :
 		GameObject("Bullet", 5),
+		// _shootSound(Assets::Instance()->GetSoundBuffer("Bullet Shoot"), 1 + random::Float(-0.2f, 0.2f)),
+		// _explosionSound(Assets::Instance()->GetSoundBuffer("Explosion"), 1 + random::Float(-0.2f, 0.2f)),
 		_particleScale(particleSize),
 		_startPosition(position),
 		_element(element),
-		_monster(GameObjectHandler::Instance()->GetObjects<Monster>()[0]),
 		_rotationSpeed(random::Float(
 			-Assets::Config<float>("Bullet", "MaxRotationSpeed"),
 			Assets::Config<float>("Bullet", "MaxRotationSpeed")
@@ -50,7 +51,11 @@ namespace maoutch
 
 		// Particles
 		_particleEmitter = SpawnParticle("Trails\\" + _element.ToString() + "_trail_particle.json");
+
+		// Sound
+		// _shootSound.Play();
 	}
+	Bullet::~Bullet() = default;
 
 	void Bullet::Update(float dt)
 	{
@@ -60,7 +65,7 @@ namespace maoutch
 		const float t = _currentTravelTime / _travelTime;
 		static constexpr easing::EaseType easeType = easing::EaseType::EaseInQuad;
 
-		const Vector2 monsterPosition = _monster->GetMonsterPosition() + _goalOffset;
+		const Vector2 monsterPosition = GameObjectHandler::Instance()->GetObjects<Monster>()[0]->GetMonsterPosition() + _goalOffset;
 		SetPosition(Vector2::Lerp(_startPosition.Lerp(_curvePoint, t, easeType), _curvePoint.Lerp(monsterPosition, t, easeType), t, easeType));
 		_particleEmitter->SetPosition(GetPosition());
 
@@ -69,8 +74,10 @@ namespace maoutch
 	}
 	void Bullet::OnDestroy()
 	{
+		Monster* monster = GameObjectHandler::Instance()->GetObjects<Monster>()[0];
+
 		// Calculate damage
-		const Element monsterElement = _monster->GetElement();
+		const Element monsterElement = monster->GetElement();
 
 		// Damage
 		sf::Color popUpColor = sf::Color::Yellow;
@@ -78,7 +85,7 @@ namespace maoutch
 		std::string popUpText = string::ToString(damage);
 		if (monsterElement.GetStrength() == _element)
 		{
-			popUpColor = sf::Color::Red;
+			popUpColor = sf::Color::White;
 			damage = -0.5;
 			popUpText = string::ToString(damage);
 		}
@@ -88,7 +95,7 @@ namespace maoutch
 			damage = -2;
 			popUpText = string::ToString(damage) + "!";
 		}
-		_monster->Damage(damage);
+		monster->Damage(damage);
 
 		// Damage PopUp
 		new TextPopUp(popUpText, GetGlobalPosition(), 1, 14, popUpColor);
@@ -97,6 +104,9 @@ namespace maoutch
 		_particleEmitter->SetDestroyAfterPlaying(true);
 		_particleEmitter->Stop();
 		SpawnParticle("Explosions\\" + _element.ToString() + "_explosion_particle.json");
+
+		// Sound
+		// _explosionSound.Play();
 	}
 
 	ParticleEmitter* Bullet::SpawnParticle(const std::string& fileName) const

@@ -18,7 +18,6 @@ namespace maoutch
 	MatchGrid::MatchGrid(const std::string& fileName) :
 		GameObject("Match Grid", 0),
 		_matchGridBackGround(new MatchGridBackGround()),
-		_emptyPositions({}),
 		_state(GridState::Starting),
 		_matchFinder(&_grid),
 		_moveChecked(false),
@@ -48,6 +47,9 @@ namespace maoutch
 
 	void MatchGrid::Setup(const std::string& fileName)
 	{
+		_emptyPositions.clear();
+		_respawnPoints.clear();
+
 		std::ifstream file(Assets::Config<std::string>("Grid", "Path") + fileName + ".json");
 		nlohmann::json json = nlohmann::json::parse(file);
 
@@ -86,8 +88,16 @@ namespace maoutch
 	}
 	void MatchGrid::SetupGrid(const Vector2i& gridSize)
 	{
+		Vector2i gridPos;
+		for (gridPos.y = 0; gridPos.y < _grid.GetHeight(); ++gridPos.y)
+			for (gridPos.x = 0; gridPos.x < _grid.GetWidth(); ++gridPos.x)
+			{
+				MatchElement* element = _grid.GetGridElement(gridPos);
+				if (element) GameObjectHandler::Instance()->Destroy(element);
+			}
+
 		_grid.Resize(gridSize.x, gridSize.y);
-		for (int i = 0;i < gridSize.x * gridSize.y; ++i) 
+		for (int i = 0; i < gridSize.x * gridSize.y; ++i) 
 			_grid.EmplaceBack(nullptr);
 
 		_FillGrid();
@@ -236,6 +246,7 @@ namespace maoutch
 	void MatchGrid::SetState(const GridState& state) { _state = state; }
 
 	Grid<MatchElement*> MatchGrid::GetGrid() const { return _grid; }
+	std::vector<Vector2i> MatchGrid::GetEmptyPositions() const { return _emptyPositions; }
 
 	void MatchGrid::PrintGrid()
 	{
@@ -438,8 +449,8 @@ namespace maoutch
 	{
 		SetState(GridState::Inputs);
 
-		PossibleMatch& possibleMatch = _matchFinder.possibleMatches[random::Int(0, _matchFinder.possibleMatches.size())];
-		Swap(possibleMatch.gridPos, possibleMatch.direction);
+		// PossibleMatch& possibleMatch = _matchFinder.possibleMatches[random::Int(0, _matchFinder.possibleMatches.size())];
+		// Swap(possibleMatch.gridPos, possibleMatch.direction);
 	}
 	void MatchGrid::_DisableMatchHint()
 	{

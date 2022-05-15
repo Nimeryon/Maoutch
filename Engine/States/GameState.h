@@ -1,12 +1,14 @@
 #pragma once
 #include "../Graphics/Sprite.h"
+#include "../../Interfaces/IStateDependant.h"
 #include "State.h"
 
 namespace maoutch
 {
+	class HealthBar;
 	class MatchGrid;
 
-	class GameState : public State
+	class GameState : public State, public IStateDependant
 	{
 	public:
 		GameState();
@@ -18,8 +20,8 @@ namespace maoutch
 		void ImGui(float dt) override;
 
 	private:
-		MatchGrid* _grid = nullptr;
+		Sprite* _background;
 
-		Sprite _background;
+		void _OnStateChange() override;
 	};
 }

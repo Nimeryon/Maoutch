@@ -17,10 +17,10 @@ namespace maoutch
 	private:
 		PossibleMatch _possibleMatch;
 
-		AnimatedSprite _hintAnimationNorth;
-		AnimatedSprite _hintAnimationEast;
-		AnimatedSprite _hintAnimationSouth;
-		AnimatedSprite _hintAnimationWest;
+		AnimatedSprite* _hintAnimationNorth;
+		AnimatedSprite* _hintAnimationEast;
+		AnimatedSprite* _hintAnimationSouth;
+		AnimatedSprite* _hintAnimationWest;
 
 		void _StopAnimations();
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;

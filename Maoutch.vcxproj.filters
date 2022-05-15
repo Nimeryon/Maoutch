@@ -124,6 +124,12 @@
     <Filter Include="Header Files\Game\Match\Objects">
       <UniqueIdentifier>{ad61371e-685e-4d9d-a835-da3e3261567f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Audio">
+      <UniqueIdentifier>{37dc680f-7f01-4d3a-b811-550d05746291}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Audio">
+      <UniqueIdentifier>{f39a15ab-2e9f-46b8-8a6d-35c8f1a5e3a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -269,6 +275,9 @@
     </ClCompile>
     <ClCompile Include="Game\Effects\Squisher.cpp">
       <Filter>Source Files\Game\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Audio\Sound.cpp">
+      <Filter>Source Files\Engine\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +457,9 @@
     </ClInclude>
     <ClInclude Include="Game\Effects\Squisher.h">
       <Filter>Header Files\Game\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Audio\Sound.h">
+      <Filter>Header Files\Engine\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

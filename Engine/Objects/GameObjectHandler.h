@@ -4,6 +4,7 @@ namespace sf { class RenderWindow; }
 #include <vector>
 
 #include "../../Interfaces/IStateDependant.h"
+#include "../../Tools/Event.h"
 
 namespace maoutch
 {
@@ -19,7 +20,9 @@ namespace maoutch
 		void operator=(GameObjectHandler const&) = delete;
 
 		void AddObject(GameObject* object);
+		void AddTranform(ITransformable* transform);
 		void Destroy(GameObject* object);
+		void NotifyDestroy(ITransformable* iTransformable);
 
 		void ProcessObjectsAdding();
 		void ProcessObjectsDestroy();
@@ -48,6 +51,8 @@ namespace maoutch
 		}
 		std::vector<GameObject*> GetObjects(const std::string& name);
 
+		Event<ITransformable*> onITransformableDestroy;
+
 	protected:
 		GameObjectHandler();
 		~GameObjectHandler() override;
@@ -64,6 +69,8 @@ namespace maoutch
 		std::vector<GameObject*> _objects;
 		std::vector<GameObject*> _objectsToDestroy;
 		std::vector<GameObject*> _objectsToAdd;
+
+		std::vector<std::shared_ptr<ITransformable>> _transformables;
 
 		void _ClearObjectsToDestroy();
 		void _AddObjectsToAdd();

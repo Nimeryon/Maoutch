@@ -47,6 +47,6 @@ namespace maoutch
 		static Squisher* _instance;
 		static std::mutex _mutex; // For allowing multithreaded use
 
-		bool _UpdateEffects(const float& dt) override;
+		bool _UpdateEffect(const float& dt, SquishData& data, ITransformable* transformable) override;
 	};
 }

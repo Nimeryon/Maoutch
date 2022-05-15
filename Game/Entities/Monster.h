@@ -10,7 +10,9 @@ namespace maoutch
 	{
 	public:
 		Monster(const std::string& fileName, const Element& element);
-		~Monster();
+		~Monster() override;
+
+		static void CreateRandomMonster();
 
 		void Init() override;
 
@@ -19,10 +21,14 @@ namespace maoutch
 		Element GetElement() const;
 		Vector2 GetMonsterPosition() const;
 
+		static int level;
+
 	private:
 		Element _element;
 		
-		Sprite _sprite;
+		Sprite* _sprite;
+
+		float _health;
 
 		float _scale;
 		bool _isBoss;

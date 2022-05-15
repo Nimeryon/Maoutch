@@ -12,13 +12,8 @@ namespace maoutch
 		SetText(text);
 		SetOutlineThickness(outlineThickness);
 		SetOutlineColor(sf::Color::Black);
-
-		Assets::Instance()->onFontChange += EventHandler::Bind<sf::Font&>(&Text::_SetFont, this);
 	}
-	Text::~Text()
-	{
-		Assets::Instance()->onFontChange -= EventHandler::Bind<sf::Font&>(&Text::_SetFont, this);
-	}
+	Text::~Text() = default;
 	
 	void Text::SetText(const std::string& text) { _text.setString(text); }
 	void Text::SetSize(const int& size) { _text.setCharacterSize(size); }
@@ -40,8 +35,10 @@ namespace maoutch
 	{
 		window.draw(_text, _localTransform.getTransform());
 	}
-
-	void Text::_SetFont(sf::Font& font) { _text.setFont(font); }
+	void Text::Draw(sf::RenderWindow& window)
+	{
+		window.draw(_text);
+	}
 
 	sf::FloatRect Text::GetBounds() const { return _text.getGlobalBounds(); }
 }

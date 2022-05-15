@@ -58,7 +58,8 @@ namespace maoutch
 		_colorEaseType(0),
 		_directionEaseType(0),
 		_xDirection{-1, 1},
-		_yDirection{-1, 1}
+		_yDirection{-1, 1},
+		_destroyAfterPlaying(false)
 	{
 		for (const auto& filePath : std::filesystem::recursive_directory_iterator(Assets::Config<std::string>("Particle", "Path")))
 			filePaths.push_back(filePath.path().string());

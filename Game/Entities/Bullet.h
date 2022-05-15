@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Engine/Objects/GameObject.h"
 #include "../../Engine/Graphics/ParticleEmitter.h"
+#include "../../Engine/Audio/Sound.h"
 #include "../Match/Data/Element.h"
 #include "Monster.h"
 
@@ -10,6 +11,7 @@ namespace maoutch
 	{
 	public:
 		Bullet(const Vector2& position, const Element& element, const Vector2& particleScale = Vector2::One());
+		~Bullet() override;
 
 		void Update(float dt) override;
 
@@ -17,7 +19,9 @@ namespace maoutch
 
 	private:
 		ParticleEmitter* _particleEmitter;
-		Monster* _monster;
+
+		// Sound _shootSound;
+		// Sound _explosionSound;
 
 		Vector2 _particleScale;
 		Vector2 _goalOffset;

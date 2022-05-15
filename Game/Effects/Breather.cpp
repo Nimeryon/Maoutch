@@ -34,35 +34,27 @@ namespace maoutch
 		return _instance;
 	}
 
-	bool Breather::_UpdateEffects(const float& dt)
+	bool Breather::_UpdateEffect(const float& dt, BreathData& data, ITransformable* transformable)
 	{
-		bool breathed = false;
-			for (int i = 0; i < _effectDatas.size(); ++i)
+		data.currentTime += dt;
+		if (data.currentTime >= data.time)
+		{
+			if (data.isLooping)
 			{
-				BreathData& data = _effectDatas[i];
-				data.currentTime += dt;
-				if (data.currentTime >= data.time)
-				{
-					if (data.isLooping)
-					{
-						data.in = !data.in;
-						data.currentTime -= data.time;
-					}
-					else
-					{
-						data.object->SetScale(data.initialScale);
-						Remove(data.object);
-
-						return false;
-					}
-				}
-
-				breathed = true;
-				const float t = data.currentTime / data.time;
-				if (data.in) data.object->SetScale(data.initialScale + data.scale * Ease(data.inEaseType, t));
-				else data.object->SetScale(data.initialScale + data.scale * Ease(data.outEaseType, 1 - t));
+				data.in = !data.in;
+				data.currentTime -= data.time;
+			}
+			else
+			{
+				transformable->SetScale(data.initialScale);
+				return false;
+			}
 		}
 
-		return breathed;
+		const float t = data.currentTime / data.time;
+		if (data.in) transformable->SetScale(data.initialScale + data.scale * Ease(data.inEaseType, t));
+		else transformable->SetScale(data.initialScale + data.scale * Ease(data.outEaseType, 1 - t));
+
+		return true;
 	}
 }

@@ -21,7 +21,9 @@ namespace maoutch
 	void MatchGridBackGround::Setup()
 	{
 		_vertexArray.clear();
-		Grid<MatchElement*> grid = ((MatchGrid*)parent)->GetGrid();
+
+		auto grid = ((MatchGrid*)parent)->GetGrid();
+		auto emptyGridPositions = ((MatchGrid*)parent)->GetEmptyPositions();
 
 		const float elementSize = Assets::Config<float>("Element", "Size");
 		Vector2 halfElementSize = elementSize / 2.f;
@@ -35,9 +37,13 @@ namespace maoutch
 			for (gridPos.x = 0; gridPos.x < grid.GetWidth(); ++gridPos.x)
 			{
 				isBlackTile = !isBlackTile;
-				if (!grid.GetGridElement(gridPos)) continue;
+				if (std::any_of(
+					emptyGridPositions.begin(),
+					emptyGridPositions.end(),
+					[gridPos](Vector2i position) { return gridPos == position; }
+				)) continue;
 
-				Vector2i texturePosition = _CalculateAutoTiling(grid, gridPos);
+				Vector2i texturePosition = _CalculateAutoTiling(emptyGridPositions, Vector2i(grid.GetWidth(), grid.GetHeight()), gridPos);
 				if (!isBlackTile) texturePosition.x += 8;
 				texturePosition.y += (int)_element.Value() * 6;
 
@@ -73,22 +79,26 @@ namespace maoutch
 		Setup();
 	}
 
-	bool MatchGridBackGround::_IsTileValid(Grid<MatchElement*>& grid, const Vector2i& gridPos)
+	bool MatchGridBackGround::_IsTileValid(std::vector<Vector2i>& emptyGridPositions, const Vector2i& gridSize, const Vector2i& gridPos)
 	{
-		if (gridPos.x < 0 || gridPos.y < 0 || gridPos.x >= grid.GetWidth() || gridPos.y >= grid.GetHeight()) return false;
-		return grid.GetGridElement(gridPos);
+		if (gridPos.x < 0 || gridPos.y < 0 || gridPos.x >= gridSize.x || gridPos.y >= gridSize.y) return false;
+		return !std::any_of(
+			emptyGridPositions.begin(),
+			emptyGridPositions.end(),
+			[gridPos](Vector2i position) { return gridPos == position; }
+		);
 	}
-	Vector2i MatchGridBackGround::_CalculateAutoTiling(Grid<MatchElement*>& grid, const Vector2i& gridPos)
+	Vector2i MatchGridBackGround::_CalculateAutoTiling(std::vector<Vector2i>& emptyGridPositions, const Vector2i& gridSize, const Vector2i& gridPos)
 	{
 		std::string neighbourBinary;
-		neighbourBinary += _IsTileValid(grid, { gridPos.x - 1, gridPos.y }) ? '1' : '0'; // 0000 0001
-		neighbourBinary += _IsTileValid(grid, { gridPos.x - 1, gridPos.y - 1 }) ? '1' : '0'; // 0000 0010
-		neighbourBinary += _IsTileValid(grid, { gridPos.x, gridPos.y - 1 }) ? '1' : '0'; // 0000 0100
-		neighbourBinary += _IsTileValid(grid, { gridPos.x + 1, gridPos.y - 1 }) ? '1' : '0'; // 0000 1000
-		neighbourBinary += _IsTileValid(grid, { gridPos.x + 1, gridPos.y }) ? '1' : '0'; // 0001 0000
-		neighbourBinary += _IsTileValid(grid, { gridPos.x + 1, gridPos.y + 1 }) ? '1' : '0'; // 0010 0000
-		neighbourBinary += _IsTileValid(grid, { gridPos.x, gridPos.y + 1 }) ? '1' : '0'; // 0100 0000
-		neighbourBinary += _IsTileValid(grid, { gridPos.x - 1, gridPos.y + 1 }) ? '1' : '0'; // 1000 0000
+		neighbourBinary += _IsTileValid(emptyGridPositions, gridSize, { gridPos.x - 1, gridPos.y }) ? '1' : '0'; // 0000 0001
+		neighbourBinary += _IsTileValid(emptyGridPositions, gridSize, { gridPos.x - 1, gridPos.y - 1 }) ? '1' : '0'; // 0000 0010
+		neighbourBinary += _IsTileValid(emptyGridPositions, gridSize, { gridPos.x, gridPos.y - 1 }) ? '1' : '0'; // 0000 0100
+		neighbourBinary += _IsTileValid(emptyGridPositions, gridSize, { gridPos.x + 1, gridPos.y - 1 }) ? '1' : '0'; // 0000 1000
+		neighbourBinary += _IsTileValid(emptyGridPositions, gridSize, { gridPos.x + 1, gridPos.y }) ? '1' : '0'; // 0001 0000
+		neighbourBinary += _IsTileValid(emptyGridPositions, gridSize, { gridPos.x + 1, gridPos.y + 1 }) ? '1' : '0'; // 0010 0000
+		neighbourBinary += _IsTileValid(emptyGridPositions, gridSize, { gridPos.x, gridPos.y + 1 }) ? '1' : '0'; // 0100 0000
+		neighbourBinary += _IsTileValid(emptyGridPositions, gridSize, { gridPos.x - 1, gridPos.y + 1 }) ? '1' : '0'; // 1000 0000
 
 		int autoTilingIndex = std::stoi(neighbourBinary, 0, 2);
 		int autoTile = autoTilingArray[autoTilingIndex];

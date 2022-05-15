@@ -9,7 +9,7 @@ namespace maoutch
 	Assets* Assets::_instance = nullptr;
 	std::mutex Assets::_mutex;
 
-	Assets::Assets() : _isSmoothFont(false) {}
+	Assets::Assets() = default;
 	Assets::~Assets() = default;
 
 	Assets* Assets::Instance()
@@ -27,6 +27,7 @@ namespace maoutch
 
 		if (!Instance()->_LoadTextures()) return false;
 		if (!Instance()->_LoadFonts()) return false;
+		if (!Instance()->_LoadSounds()) return false;
 		
 		return true;
 	}
@@ -34,20 +35,19 @@ namespace maoutch
 	nlohmann::json& Assets::Config() { return Instance()->_jsonData; }
 
 	std::map<std::string, sf::Texture>& Assets::GetTexturesMap() { return _textures; }
+
 	sf::Texture& Assets::GetTexture(const std::string& name) { return _textures.at(name); }
-
-	void Assets::SetSmoothFont(const bool& isSmooth)
-	{
-		_isSmoothFont = isSmooth;
-		onFontChange(GetFont());
-	}
-
-	sf::Font& Assets::GetFont() { return _isSmoothFont ? _robotoFont : _minecraftiaFont; }
+	sf::Font& Assets::GetFont() { return _font; }
+	sf::SoundBuffer& Assets::GetSoundBuffer(const std::string& name) { return _sounds.at(name); }
 
 	bool Assets::_LoadTexture(const std::string& name, const std::string& fileName)
 	{
 		const bool loaded = _textures[name].loadFromFile(Config<std::string>("Assets", "TexturePath") + fileName);
-
+		return loaded;
+	}
+	bool Assets::_LoadSound(const std::string& name, const std::string& fileName)
+	{
+		const bool loaded = _sounds[name].loadFromFile(Config<std::string>("Assets", "SoundPath") + fileName);
 		return loaded;
 	}
 
@@ -64,6 +64,14 @@ namespace maoutch
 		
 		if (!_LoadTexture("Demon", "demon.png")) return false;
 		if (!_LoadTexture("Cerbere", "cerbere.png")) return false;
+		if (!_LoadTexture("Dragon", "boss_dragon.png")) return false;
+		if (!_LoadTexture("Ent", "creeper.png")) return false;
+		if (!_LoadTexture("Elemental", "elemental_wisp.png")) return false;
+		if (!_LoadTexture("Imp", "imp.png")) return false;
+		if (!_LoadTexture("Plant", "man_eating_plant.png")) return false;
+		if (!_LoadTexture("Mimic", "mimic.png")) return false;
+		if (!_LoadTexture("Ghost", "shadow.png")) return false;
+		if (!_LoadTexture("Slime", "slime.png")) return false;
 
 		if (!_LoadTexture("BackGround", "test_background.png")) return false;
 
@@ -73,8 +81,14 @@ namespace maoutch
 	{
 		const auto fontPath = Config<std::string>("Assets", "FontPath");
 
-		if (!_minecraftiaFont.loadFromFile(fontPath + "minecraftia.ttf")) return false;
-		if (!_robotoFont.loadFromFile(fontPath + "roboto.ttf")) return false;
+		if (!_font.loadFromFile(fontPath + "minecraftia.ttf")) return false;
+
+		return true;
+	}
+	bool Assets::_LoadSounds()
+	{
+		if (!_LoadSound("Bullet Shoot", "bullet_shoot.wav")) return false;
+		if (!_LoadSound("Explosion", "explosion.wav")) return false;
 
 		return true;
 	}

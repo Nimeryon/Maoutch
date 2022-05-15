@@ -5,9 +5,12 @@
 
 namespace maoutch
 {
-	class ITransformable
+	class ITransformable : public std::enable_shared_from_this<ITransformable>
 	{
 	public:
+		ITransformable();
+		virtual ~ITransformable();
+
 		virtual sf::FloatRect GetBounds() const;
 
 		[[nodiscard]] virtual Vector2 GetPosition() const;

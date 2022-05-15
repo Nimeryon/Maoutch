@@ -44,6 +44,6 @@ namespace maoutch
 		static Floater* _instance;
 		static std::mutex _mutex; // For allowing multithreaded use
 
-		bool _UpdateEffects(const float& dt) override;
+		bool _UpdateEffect(const float& dt, FloaterData& data, ITransformable* transformable) override;
 	};
 }

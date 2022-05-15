@@ -25,16 +25,24 @@ namespace maoutch
 
 		_objectsToAdd.push_back(object);
 	}
+	void GameObjectHandler::AddTranform(ITransformable* transform)
+	{
+		_transformables.push_back(std::shared_ptr<ITransformable>(transform));
+	}
 	void GameObjectHandler::Destroy(GameObject* object)
 	{
 		_needObjectDeleting = true;
 
-		object->OnDestroy();
 		object->RemoveFromParent();
 		for (GameObject* childObject : object->childrens)
 			Destroy(childObject);
 
 		_objectsToDestroy.push_back(object);
+	}
+	void GameObjectHandler::NotifyDestroy(ITransformable* iTransformable)
+	{
+		onITransformableDestroy(iTransformable);
+		_transformables.erase(std::find(_transformables.begin(), _transformables.end(), iTransformable->shared_from_this()));
 	}
 
 	void GameObjectHandler::ProcessObjectsAdding()
@@ -105,8 +113,7 @@ namespace maoutch
 	void GameObjectHandler::NeedUpdateSorting()	{ _neeedObjectSorting = true; }
 	void GameObjectHandler::Clear()
 	{
-		std::vector<GameObject*> objects = _objects;
-		for (GameObject* object : objects)
+		for (GameObject* object : _objects)
 			delete object;
 
 		_objects.clear();
@@ -133,8 +140,10 @@ namespace maoutch
 	{
 		for (GameObject* object : _objectsToDestroy)
 		{
-			delete object;
+			object->OnDestroy();
 			_objects.erase(std::find(_objects.begin(), _objects.end(), object));
+
+			NotifyDestroy(object);
 		}
 
 		_objectsToDestroy.clear();

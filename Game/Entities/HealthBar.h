@@ -17,13 +17,14 @@ namespace maoutch
 	class HealthBar : public GameObject, public IDamageable
 	{
 	public:
-		HealthBar(const float& health, const bool& isBossBar = false);
+		HealthBar(const float& health = 10, const bool& isBossBar = false);
 		~HealthBar() override;
 
 		void FixedUpdate(float dt) override;
 
 		void Damage(const float& damage) override;
 		void SetIsBossBar(const bool& isBossBar);
+		void SetHealth(const float& health);
 
 		Event<void> onDeath;
 		Event<const float> onDamage;
@@ -33,10 +34,14 @@ namespace maoutch
 		sf::RectangleShape _backgroundRectangle;
 		sf::RectangleShape _damageIndicatorRectangle;
 		sf::RectangleShape _healthRectangle;
-		std::vector<Sprite> _decorators;
-		Text _healthText;
+		std::vector<Sprite*> _decorators;
+
+		Text* _healthText;
+		Text* _levelText;
 
 		Vector2 _size;
+		Vector2 _rectangleSize;
+
 		float _currentHealth;
 		float _health;
 		bool _isBossBar;
@@ -50,6 +55,7 @@ namespace maoutch
 		Timer<HealthBar> _indicatorTimer;
 
 		void _OnIndicatorTimer();
+		void _SetupSize();
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 	};

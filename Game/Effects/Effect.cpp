@@ -3,7 +3,7 @@
 namespace maoutch
 {
 	EffectData::EffectData(ITransformable* object, const float& time, const bool& isLooping) :
-		object(object),
+		object(std::weak_ptr(object->shared_from_this())),
 		currentTime(0),
 		time(time),
 		isLooping(isLooping)

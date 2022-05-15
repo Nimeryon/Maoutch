@@ -34,36 +34,27 @@ namespace maoutch
 		return _instance;
 	}
 
-	bool Floater::_UpdateEffects(const float& dt)
+	bool Floater::_UpdateEffect(const float& dt, FloaterData& data, ITransformable* transformable)
 	{
-		bool floated = false;
-
-		for (int i = 0; i < _effectDatas.size(); ++i)
+		data.currentTime += dt;
+		if (data.currentTime >= data.time)
 		{
-			FloaterData& data = _effectDatas[i];
-			data.currentTime += dt;
-			if (data.currentTime >= data.time)
+			if (data.isLooping)
 			{
-				if (data.isLooping)
-				{
-					data.in = !data.in;
-					data.currentTime -= data.time;
-				}
-				else
-				{
-					data.object->SetPosition(Vector2(data.object->GetPosition().x, data.initialHeight));
-					Remove(data.object);
-
-					return false;
-				}
+				data.currentTime -= data.time;
+				data.in = !data.in;
 			}
-
-			floated = true;
-			const float t = data.currentTime / data.time;
-			if (data.in) data.object->SetPosition(Vector2(data.object->GetPosition().x, data.initialHeight + data.height * Ease(data.inEaseType, t)));
-			else data.object->SetPosition(Vector2(data.object->GetPosition().x, data.initialHeight + data.height * Ease(data.outEaseType, 1 - t)));
+			else
+			{
+				transformable->SetPosition(Vector2(transformable->GetPosition().x, data.initialHeight));
+				return false;
+			}
 		}
 
-		return floated;
+		const float t = data.currentTime / data.time;
+		if (data.in) transformable->SetPosition(Vector2(transformable->GetPosition().x, data.initialHeight + data.height * Ease(data.inEaseType, t)));
+		else transformable->SetPosition(Vector2(transformable->GetPosition().x, data.initialHeight + data.height * Ease(data.outEaseType, 1 - t)));
+
+		return true;
 	}
 }

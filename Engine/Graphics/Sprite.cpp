@@ -43,6 +43,10 @@ namespace maoutch
 		_renderState.transform = transform * _localTransform.getTransform();
 		window.draw(_vertexArray, _renderState);
 	}
+	void Sprite::Draw(sf::RenderWindow& window)
+	{
+		window.draw(_vertexArray, _renderState.texture);
+	}
 	
 	sf::FloatRect Sprite::GetBounds() const	{ return _vertexArray.getBounds(); }
 

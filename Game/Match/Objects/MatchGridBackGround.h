@@ -66,8 +66,8 @@ namespace maoutch
 
 		Element _element;
 
-		bool _IsTileValid(Grid<MatchElement*>& grid, const Vector2i& gridPos);
-		Vector2i _CalculateAutoTiling(Grid<MatchElement*>& grid, const Vector2i& gridPos);
+		bool _IsTileValid(std::vector<Vector2i>& emptyGridPositions, const Vector2i& gridSize, const Vector2i& gridPos);
+		Vector2i _CalculateAutoTiling(std::vector<Vector2i>& emptyGridPositions, const Vector2i& gridSize, const Vector2i& gridPos);
 
 		void _OnDraw(sf::RenderWindow& window, const sf::Transform& transform) override;
 	};

@@ -46,6 +46,7 @@ namespace maoutch
 		void SetState(const GridState& state);
 
 		Grid<MatchElement*> GetGrid() const;
+		std::vector<Vector2i> GetEmptyPositions() const;
 
 		void PrintGrid();
 

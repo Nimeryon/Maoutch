@@ -13,7 +13,7 @@ namespace maoutch
 		void Update(float dt) override;
 
 	private:
-		Text _text;
+		Text* _text;
 
 		Vector2 _initialPosition;
 		float _finalHeight;

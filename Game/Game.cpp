@@ -72,10 +72,11 @@ namespace maoutch
 			if (_logicUpdateTime.asSeconds() > .1f) _logicUpdateTime = sf::milliseconds(100);
 			while (_logicUpdateTime >= _data->logicDeltatime)
 			{
+				StateMachine::Instance()->ProcessObjectsAdding();
+
 				float logicDt = _logicUpdateTime.asSeconds();
 				StateMachine::Instance()->FixedUpdate(logicDt);
 
-				StateMachine::Instance()->ProcessObjectsAdding();
 				StateMachine::Instance()->ProcessObjectsDestroy();
 
 				_logicUpdateTime -= _data->logicDeltatime;

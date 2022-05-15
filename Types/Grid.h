@@ -48,7 +48,7 @@ namespace maoutch
 			_height = height;
 			_ReserveSpace();
 		}
-		void EmplaceBack(const T& element) { array.emplace_back(element); }
+		void EmplaceBack(const T& value) { array.emplace_back(value); }
 		void Clear() { array.clear(); }
 
 		std::vector<T> array = {};

@@ -1,10 +1,10 @@
 {
   "Texture": "Cerbere",
   "Size": "128|128",
-  "Boss": false,
+  "BossSize": 420,
   "Breathing": true,
   "BreathTime": 2,
   "BreathScale": "0.025|0.025",
   "Floating": false,
-  "BaseHealth": 500
+  "BaseHealth": 10
 }

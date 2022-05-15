@@ -36,6 +36,6 @@ namespace maoutch
 		static Shaker* _instance;
 		static std::mutex _mutex; // For allowing multithreaded use
 
-		bool _UpdateEffects(const float& dt) override;
+		bool _UpdateEffect(const float& dt, ShakeData& data, ITransformable* transformable) override;
 	};
 }

@@ -3,6 +3,7 @@
 #include <mutex>
 #include <string>
 #include <json.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Font.hpp>
 
@@ -28,12 +29,10 @@ namespace maoutch
 		}
 
 		std::map<std::string, sf::Texture>& GetTexturesMap();
+
 		sf::Texture& GetTexture(const std::string& name);
-
-		void SetSmoothFont(const bool& isSmooth);
-
 		sf::Font& GetFont();
-		Event<sf::Font&> onFontChange;
+		sf::SoundBuffer& GetSoundBuffer(const std::string& name);
 		
 	protected:
 		Assets();
@@ -44,16 +43,17 @@ namespace maoutch
 		static std::mutex _mutex; // For allowing multithreaded use
 
 		std::map<std::string, sf::Texture> _textures;
-
-		bool _isSmoothFont;
-		sf::Font _minecraftiaFont;
-		sf::Font _robotoFont;
+		std::map<std::string, sf::SoundBuffer> _sounds;
+		
+		sf::Font _font;
 
 		nlohmann::json _jsonData;
 		
 		bool _LoadTexture(const std::string& name, const std::string& fileName);
+		bool _LoadSound(const std::string& name, const std::string& fileName);
 
 		bool _LoadTextures();
 		bool _LoadFonts();
+		bool _LoadSounds();
 	};
 }

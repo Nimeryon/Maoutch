@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Assets.cpp" />
+    <ClCompile Include="Engine\Audio\Sound.cpp" />
     <ClCompile Include="Engine\Graphics\AnimatedSprite.cpp" />
     <ClCompile Include="Engine\Graphics\Particle.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleEmitter.cpp" />
@@ -198,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Assets.h" />
+    <ClInclude Include="Engine\Audio\Sound.h" />
     <ClInclude Include="Engine\Graphics\AnimatedSprite.h" />
     <ClInclude Include="Engine\Graphics\Particle.h" />
     <ClInclude Include="Engine\Graphics\ParticleEmitter.h" />

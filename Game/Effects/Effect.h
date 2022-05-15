@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "../../Tools/Event.h"
+#include "../../Engine/Objects/GameObjectHandler.h"
 #include "../../Engine/Tools/Timer.h"
 #include "../../Interfaces/IStateDependant.h"
 #include "../../Interfaces/ITransformable.h"
@@ -11,7 +12,7 @@ namespace maoutch
 	{
 		EffectData(ITransformable* object, const float& time, const bool& isLooping = false);
 
-		ITransformable* object;
+		std::weak_ptr<ITransformable> object;
 		float currentTime;
 		float time;
 		bool isLooping;
@@ -23,9 +24,19 @@ namespace maoutch
 	class Effect : IStateDependant
 	{
 	public:
+		Effect()
+		{
+			GameObjectHandler::Instance()->onITransformableDestroy += EventHandler::Bind<ITransformable*, Effect>(&Effect::Remove, this);
+		}
+		~Effect() override
+		{
+			GameObjectHandler::Instance()->onITransformableDestroy -= EventHandler::Bind<ITransformable*, Effect>(&Effect::Remove, this);
+		}
+
 		void Apply(T data)
 		{
-			if (!data.object) return;
+			std::shared_ptr<ITransformable> transform = data.object.lock();
+			if (!transform) return;
 			if (!_isActive)
 			{
 				_isActive = true;
@@ -33,9 +44,10 @@ namespace maoutch
 			}
 
 			bool objectFound = false;
-			for (EffectData& effectData : _effectDatas)
+			for (T& effectData : _effectDatas)
 			{
-				if (effectData.object == data.object)
+				std::shared_ptr<ITransformable> dataTransform = data.object.lock();
+				if (dataTransform && dataTransform == transform)
 				{
 					effectData = data;
 					objectFound = true;
@@ -44,16 +56,27 @@ namespace maoutch
 
 			if (!objectFound) _effectDatas.push_back(data);
 		}
-		void Remove(ITransformable* object)
+		void Remove(ITransformable*& object)
 		{
-			for (int i = 0; i < _effectDatas.size(); ++i)
-			{
-				EffectData& data = _effectDatas[i];
-				if (data.object == object)
+			if (!_isActive) return;
+			
+			_effectDatas.erase(std::remove_if(
+				_effectDatas.begin(),
+				_effectDatas.end(),
+				[this, object](T& data)
 				{
-					_effectDatas.erase(_effectDatas.begin() + i);
-					break;
+					std::shared_ptr<ITransformable> transform = data.object.lock();
+					if (transform)
+						return transform.get() == object;
+
+					return false;
 				}
+			), _effectDatas.end());
+
+			if (_effectDatas.empty())
+			{
+				TimerBase::timerEvent -= EventHandler::Bind<const float&, Effect<T>>(&Effect<T>::_Update, this);
+				_isActive = false;
 			}
 		}
 
@@ -83,8 +106,25 @@ namespace maoutch
 				_isActive = false;
 			}
 		}
+		
+		bool _UpdateEffects(const float& dt)
+		{
+			for (int i = 0; i < _effectDatas.size(); ++i)
+			{
+				std::shared_ptr<ITransformable> transform = _effectDatas[i].object.lock();
+				if (transform)
+				{
+					if (!_UpdateEffect(dt, _effectDatas[i], transform.get()))
+					{
+						ITransformable* transformable = transform.get();
+						Remove(transformable);
+					}
+				}
+				else _effectDatas.erase(_effectDatas.begin() + i);
+			}
 
-		/* Return if an effect has been updated */
-		virtual bool _UpdateEffects(const float& dt) { return false; }
+			return !_effectDatas.empty();
+		}
+		virtual bool _UpdateEffect(const float& dt, T& data, ITransformable* transformable) = 0;
 	};
 }

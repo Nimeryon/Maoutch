@@ -34,33 +34,26 @@ namespace maoutch
 		return _instance;
 	}
 
-	bool Shaker::_UpdateEffects(const float& dt)
+	bool Shaker::_UpdateEffect(const float& dt, ShakeData& data, ITransformable* transformable)
 	{
-		bool shaked = false;
-
-		for (int i = 0; i < _effectDatas.size(); ++i)
+		if (data.currentTime < data.time)
 		{
-			ShakeData& data = _effectDatas[i];
-			if (data.currentTime < data.time)
-			{
-				shaked = true;
-				data.currentTime += dt;
+			data.currentTime += dt;
 
-				Vector2 randomDirection = Vector2::RandomCireclePoint();
-				data.magnitude -= data.decreaseFactor * dt;
-				if (data.magnitude < 0) data.magnitude = 0;
+			Vector2 randomDirection = Vector2::RandomCireclePoint();
+			data.magnitude -= data.decreaseFactor * dt;
+			if (data.magnitude < 0) data.magnitude = 0;
 
-				data.object->Move(randomDirection * dt * data.magnitude);
-				if (data.object->GetPosition().Distance(data.initialPosition) > data.maxRadius)
-					data.object->SetPosition(data.initialPosition);
-			}
-			else
-			{
-				data.object->SetPosition(data.initialPosition);
-				Remove(data.object);
-			}
+			transformable->Move(randomDirection * dt * data.magnitude);
+			if (transformable->GetPosition().Distance(data.initialPosition) > data.maxRadius)
+				transformable->SetPosition(data.initialPosition);
+		}
+		else
+		{
+			transformable->SetPosition(data.initialPosition);
+			return false;
 		}
 
-		return shaked;
+		return true;
 	}
 }

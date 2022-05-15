@@ -1,7 +1,14 @@
 #include "ITransformable.h"
+#include "../../Engine/Objects/GameObjectHandler.h"
 
 namespace maoutch
 {
+	ITransformable::ITransformable()
+	{
+		GameObjectHandler::Instance()->AddTranform(this);
+	}
+	ITransformable::~ITransformable() = default;
+
 	sf::FloatRect ITransformable::GetBounds() const { return sf::FloatRect(); }
 
 	Vector2 ITransformable::GetPosition() const { return Vector2::From(_localTransform.getPosition()); }

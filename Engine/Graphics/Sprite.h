@@ -30,6 +30,7 @@ namespace maoutch
 		sf::Color GetColor() const;
 
 		void Draw(sf::RenderWindow& window, const sf::Transform& transform);
+		void Draw(sf::RenderWindow& window);
 
 		sf::FloatRect GetBounds() const override;
 
